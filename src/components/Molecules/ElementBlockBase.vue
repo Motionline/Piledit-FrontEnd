@@ -27,8 +27,7 @@
 
 <script lang="ts">
 import { Prop, Emit, Vue } from 'vue-property-decorator'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const svgZOrder = require('svg-z-order')
+import svgZOrder from 'svgZOrder'
 const remote = require('electron').remote
 const Menu = remote.Menu
 const MenuItem = remote.MenuItem
