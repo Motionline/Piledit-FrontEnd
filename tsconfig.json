@@ -12,10 +12,14 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
+    "typeRoots": [
+      "src/@types/*.d.ts"
+    ],
     "types": [
       "webpack-env",
       "jest",
-      "vuetify"
+      "vuetify",
+      "svg-z-order"
     ],
     "paths": {
       "@/*": [
