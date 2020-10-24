@@ -17,39 +17,41 @@
   </svg>
 </template>
 
-<script>
-import LoadingVideoBlock from '@/components/Organisms/LoadingVideoBlock'
-import DebugBlock from '@/components/Organisms/DebugBlock'
-import DefinitionComponentBlock from '@/components/Organisms/DefinitionComponentBlock'
-export default {
-  name: 'BlocksSandBox',
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import { blocksModule } from '@/store/Modules/Blocks'
+import LoadingVideoBlock from '@/components/Organisms/LoadingVideoBlock.vue'
+import DebugBlock from '@/components/Organisms/DebugBlock.vue'
+import DefinitionComponentBlock from '@/components/Organisms/DefinitionComponentBlock.vue'
+
+@Component({
   components: {
     LoadingVideoBlock,
     DebugBlock,
     DefinitionComponentBlock
-  },
-  props: {
-    allBlocks: {
-      type: Object,
-      required: true
-    }
-  },
-  methods: {
-    shadowPath (width) {
-      return `m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H ${width} a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z`
-    },
-    test () {
-      console.log('drop')
-    },
-    stopDragging (event) {
-      this.$store.dispatch('Blocks/stopDragging', event)
-    },
-    updatePosition (event) {
-      this.$store.dispatch('Blocks/update', event)
-    },
-    removeBlock (event) {
-      this.$store.dispatch('Blocks/remove', event.blockUniqueKey)
-    }
+  }
+})
+export default class BlocksSandBox extends Vue {
+  @Prop({ required: true })
+  // TODO: Block型をプロジェクト全体から使えるようにする
+  public allBlocks!: null
+  /* Block[] */
+
+  public shadowPath (width: number) {
+    return `m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H ${width.toString()} a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z`
+  }
+
+  // TODO: event型を定義する
+  public stopDragging (event: DragEvent) {
+    // blocksModule.stopDragging(event)
+  }
+
+  public updatePosition (event: DragEvent) {
+    // blocksModule.update(event)
+  }
+
+  public removeBlock (event: DragEvent) {
+    // blocksModule.remove(event.blockUniqueKey)
   }
 }
 </script>
