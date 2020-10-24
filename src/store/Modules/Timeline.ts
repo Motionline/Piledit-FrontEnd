@@ -7,18 +7,7 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-
-type Position = {
-  x: number;
-  y: number;
-}
-
-type ComponentObject = {
-  componentObjectUniqueKey: string;
-  componentUniqueKey: string;
-  position: Position;
-  width: number;
-}
+import { ComponentObject } from '@/@types/piledit'
 
 export interface TimeLineStateIF {
   componentObjects: { [key: string]: ComponentObject };

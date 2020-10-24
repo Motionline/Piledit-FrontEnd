@@ -7,34 +7,20 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-
-interface IPosition {
-  x: number
-  y: number
-}
-
-interface IBlock {
-  position: IPosition
-  blockType: string
-  showShadow: boolean
-  childBlockUniqueKey: string
-  blockUniqueKey: string
-  parentBlockUniqueKey: string
-  topBlockUniqueKey: string
-}
+import { Position, Block } from '@/@types/piledit'
 
 export interface IBlockState {
-  allBlocks: { [key: string]: IBlock }
+  allBlocks: { [key: string]: Block }
   objectOfBlockAndComponent: { [key: string] : string }
 }
 
 @Module({ dynamic: true, store: store, name: 'Blocks', namespaced: true })
 class Blocks extends VuexModule implements IBlockState {
-  allBlocks: { [key: string]: IBlock } = {}
+  allBlocks: { [key: string]: Block } = {}
   objectOfBlockAndComponent: { [key: string]: string } = {}
 
   @Mutation
-  public addBlock (block: IBlock) {
+  public addBlock (block: Block) {
     Vue.set(this.allBlocks, block.blockUniqueKey, block)
   }
 
@@ -44,12 +30,12 @@ class Blocks extends VuexModule implements IBlockState {
   }
 
   @Mutation
-  public updateBlock (block: IBlock) {
+  public updateBlock (block: Block) {
     this.allBlocks[block.blockUniqueKey] = block
   }
 
   @Mutation
-  public updateChildBlock (block: IBlock) {
+  public updateChildBlock (block: Block) {
     let blockInSearch = this.allBlocks[block.blockUniqueKey]
     while (blockInSearch.childBlockUniqueKey !== '') {
       const child = this.allBlocks[blockInSearch.childBlockUniqueKey]
@@ -101,9 +87,9 @@ class Blocks extends VuexModule implements IBlockState {
   }
 
   @Action({})
-  public add (position: IPosition, blockType: string) {
+  public add (position: Position, blockType: string) {
     const blockUniqueKey = generateUuid()
-    const block: IBlock = {
+    const block: Block = {
       position,
       blockType,
       showShadow: false,
@@ -138,7 +124,7 @@ class Blocks extends VuexModule implements IBlockState {
   }
 
   @Action({})
-  public update (blockArg: IBlock) {
+  public update (blockArg: Block) {
     this.updateBlock(blockArg)
     this.updateChildBlock(blockArg)
     const blockUniqueKey = blockArg.blockUniqueKey
@@ -159,7 +145,7 @@ class Blocks extends VuexModule implements IBlockState {
   }
 
   @Action({})
-  public stopDragging (blockArg: IBlock) {
+  public stopDragging (blockArg: Block) {
     const block = this.allBlocks[blockArg.blockUniqueKey]
     const position = block.position
     for (const key of Object.keys(this.allBlocks)) {
@@ -261,7 +247,7 @@ const generateUuid = () => {
   return material.join('')
 }
 
-const isNearbyBlocks = (position1: IPosition, position2: IPosition) => {
+const isNearbyBlocks = (position1: Position, position2: Position) => {
   const isNearbyX1 = (position1.x - position2.x) <= 80
   const isNearbyX2 = (position1.x - position2.x) >= -160
   const isNearbyY1 = (position2.y - position1.y) <= 65

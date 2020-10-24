@@ -7,10 +7,7 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-
-type Component = {
-  componentUniqueKey: string;
-}
+import { Component } from '@/@types/piledit'
 
 export interface ComponentsStateIF {
   allComponents: { [key: string]: Component };
