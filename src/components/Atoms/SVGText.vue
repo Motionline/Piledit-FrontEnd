@@ -10,23 +10,18 @@
   </text>
 </template>
 
-<script>
-export default {
-  name: 'SVGText',
-  props: {
-    x: {
-      type: String,
-      required: true
-    },
-    y: {
-      type: String,
-      required: true
-    },
-    color: {
-      type: String,
-      required: true
-    }
-  }
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+@Component
+export default class SVGText extends Vue {
+  @Prop()
+  public x?: number
+
+  @Prop()
+  public y?: number
+
+  @Prop()
+  public color?: string
 }
 </script>
 
