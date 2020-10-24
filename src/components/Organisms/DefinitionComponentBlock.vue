@@ -26,54 +26,47 @@
   </EventBlockBase>
 </template>
 
-<script>
-import SVGText from '@/components/Atoms/SVGText'
-import EventBlockBase from '@/components/Molecules/EventBlockBase'
-export default {
-  name: 'DefinitionComponentBlock',
+<script lang="ts">
+import SVGText from '@/components/Atoms/SVGText.vue'
+import EventBlockBase from '@/components/Molecules/EventBlockBase.vue'
+import { Component, Prop, Vue } from 'vue-property-decorator'
+@Component({
   components: {
     SVGText,
     EventBlockBase
-  },
-  props: {
-    blockUniqueKey: {
-      type: String,
-      required: true
-    },
-    x: {
-      type: Number,
-      required: true
-    },
-    y: {
-      type: Number,
-      required: true
-    },
-    showShadow: {
-      type: Boolean,
-      required: true
-    },
-    shadowPath: {
-      type: Function
-    }
-  },
-  data () {
-    return {
-      selectFilePath: '',
-      strokeColor: '#e9bc00',
-      fillColor: '#fcc800',
-      width: '300'
-    }
-  },
-  methods: {
-    stopDragging (event) {
-      this.$emit('stopDragging', event)
-    },
-    updatePosition (event) {
-      this.$emit('updatePosition', event)
-    },
-    removeBlock (event) {
-      this.$emit('removeBlock', event)
-    }
+  }
+})
+export default class DefinitionComponentBlock extends Vue {
+  @Prop({ required: true })
+  public blockUniqueKey!: string
+
+  @Prop({ required: true })
+  public x!: number
+
+  @Prop({ required: true })
+  public y!: number
+
+  @Prop({ required: true })
+  public showShadow!: string
+
+  @Prop({ required: true })
+  public shadowPath!: (width: number) => string
+
+  public selectFilePath = ''
+  public strokeColor = '#e9bc00'
+  public fillColor = '#fcc800'
+  public width = 300
+
+  public stopDragging (event: DragEvent) {
+    this.$emit('stopDragging', event)
+  }
+
+  public updatePosition (event: DragEvent) {
+    this.$emit('updatePosition', event)
+  }
+
+  public removeBlock (event: DragEvent) {
+    this.$emit('removeBlock', event)
   }
 }
 </script>
