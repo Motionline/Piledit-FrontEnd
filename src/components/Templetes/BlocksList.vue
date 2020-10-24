@@ -41,47 +41,35 @@
   </svg>
 </template>
 
-<script>
-import DragLoadingVideoBlock from '@/components/Organisms/DragLoadingVideoBlock'
-import DragDebugBlock from '@/components/Organisms/DragDebugBlock'
-import DragDefinitionComponentBlock from '@/components/Organisms/DragDefinitionComponentBlock'
-export default {
-  name: 'BlocksList',
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+import DragLoadingVideoBlock from '@/components/Organisms/DragLoadingVideoBlock.vue'
+import DragDebugBlock from '@/components/Organisms/DragDebugBlock.vue'
+import DragDefinitionComponentBlock from '@/components/Organisms/DragDefinitionComponentBlock.vue'
+import { blocksModule } from '@/store/Modules/Blocks'
+@Component({
   components: {
     DragLoadingVideoBlock,
     DragDebugBlock,
     DragDefinitionComponentBlock
-  },
-  methods: {
-    addBlock (blockType) {
-      this.$store.dispatch('Blocks/add', {
-        position: {
-          x: 0,
-          y: 0
-        },
-        blockType
-      })
-    },
-    dragEnd (event, blockType) {
-      // console.log('dragEnd')
-      // if (event.clientY <= 400) {
-      //   this.$store.dispatch('Blocks/add', {
-      //     position: {
-      //       x: event.clientX - 250,
-      //       y: event.clientY
-      //     },
-      //     blockType
-      //   })
-      // }
-      this.$store.dispatch('Blocks/add', {
-        position: {
-          x: event.clientX,
-          y: event.clientY
-        },
-        blockType
-      })
-      event.preventDefault()
+  }
+})
+export default class BlocksList extends Vue {
+  public addBlock (blockType: string) {
+    const position = {
+      x: 0,
+      y: 0
     }
+    blocksModule.add(position, blockType)
+  }
+
+  public dragEnd (event: DragEvent, blockType: string) {
+    const position = {
+      x: event.clientX,
+      y: event.clientY
+    }
+    blocksModule.add(position, blockType)
+    event.preventDefault()
   }
 }
 </script>
