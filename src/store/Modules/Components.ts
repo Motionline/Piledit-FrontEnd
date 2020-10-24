@@ -3,21 +3,21 @@ import {
   VuexModule,
   Mutation,
   Action,
-  getModule,
+  getModule
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
 
 type Component = {
-  componentUniqueKey: string
+  componentUniqueKey: string;
 }
 
-export interface IComponentsState {
-  allComponents: { [key: string]: Component }
+export interface ComponentsStateIF {
+  allComponents: { [key: string]: Component };
 }
 
 @Module({ dynamic: true, store: store, name: 'Components', namespaced: true })
-class Components extends VuexModule implements IComponentsState {
+class Components extends VuexModule implements ComponentsStateIF {
   allComponents: { [key: string]: Component } = {}
 
   @Mutation

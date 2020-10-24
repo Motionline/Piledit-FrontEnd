@@ -3,29 +3,29 @@ import {
   VuexModule,
   Mutation,
   Action,
-  getModule,
+  getModule
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
 
 type Position = {
-  x: number
-  y: number
+  x: number;
+  y: number;
 }
 
 type ComponentObject = {
-  componentObjectUniqueKey: string
-  componentUniqueKey: string
-  position: Position
-  width: number
+  componentObjectUniqueKey: string;
+  componentUniqueKey: string;
+  position: Position;
+  width: number;
 }
 
-export interface ITimeLineState {
-  componentObjects: { [key: string]: ComponentObject }
+export interface TimeLineStateIF {
+  componentObjects: { [key: string]: ComponentObject };
 }
 
 @Module({ dynamic: true, store: store, name: 'Components', namespaced: true })
-class TimeLine extends VuexModule implements ITimeLineState {
+class TimeLine extends VuexModule implements TimeLineStateIF {
   componentObjects: { [key: string]: ComponentObject } = {}
 
   @Mutation
@@ -45,7 +45,7 @@ class TimeLine extends VuexModule implements ITimeLineState {
 
   @Action({})
   public add (componentUniqueKey: string) {
-    const componentObjectUniqueKey = generateUuid()
+    const componentObjectUniqueKey = this.generateUuid()
     const componentObject: ComponentObject = {
       componentObjectUniqueKey,
       componentUniqueKey: componentUniqueKey,
@@ -67,18 +67,18 @@ class TimeLine extends VuexModule implements ITimeLineState {
   public updateWidth (componentObject: ComponentObject) {
     this.updateComponentObjectWidth(componentObject)
   }
-}
 
-const generateUuid = () => {
-  const material = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.split('')
-  for (let i = 0, len = material.length; i < len; i++) {
-    if (material[i] === 'x') {
-      material[i] = Math.floor(Math.random() * 16).toString(16)
-    } else if (material[i] === 'y') {
-      material[i] = (Math.floor(Math.random() * 4) + 8).toString(16)
+  public generateUuid () {
+    const material = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.split('')
+    for (let i = 0, len = material.length; i < len; i++) {
+      if (material[i] === 'x') {
+        material[i] = Math.floor(Math.random() * 16).toString(16)
+      } else if (material[i] === 'y') {
+        material[i] = (Math.floor(Math.random() * 4) + 8).toString(16)
+      }
     }
+    return material.join('')
   }
-  return material.join('')
 }
 
 export const timelineModule = getModule(TimeLine)
