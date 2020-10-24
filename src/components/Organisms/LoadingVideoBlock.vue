@@ -36,70 +36,68 @@
   </ElementBlockBase>
 </template>
 
-<script>
-import SVGText from '@/components/Atoms/SVGText'
-import ElementBlockBase from '@/components/Molecules/ElementBlockBase'
-const dialog = require('electron').remote.dialog
-const path = require('path')
-export default {
-  name: 'LoadingVideoBlock',
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import SVGText from '@/components/Atoms/SVGText.vue'
+import ElementBlockBase from '@/components/Molecules/ElementBlockBase.vue'
+import electron from 'electron'
+import path from 'path'
+const remote = electron.remote
+const dialog = remote.dialog
+@Component({
   components: {
     SVGText,
     ElementBlockBase
-  },
-  props: {
-    blockUniqueKey: {
-      type: String,
-      required: true
-    },
-    x: {
-      type: Number,
-      required: true
-    },
-    y: {
-      type: Number,
-      required: true
-    },
-    showShadow: {
-      type: Boolean,
-      required: true
+  }
+})
+export default class LoadingVideoBlock extends Vue {
+  @Prop({ required: true })
+  public blockUniqueKey!: string
+
+  @Prop({ required: true })
+  public x!: number
+
+  @Prop({ required: true })
+  public y!: number
+
+  @Prop({ required: true })
+  public showShadow!: boolean
+
+  public selectFilePath: string[] | undefined = undefined
+  public strokeColor = '#ee7800'
+  public fillColor = '#f39800'
+  public width = 370
+
+  public openFileDialog () {
+    const currentWindow = remote.getCurrentWindow()
+    this.selectFilePath = dialog.showOpenDialogSync(currentWindow, {
+      properties: ['openFile'],
+      title: 'Select a text file',
+      defaultPath: '.',
+      filters: [
+        { name: 'text file', extensions: ['mp4'] }
+      ]
+    })
+  }
+
+  public getDisplayButtonText () {
+    if (this.selectFilePath) {
+      return path.basename(this.selectFilePath[0])
+    } else {
+      return '開く'
     }
-  },
-  data () {
-    return {
-      selectFilePath: '',
-      strokeColor: '#ee7800',
-      fillColor: '#f39800',
-      width: '370'
-    }
-  },
-  methods: {
-    openFileDialog () {
-      this.selectFilePath = dialog.showOpenDialogSync(null, {
-        properties: ['openFile'],
-        title: 'Select a text file',
-        defaultPath: '.',
-        filters: [
-          { name: 'text file', extensions: ['mp4'] }
-        ]
-      })
-    },
-    getDisplayButtonText () {
-      if (this.selectFilePath) {
-        return path.basename(this.selectFilePath[0])
-      } else {
-        return '開く'
-      }
-    },
-    stopDragging (event) {
-      this.$emit('stopDragging', event)
-    },
-    updatePosition (event) {
-      this.$emit('updatePosition', event)
-    },
-    removeBlock (event) {
-      this.$emit('removeBlock', event)
-    }
+  }
+
+  public stopDragging (event: DragEvent) {
+    this.$emit('stopDragging', event)
+  }
+
+  public updatePosition (event: DragEvent) {
+    this.$emit('updatePosition', event)
+  }
+
+  public removeBlock (event: DragEvent) {
+    this.$emit('removeBlock', event)
   }
 }
 </script>
