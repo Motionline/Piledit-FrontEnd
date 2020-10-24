@@ -9,9 +9,10 @@
   </v-tabs>
 </template>
 
-<script>
-export default {
-  name: 'ApplicationTab'
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+@Component
+export default class ApplicationTab extends Vue {
 }
 </script>
 
