@@ -14,50 +14,50 @@
 <style scoped>
 </style>
 
-<!--<script>-->
-<!--import { mapGetters } from 'vuex'-->
-<!--import Timeline from '@/components/Templetes/Timeline'-->
-<!--import ApplicationTab from '@/components/Organisms/ApplicationTab'-->
-<!--// const fs = import('fs')-->
-<!--const app = require('electron').remote.app-->
-<!--export default {-->
-<!--  components: {-->
-<!--    Timeline,-->
-<!--    ApplicationTab-->
-<!--  },-->
-<!--  computed: {-->
-<!--    ...mapGetters('Components', [-->
-<!--      'allComponents'-->
-<!--    ]),-->
-<!--    ...mapGetters('Timeline', [-->
-<!--      'componentObjects'-->
-<!--    ])-->
-<!--  }-->
-<!--  // methods: {-->
-<!--  //   addComponentObject ({ payload }) {-->
-<!--  //     this.$store.dispatch('Timeline/add', payload)-->
-<!--  //   },-->
-<!--  //   outputMovieConfigurationFile () {-->
-<!--  //     for (const key of Object.keys(this.componentObjects)) {-->
-<!--  //       const componentObject = this.componentObjects[key]-->
-<!--  //       const path = `${app.getAppPath()}/JSON`-->
-<!--  //       if (!fs.existsSync(path)) {-->
-<!--  //         fs.mkdirSync(path)-->
-<!--  //       }-->
-<!--  //       fs.writeFileSync(-->
-<!--  //           `${path}/${key}.json`,-->
-<!--  //           JSON.stringify({-->
-<!--  //             Frame: {-->
-<!--  //               Begin: componentObject.position.x,-->
-<!--  //               End: componentObject.position.x + componentObject.width,-->
-<!--  //               Length: componentObject.width-->
-<!--  //             }-->
-<!--  //           }, undefined, 2), 'utf-8')-->
-<!--  //     }-->
-<!--  //   }-->
-<!--  // }-->
-<!--}-->
-<!--</script>-->
+<script>
+import { mapGetters } from 'vuex'
+import Timeline from '@/components/Templetes/Timeline'
+import ApplicationTab from '@/components/Organisms/ApplicationTab'
+// const fs = import('fs')
+const app = require('electron').remote.app
+export default {
+  components: {
+    Timeline,
+    ApplicationTab
+  },
+  computed: {
+    ...mapGetters('Components', [
+      'allComponents'
+    ]),
+    ...mapGetters('Timeline', [
+      'componentObjects'
+    ])
+  },
+  methods: {
+    addComponentObject ({ payload }) {
+      this.$store.dispatch('Timeline/add', payload)
+    },
+    outputMovieConfigurationFile () {
+      for (const key of Object.keys(this.componentObjects)) {
+        const componentObject = this.componentObjects[key]
+        const path = `${app.getAppPath()}/JSON`
+        if (!fs.existsSync(path)) {
+          fs.mkdirSync(path)
+        }
+        fs.writeFileSync(
+            `${path}/${key}.json`,
+            JSON.stringify({
+              Frame: {
+                Begin: componentObject.position.x,
+                End: componentObject.position.x + componentObject.width,
+                Length: componentObject.width
+              }
+            }, undefined, 2), 'utf-8')
+      }
+    }
+  }
+}
+</script>
 
 <!--<template>-->
 <!--  <v-content>-->
