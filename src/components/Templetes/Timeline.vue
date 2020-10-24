@@ -46,66 +46,69 @@
   </svg>
 </template>
 
-<script>
-import SVGText from '@/components/Atoms/SVGText'
-import ComponentObject from '@/components/Molecules/ComponentObject'
-export default {
-  name: 'Timeline',
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import { timelineModule } from '@/store/Modules/Timeline'
+import SVGText from '@/components/Atoms/SVGText.vue'
+import ComponentObject from '@/components/Molecules/ComponentObject.vue'
+@Component({
   components: {
     SVGText,
     ComponentObject
-  },
-  props: {
-    componentObjects: {
-      type: Object,
-      required: true
+  }
+})
+export default class Timeline extends Vue {
+  @Prop({ required: true })
+  // TODO: componentObject型をプロジェクト全体で使えるようにする
+  public componentObjects: undefined
+
+  public width = 4000
+  public beforeMouseX = 0
+  public beforeMouseY = 0
+  public timelinePositionX = 0
+  public isDragging = false
+
+  public getTimeDisplay (seconds: number) {
+    const minutes = Math.floor(seconds / 60)
+    seconds -= minutes * 60
+    const displayMinutes = minutes >= 10 ? minutes.toString() : '0' + minutes.toString()
+    const displaySeconds = seconds >= 10 ? seconds.toString() : '0' + seconds.toString()
+    return `${displayMinutes}:${displaySeconds}:00`
+  }
+
+  public getLinePosY (i: number) {
+    return (i - 1) * 50 + 1
+  }
+
+  public mouseDown (event: MouseEvent) {
+    this.isDragging = true
+    this.beforeMouseX = event.offsetX
+    event.preventDefault()
+  }
+
+  public mouseMove (event: MouseEvent) {
+    if (!this.isDragging) return
+    const res = this.timelinePositionX + event.offsetX - this.beforeMouseX
+    if (res <= 0 && res >= -this.width + 1500) {
+      this.timelinePositionX = res
     }
-  },
-  data () {
-    return {
-      width: 4000,
-      beforeMouseX: 0,
-      timelinePositionX: 0,
-      isDragging: false
-    }
-  },
-  methods: {
-    getTimeDisplay (seconds) {
-      const minutes = Math.floor(seconds / 60)
-      seconds -= minutes * 60
-      const displayMinutes = minutes >= 10 ? minutes.toString() : '0' + minutes.toString()
-      const displaySeconds = seconds >= 10 ? seconds.toString() : '0' + seconds.toString()
-      return `${displayMinutes}:${displaySeconds}:00`
-    },
-    getLinePosY (i) {
-      return (i - 1) * 50 + 1
-    },
-    mouseDown (event) {
-      this.isDragging = true
-      this.beforeMouseX = event.offsetX
-      event.preventDefault()
-    },
-    mouseMove (event) {
-      if (!this.isDragging) return
-      const res = this.timelinePositionX + event.offsetX - this.beforeMouseX
-      if (res <= 0 && res >= -this.width + 1500) {
-        this.timelinePositionX = res
-      }
-      this.beforeMouseX = event.offsetX
-      event.preventDefault()
-    },
-    mouseUp (event) {
-      this.isDragging = false
-      this.beforeMouseX = 0
-      this.beforeMouseY = 0
-      event.preventDefault()
-    },
-    updatePosition (pos) {
-      this.$store.dispatch('Timeline/updatePosition', pos)
-    },
-    updateWidth (width) {
-      this.$store.dispatch('Timeline/updateWidth', width)
-    }
+    this.beforeMouseX = event.offsetX
+    event.preventDefault()
+  }
+
+  public mouseUp (event: MouseEvent) {
+    this.isDragging = false
+    this.beforeMouseX = 0
+    this.beforeMouseY = 0
+    event.preventDefault()
+  }
+
+  public updatePosition (position: Position) {
+    // timelineModule.updatePosition(position)
+  }
+
+  public updateWidth (width: number) {
+    // timelineModule.updateWidth(width)
   }
 }
 </script>
