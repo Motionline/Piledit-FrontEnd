@@ -10,21 +10,19 @@
   </DragEventBlockBase>
 </template>
 
-<script>
-import SVGText from '@/components/Atoms/SVGText'
-import DragEventBlockBase from '@/components/Molecules/DragEventBlockBase'
-export default {
-  name: 'DragDefinitionComponentBlock',
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+import SVGText from '@/components/Atoms/SVGText.vue'
+import DragEventBlockBase from '@/components/Molecules/DragEventBlockBase.vue'
+@Component({
   components: {
     SVGText,
     DragEventBlockBase
-  },
-  data () {
-    return {
-      strokeColor: '#e9bc00',
-      fillColor: '#fcc800',
-      width: '250'
-    }
   }
+})
+export default class DragDefinitionComponentBlock extends Vue {
+  public strokeColor = '#e9bc00'
+  public fillColor = '#fcc800'
+  public width = 250
 }
 </script>
