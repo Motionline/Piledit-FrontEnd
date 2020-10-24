@@ -28,23 +28,21 @@
   </DragElementBlockBase>
 </template>
 
-<script>
-import SVGText from '@/components/Atoms/SVGText'
-import DragElementBlockBase from '@/components/Molecules/DragElementBlockBase'
-export default {
-  name: 'DragLoadingVideoBlock',
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+import SVGText from '@/components/Atoms/SVGText.vue'
+import DragElementBlockBase from '@/components/Molecules/DragElementBlockBase.vue'
+@Component({
   components: {
     SVGText,
     DragElementBlockBase
-  },
-  data () {
-    return {
-      selectFilePath: '',
-      strokeColor: '#ee7800',
-      fillColor: '#f39800',
-      width: '370'
-    }
   }
+})
+export default class DragLoadingVideoBlock extends Vue {
+  public selectFilePath = ''
+  public strokeColor = '#ee7800'
+  public fillColor = '#f39800'
+  public width = 370
 }
 </script>
 
