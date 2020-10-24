@@ -18,11 +18,10 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { componentsModule } from '@/store/Modules/Components'
 import { timelineModule } from '@/store/Modules/Timeline'
-import Timeline from '@/components/Templetes/Timeline.vue'
+import Timeline from '@/components/Templates/Timeline.vue'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
-import * as fs from 'fs'
-import electron from 'electron'
-const app = electron.remote.app
+import fs from 'fs'
+import { app } from 'electron'
 @Component({
   components: {
     Timeline,
@@ -45,7 +44,8 @@ export default class Home extends Vue {
   public outputMovieConfigurationFile () {
     for (const key of Object.keys(this.componentObjects)) {
       const componentObject = this.componentObjects[key]
-      const path = `${app.getAppPath()}/JSON`
+      const appPath = app.getAppPath()
+      const path = appPath + '/JSON'
       if (!fs.existsSync(path)) {
         fs.mkdirSync(path)
       }
@@ -76,6 +76,7 @@ export default class Home extends Vue {
 
 <!--<script>-->
 <!--import axios from 'axios'-->
+<!--import { app } from 'electron'-->
 <!--export default {-->
 <!--  name: 'Home',-->
 <!--  components: {-->
@@ -90,6 +91,7 @@ export default class Home extends Vue {
 <!--    loadImage ($event) {-->
 <!--      this.path = $event.path-->
 <!--      this.afterPath = this.path-->
+<!--      console.log(app.getAppPath())-->
 <!--    },-->
 <!--    grayscale () {-->
 <!--      const path = this.replaceSlashToColon(this.path)-->
