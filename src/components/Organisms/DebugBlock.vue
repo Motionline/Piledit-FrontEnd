@@ -17,57 +17,49 @@
   </ElementBlockBase>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
-import SVGText from '@/components/Atoms/SVGText'
-import ElementBlockBase from '@/components/Molecules/ElementBlockBase'
-export default {
-  name: 'DebugBlock',
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import { blocksModule } from '@/store/Modules/Blocks'
+import SVGText from '@/components/Atoms/SVGText.vue'
+import ElementBlockBase from '@/components/Molecules/ElementBlockBase.vue'
+@Component({
   components: {
     SVGText,
     ElementBlockBase
-  },
-  props: {
-    blockUniqueKey: {
-      type: String,
-      required: true
-    },
-    x: {
-      type: Number,
-      required: true
-    },
-    y: {
-      type: Number,
-      required: true
-    },
-    showShadow: {
-      type: Boolean,
-      required: true
-    }
-  },
-  data () {
-    return {
-      selectFilePath: '',
-      strokeColor: '#c53d43',
-      fillColor: '#e83929',
-      width: '350'
-    }
-  },
-  methods: {
-    stopDragging (event) {
-      this.$emit('stopDragging', event)
-    },
-    updatePosition (event) {
-      this.$emit('updatePosition', event)
-    },
-    removeBlock (event) {
-      this.$emit('removeBlock', event)
-    }
-  },
-  computed: {
-    ...mapGetters('Blocks', [
-      'allBlocks'
-    ])
+  }
+})
+export default class DebugBlock extends Vue {
+  get allBlocks () {
+    return blocksModule.allBlocks
+  }
+
+  @Prop({ required: true })
+  public blockUniqueKey!: string
+
+  @Prop({ required: true })
+  public x!: number
+
+  @Prop({ required: true })
+  public y!: number
+
+  @Prop({ required: true })
+  public showShadow!: boolean
+
+  public selectFilePath = ''
+  public strokeColor = '#c53d43'
+  public fillColor = '#e83929'
+  public width = 350
+
+  public stopDragging (event: DragEvent) {
+    this.$emit('stopDragging', event)
+  }
+
+  public updatePosition (event: DragEvent) {
+    this.$emit('updatePosition', event)
+  }
+
+  public removeBlock (event: DragEvent) {
+    this.$emit('removeBlock', event)
   }
 }
 </script>
