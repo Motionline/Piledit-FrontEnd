@@ -1,6 +1,7 @@
 <template>
   <svg height="2000" width="1200">
     <rect x="3" y="3" stroke="black" stroke-width="3px" height="380" width="1180" fill-opacity="0" />
+    <p>{{ allBlocks }}</p>
     <component
       v-for="(value, key, index) in this.allBlocks"
       :is="value.blockType"

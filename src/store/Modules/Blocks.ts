@@ -99,8 +99,6 @@ class Blocks extends VuexModule implements BlockStateIF {
       parentBlockUniqueKey: '',
       topBlockUniqueKey: ''
     }
-    console.log(blockUniqueKey)
-    console.log(block)
     this.addBlock(block)
   }
 
