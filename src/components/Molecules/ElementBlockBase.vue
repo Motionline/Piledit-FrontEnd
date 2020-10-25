@@ -30,9 +30,9 @@ import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import svgZOrder from 'svg-z-order'
 import { remote } from 'electron'
 import { Position } from '@/@types/piledit'
-import { blocksModule } from '@/store/Modules/Blocks'
 const Menu = remote.Menu
 const MenuItem = remote.MenuItem
+
 @Component
 export default class ElementBlockBase extends Vue {
   @Prop({ required: true })
