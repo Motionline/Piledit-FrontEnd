@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { blocksModule } from '@/store/Modules/Blocks'
 import SVGText from '@/components/Atoms/SVGText.vue'
 import ElementBlockBase from '@/components/Molecules/ElementBlockBase.vue'
@@ -50,16 +50,19 @@ export default class DebugBlock extends Vue {
   public fillColor = '#e83929'
   public width = 350
 
-  public stopDragging (event: DragEvent) {
-    this.$emit('stopDragging', event)
+  @Emit('stopDragging')
+  public stopDragging (blockUniqueKey: string) {
+    return blockUniqueKey
   }
 
-  public updatePosition (event: DragEvent) {
-    this.$emit('updatePosition', event)
+  @Emit('updatePosition')
+  public updatePosition (blockObj: { position: Position; blockUniqueKey: string }) {
+    return blockObj
   }
 
-  public removeBlock (event: DragEvent) {
-    this.$emit('removeBlock', event)
+  @Emit('removeBlock')
+  public removeBlock (blockUniqueKey: string) {
+    return blockUniqueKey
   }
 }
 </script>

@@ -42,7 +42,7 @@ class Blocks extends VuexModule implements BlockStateIF {
       const child = this.allBlocks[blockInSearch.childBlockUniqueKey]
       child.position = {
         x: blockInSearch.position.x,
-        y: blockInSearch.position.y + this.calcHeight(blockInSearch.blockType)
+        y: blockInSearch.position.y + VuexMixin.calcHeight(blockInSearch.blockType)
       }
       blockInSearch = this.allBlocks[blockInSearch.childBlockUniqueKey]
     }
@@ -102,7 +102,7 @@ class Blocks extends VuexModule implements BlockStateIF {
     this.addBlock(block)
   }
 
-  @Action({})
+  @Action({ rawError: true })
   public remove (blockUniqueKey: string) {
     const block = this.allBlocks[blockUniqueKey]
     const topBlock = this.allBlocks[block.topBlockUniqueKey]
@@ -124,7 +124,7 @@ class Blocks extends VuexModule implements BlockStateIF {
     this.removeBlock(blockUniqueKey)
   }
 
-  @Action({})
+  @Action({ rawError: true })
   public update (blockArg: Block) {
     this.updateBlock(blockArg)
     this.updateChildBlock(blockArg)
@@ -135,7 +135,7 @@ class Blocks extends VuexModule implements BlockStateIF {
       if (blockUniqueKey === key) continue
       const blockInSearch = this.allBlocks[key]
       const positionInSearch = blockInSearch.position
-      const isNearBy = this.isNearbyBlocks(positionInSearch, position)
+      const isNearBy = VuexMixin.isNearbyBlocks(positionInSearch, position)
       const notHaveChildRelation = blockInSearch.childBlockUniqueKey === ''
       if (isNearBy && notHaveChildRelation) {
         this.showShadow(key)
@@ -145,7 +145,7 @@ class Blocks extends VuexModule implements BlockStateIF {
     }
   }
 
-  @Action({})
+  @Action({ rawError: true })
   public stopDragging (blockUniqueKey: string) {
     const block = this.allBlocks[blockUniqueKey]
     const position = block.position
@@ -153,11 +153,11 @@ class Blocks extends VuexModule implements BlockStateIF {
       if (blockUniqueKey === key) continue
       const blockInSearch = this.allBlocks[key]
       const positionInSearch = blockInSearch.position
-      const isNearby = this.isNearbyBlocks(positionInSearch, position)
+      const isNearby = VuexMixin.isNearbyBlocks(positionInSearch, position)
       if (isNearby) {
         position.x = positionInSearch.x
         // TODO: 目視で48に設定してあるが、ブロックの高さに合わせて書くべき
-        position.y = positionInSearch.y + this.calcHeight(blockInSearch.blockType)
+        position.y = positionInSearch.y + VuexMixin.calcHeight(blockInSearch.blockType)
         const processedBlock = this.allBlocks[blockUniqueKey]
         processedBlock.position = position
         this.updateBlock(processedBlock)
@@ -225,22 +225,6 @@ class Blocks extends VuexModule implements BlockStateIF {
         }
       }
     }
-  }
-
-  public calcHeight (blockName: string) {
-    if (blockName === 'DefinitionComponentBlock') {
-      return 51
-    } else {
-      return 37
-    }
-  }
-
-  public isNearbyBlocks (position1: Position, position2: Position) {
-    const isNearbyX1 = (position1.x - position2.x) <= 80
-    const isNearbyX2 = (position1.x - position2.x) >= -160
-    const isNearbyY1 = (position2.y - position1.y) <= 65
-    const isNearbyY2 = (position2.y - position1.y) >= 30
-    return isNearbyX1 && isNearbyX2 && isNearbyY1 && isNearbyY2
   }
 }
 
