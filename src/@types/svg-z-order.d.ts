@@ -1,1 +1,1 @@
-declare module 'svgZOrder'
+declare module 'svg-z-order'
