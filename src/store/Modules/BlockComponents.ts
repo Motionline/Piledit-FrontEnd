@@ -19,18 +19,18 @@ class BlockComponents extends VuexModule implements BlockComponentsStateIF {
 
   @Mutation
   public addComponent (component: BlockComponent) {
-    Vue.set(this.allBlockComponents, component.componentUniqueKey, component)
+    Vue.set(this.allBlockComponents, component.blockComponentUniqueKey, component)
     console.log(this.allBlockComponents)
   }
 
   @Mutation
-  public removeComponent (componentUniqueKey: string) {
-    Vue.delete(this.allBlockComponents, componentUniqueKey)
+  public removeComponent (blockComponentUniqueKey: string) {
+    Vue.delete(this.allBlockComponents, blockComponentUniqueKey)
   }
 
   @Mutation
   public updateComponent (component: BlockComponent) {
-    Vue.set(this.allBlockComponents, component.componentUniqueKey, component)
+    Vue.set(this.allBlockComponents, component.blockComponentUniqueKey, component)
   }
 
   @Action({ rawError: true })
@@ -39,8 +39,8 @@ class BlockComponents extends VuexModule implements BlockComponentsStateIF {
   }
 
   @Action({ rawError: true })
-  public remove (componentUniqueKey: string) {
-    this.removeComponent(componentUniqueKey)
+  public remove (blockComponentUniqueKey: string) {
+    this.removeComponent(blockComponentUniqueKey)
   }
 
   @Action({ rawError: true })

@@ -2,10 +2,11 @@
   <div id="Home">
     <ApplicationTab />
     <h2>タイムライン(svgで作る)</h2>
+    <v-btn @click="outputBC"></v-btn>
     <v-btn @click="outputMovieConfigurationFile">出力する</v-btn>
     <h3>全てのコンポーネント</h3>
     <div v-for="(_, key) in allBlockComponents" :key="key">
-      <v-btn @click="addBlockComponentObject({ payload: { key } })">{{ key }}</v-btn>
+      <v-btn @click="addBlockComponentObject(key)">{{ key }}</v-btn>
     </div>
     <Timeline :componentObjects="componentObjects" />
   </div>
@@ -37,9 +38,13 @@ export default class Home extends Vue {
     return timelineModule.componentObjects
   }
 
-  // public addBlockComponentObject ({ payload }) {
-  //   this.$store.dispatch('Timeline/add', payload)
-  // }
+  public outputBC () {
+    console.log(this.allBlockComponents)
+  }
+
+  public addBlockComponentObject (uniqueKey: string) {
+    timelineModule.add(uniqueKey)
+  }
 
   public outputMovieConfigurationFile () {
     for (const key of Object.keys(this.componentObjects)) {

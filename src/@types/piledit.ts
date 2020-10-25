@@ -14,7 +14,8 @@ export type Block = {
 }
 
 export type BlockComponent = {
-  componentUniqueKey: string
+  blockComponentUniqueKey: string
+  blocks: { [ key: string ]: Block }
 }
 
 export type ComponentObject = {

@@ -7,8 +7,9 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-import { Position, Block } from '@/@types/piledit'
+import { Position, Block, BlockComponent } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
+import { blockComponentsModule } from '@/store/Modules/BlockComponents'
 
 export interface BlockStateIF {
   allBlocks: { [key: string]: Block };
@@ -23,7 +24,6 @@ class Blocks extends VuexModule implements BlockStateIF {
   @Mutation
   public addBlock (block: Block) {
     Vue.set(this.allBlocks, block.blockUniqueKey, block)
-    console.log(this.allBlocks)
   }
 
   @Mutation
@@ -122,7 +122,7 @@ class Blocks extends VuexModule implements BlockStateIF {
         if (checkCurrentBlock.blockUniqueKey === blockUniqueKey) break
       }
       this.removeChild(block.parentBlockUniqueKey)
-      // dispatch('Components/update', { componentUniqueKey, componentArr }, { root: true })
+      store.dispatch('Components/update', { componentUniqueKey, componentArr }, { root: true })
     }
     this.removeBlock(blockUniqueKey)
   }
@@ -150,6 +150,7 @@ class Blocks extends VuexModule implements BlockStateIF {
 
   @Action({ rawError: true })
   public stopDragging (blockUniqueKey: string) {
+    // ブロック全体から探す
     const block = this.allBlocks[blockUniqueKey]
     const position = block.position
     for (const key of Object.keys(this.allBlocks)) {
@@ -173,36 +174,39 @@ class Blocks extends VuexModule implements BlockStateIF {
           }
           this.addChild(payload)
           if (blockInSearch.blockType === 'DefinitionComponentBlock') {
-            const componentUniqueKey = VuexMixin.generateUuid()
-            this.addRelationBlockAndComponent(key, componentUniqueKey)
-            const componentArr = []
-            let checkCurrentBlock = this.allBlocks[key]
+            const blockComponentUniqueKey = VuexMixin.generateUuid()
+            this.addRelationBlockAndComponent(key, blockComponentUniqueKey)
+            const blocks: { [key: string]: Block } = {}
+            let currentBlock = this.allBlocks[key]
             while (true) {
-              componentArr.push({
-                blockType: checkCurrentBlock.blockType,
-                value: {}
-              })
-              if (checkCurrentBlock.childBlockUniqueKey === '') break
-              checkCurrentBlock = this.allBlocks[checkCurrentBlock.childBlockUniqueKey]
+              blocks[currentBlock.blockUniqueKey] = currentBlock
+              if (currentBlock.childBlockUniqueKey === '') break
+              currentBlock = this.allBlocks[currentBlock.childBlockUniqueKey]
             }
             // TODO: 別のモジュールのActionを呼ぶ方法を調べる
-            store.dispatch('Components/add', { componentUniqueKey, componentArr }, { root: true })
+            const blockComponent: BlockComponent = {
+              blockComponentUniqueKey,
+              blocks
+            }
+            console.log(blockComponent)
+            blockComponentsModule.add(blockComponent)
           }
           const topBlock = this.allBlocks[blockInSearch.topBlockUniqueKey]
           if (topBlock != null && topBlock.blockType === 'DefinitionComponentBlock') {
-            const componentUniqueKey = this.objectOfBlockAndComponent[blockInSearch.topBlockUniqueKey]
-            let checkCurrentBlock = this.allBlocks[blockInSearch.topBlockUniqueKey]
-            const componentArr = []
+            const blockComponentUniqueKey = this.objectOfBlockAndComponent[blockInSearch.topBlockUniqueKey]
+            const blocks: { [key: string]: Block } = {}
+            let currentBlock = this.allBlocks[key]
             while (true) {
-              componentArr.push({
-                blockType: checkCurrentBlock.blockType,
-                value: {}
-              })
-              if (checkCurrentBlock.childBlockUniqueKey === '') break
-              checkCurrentBlock = this.allBlocks[checkCurrentBlock.childBlockUniqueKey]
+              blocks[currentBlock.blockUniqueKey] = currentBlock
+              if (currentBlock.childBlockUniqueKey === '') break
+              currentBlock = this.allBlocks[currentBlock.childBlockUniqueKey]
             }
             // TODO: 別のモジュールのActionを呼ぶ方法を調べる
-            store.dispatch('Components/update', { componentUniqueKey, componentArr }, { root: true })
+            const blockComponent: BlockComponent = {
+              blockComponentUniqueKey,
+              blocks
+            }
+            blockComponentsModule.update(blockComponent)
           }
         }
         this.hideShadow(key)
@@ -210,26 +214,24 @@ class Blocks extends VuexModule implements BlockStateIF {
         this.removeChild(key)
         const topBlock = this.allBlocks[blockInSearch.topBlockUniqueKey]
         if (topBlock != null && topBlock.blockType === 'DefinitionComponentBlock') {
-          const componentUniqueKey = this.objectOfBlockAndComponent[blockInSearch.topBlockUniqueKey]
-          let checkCurrentBlock = this.allBlocks[blockInSearch.topBlockUniqueKey]
-          const componentArr = []
+          const blockComponentUniqueKey = this.objectOfBlockAndComponent[blockInSearch.topBlockUniqueKey]
+          const blocks: { [key: string]: Block } = {}
+          let currentBlock = this.allBlocks[blockInSearch.topBlockUniqueKey]
           while (true) {
-            componentArr.push({
-              blockType: checkCurrentBlock.blockType,
-              value: {}
-            })
-            if (checkCurrentBlock.childBlockUniqueKey === '') break
-            checkCurrentBlock = this.allBlocks[checkCurrentBlock.childBlockUniqueKey]
+            blocks[currentBlock.blockUniqueKey] = currentBlock
+            if (currentBlock.childBlockUniqueKey === '') break
+            currentBlock = this.allBlocks[currentBlock.childBlockUniqueKey]
           }
-          // TODO: 別のモジュールのActionを呼ぶ方法を調べる
-          store.dispatch('Components/update', { componentUniqueKey, componentArr }, { root: true })
+          const blockComponent: BlockComponent = {
+            blockComponentUniqueKey,
+            blocks
+          }
+          blockComponentsModule.update(blockComponent)
         }
         if (blockInSearch.blockType === 'DefinitionComponentBlock') {
-          const componentUniqueKey = this.objectOfBlockAndComponent[key]
+          const blockComponentUniqueKey = this.objectOfBlockAndComponent[key]
           this.removeRelationBlockAndComponent(key)
-          // TODO: 別のモジュールのActionを呼ぶ方法を調べる
-          // dispatch('Components/remove', componentUniqueKey, { root: true })
-          store.dispatch('Components/remove', componentUniqueKey, { root: true })
+          blockComponentsModule.remove(blockComponentUniqueKey)
         }
       }
     }
