@@ -26,9 +26,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
-import svgZOrder from 'svgZOrder'
+import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
+import svgZOrder from 'svg-z-order'
 import { remote } from 'electron'
+import { blocksModule } from '@/store/Modules/Blocks'
 const Menu = remote.Menu
 const MenuItem = remote.MenuItem
 @Component
@@ -64,19 +65,18 @@ export default class ElementBlockBase extends Vue {
     document.addEventListener('mousemove', this.mouseMove)
   }
 
-  public beforeDestory () {
+  public beforeDestroy () {
     document.removeEventListener('mouseup', this.mouseUp)
     document.removeEventListener('mousemove', this.mouseMove)
   }
 
+  @Emit('stopDragging')
   public mouseUp (event: MouseEvent) {
+    event.preventDefault()
     this.isDragging = false
     this.beforeMouseX = 0
     this.beforeMouseY = 0
-    this.$emit('stopDragging', {
-      blockUniqueKey: this.blockUniqueKey
-    })
-    event.preventDefault()
+    return this.blockUniqueKey
   }
 
   public mouseDown (event: MouseEvent) {
@@ -84,17 +84,18 @@ export default class ElementBlockBase extends Vue {
     event.preventDefault()
   }
 
+  @Emit('updatePosition')
   public mouseMove (event: MouseEvent) {
     if (!this.isDragging) return
+    event.preventDefault()
     const blockElement = document.getElementById(this.blockUniqueKey)
     svgZOrder.element(blockElement).toTop()
     // 座標を更新 -> Emit
     const newPosition = this.getNewPosition(event.offsetX, event.offsetY)
-    this.$emit('updatePosition', {
+    return {
       position: newPosition,
       blockUniqueKey: this.blockUniqueKey
-    })
-    event.preventDefault()
+    }
   }
 
   public getNewPosition (offsetX: number, offsetY: number) {
@@ -115,7 +116,7 @@ export default class ElementBlockBase extends Vue {
     return { x, y }
   }
 
-  public popupContextMenu (event: MouseEvent) {
+  public popupContextMenu (event: Event) {
     const menu = this.buildContextMenu()
     const currentWindow = remote.getCurrentWindow()
     menu.popup({ window: currentWindow })
@@ -141,11 +142,9 @@ export default class ElementBlockBase extends Vue {
     return menu
   }
 
+  @Emit('removeBlock')
   public calledByRemoveMenuItem () {
-    // ブロックを削除 -> Emit
-    this.$emit('removeBlock', {
-      blockUniqueKey: this.blockUniqueKey
-    })
+    return this.blockUniqueKey
   }
 }
 </script>

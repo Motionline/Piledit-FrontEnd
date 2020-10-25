@@ -3,21 +3,49 @@ import {
   VuexModule,
   Mutation,
   Action,
-  getModule,
+  getModule
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
 import { Position, Block } from '@/@types/piledit'
 
-export interface IBlockState {
-  allBlocks: { [key: string]: Block }
-  objectOfBlockAndComponent: { [key: string] : string }
+export interface BlockStateIF {
+  allBlocks: { [key: string]: Block };
+  objectOfBlockAndComponent: { [key: string]: string };
 }
 
 @Module({ dynamic: true, store: store, name: 'Blocks', namespaced: true })
-class Blocks extends VuexModule implements IBlockState {
+class Blocks extends VuexModule implements BlockStateIF {
   allBlocks: { [key: string]: Block } = {}
   objectOfBlockAndComponent: { [key: string]: string } = {}
+
+  public calcHeight (blockName: string) {
+    if (blockName === 'DefinitionComponentBlock') {
+      return 51
+    } else {
+      return 37
+    }
+  }
+
+  public generateUuid () {
+    const material = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.split('')
+    for (let i = 0, len = material.length; i < len; i++) {
+      if (material[i] === 'x') {
+        material[i] = Math.floor(Math.random() * 16).toString(16)
+      } else if (material[i] === 'y') {
+        material[i] = (Math.floor(Math.random() * 4) + 8).toString(16)
+      }
+    }
+    return material.join('')
+  }
+
+  public isNearbyBlocks (position1: Position, position2: Position) {
+    const isNearbyX1 = (position1.x - position2.x) <= 80
+    const isNearbyX2 = (position1.x - position2.x) >= -160
+    const isNearbyY1 = (position2.y - position1.y) <= 65
+    const isNearbyY2 = (position2.y - position1.y) >= 30
+    return isNearbyX1 && isNearbyX2 && isNearbyY1 && isNearbyY2
+  }
 
   @Mutation
   public addBlock (block: Block) {
@@ -41,7 +69,7 @@ class Blocks extends VuexModule implements IBlockState {
       const child = this.allBlocks[blockInSearch.childBlockUniqueKey]
       child.position = {
         x: blockInSearch.position.x,
-        y: blockInSearch.position.y + calcHeight(blockInSearch.blockType)
+        y: blockInSearch.position.y + this.calcHeight(blockInSearch.blockType)
       }
       blockInSearch = this.allBlocks[blockInSearch.childBlockUniqueKey]
     }
@@ -72,7 +100,7 @@ class Blocks extends VuexModule implements IBlockState {
   }
 
   @Mutation
-  public  hideShadow (blockUniqueKey: string) {
+  public hideShadow (blockUniqueKey: string) {
     this.allBlocks[blockUniqueKey].showShadow = false
   }
 
@@ -88,7 +116,7 @@ class Blocks extends VuexModule implements IBlockState {
 
   @Action({})
   public add (position: Position, blockType: string) {
-    const blockUniqueKey = generateUuid()
+    const blockUniqueKey = this.generateUuid()
     const block: Block = {
       position,
       blockType,
@@ -134,7 +162,7 @@ class Blocks extends VuexModule implements IBlockState {
       if (blockUniqueKey === key) continue
       const blockInSearch = this.allBlocks[key]
       const positionInSearch = blockInSearch.position
-      const isNearBy = isNearbyBlocks(positionInSearch, position)
+      const isNearBy = this.isNearbyBlocks(positionInSearch, position)
       const notHaveChildRelation = blockInSearch.childBlockUniqueKey === ''
       if (isNearBy && notHaveChildRelation) {
         this.showShadow(key)
@@ -145,27 +173,27 @@ class Blocks extends VuexModule implements IBlockState {
   }
 
   @Action({})
-  public stopDragging (blockArg: Block) {
-    const block = this.allBlocks[blockArg.blockUniqueKey]
+  public stopDragging (blockUniqueKey: string) {
+    const block = this.allBlocks[blockUniqueKey]
     const position = block.position
     for (const key of Object.keys(this.allBlocks)) {
-      if (blockArg.blockUniqueKey === key) continue
+      if (blockUniqueKey === key) continue
       const blockInSearch = this.allBlocks[key]
       const positionInSearch = blockInSearch.position
-      const isNearby = isNearbyBlocks(positionInSearch, position)
+      const isNearby = this.isNearbyBlocks(positionInSearch, position)
       if (isNearby) {
         position.x = positionInSearch.x
         // TODO: 目視で48に設定してあるが、ブロックの高さに合わせて書くべき
-        position.y = positionInSearch.y + calcHeight(blockInSearch.blockType)
-        const processedBlock = this.allBlocks[blockArg.blockUniqueKey]
+        position.y = positionInSearch.y + this.calcHeight(blockInSearch.blockType)
+        const processedBlock = this.allBlocks[blockUniqueKey]
         processedBlock.position = position
         this.updateBlock(processedBlock)
         // TODO: 正しく動いているか検証
         this.updateChildBlock(processedBlock)
         if (blockInSearch.childBlockUniqueKey === '') {
-          this.addChild(key, blockArg.blockUniqueKey)
+          this.addChild(key, blockUniqueKey)
           if (blockInSearch.blockType === 'DefinitionComponentBlock') {
-            const componentUniqueKey = generateUuid()
+            const componentUniqueKey = this.generateUuid()
             this.addRelationBlockAndComponent(key, componentUniqueKey)
             const componentArr = []
             let checkCurrentBlock = this.allBlocks[key]
@@ -198,7 +226,7 @@ class Blocks extends VuexModule implements IBlockState {
           }
         }
         this.hideShadow(key)
-      } else if (blockInSearch.childBlockUniqueKey === blockArg.blockUniqueKey && blockArg.blockUniqueKey !== key) {
+      } else if (blockInSearch.childBlockUniqueKey === blockUniqueKey && blockUniqueKey !== key) {
         this.removeChild(key)
         const topBlock = this.allBlocks[blockInSearch.topBlockUniqueKey]
         if (topBlock != null && topBlock.blockType === 'DefinitionComponentBlock') {
@@ -225,34 +253,6 @@ class Blocks extends VuexModule implements IBlockState {
       }
     }
   }
-}
-
-const calcHeight = (blockName: string) => {
-  if (blockName === 'DefinitionComponentBlock') {
-    return 51
-  } else {
-    return 37
-  }
-}
-
-const generateUuid = () => {
-  const material = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.split('')
-  for (let i = 0, len = material.length; i < len; i++) {
-    if (material[i] === 'x') {
-      material[i] = Math.floor(Math.random() * 16).toString(16)
-    } else if (material[i] === 'y') {
-      material[i] = (Math.floor(Math.random() * 4) + 8).toString(16)
-    }
-  }
-  return material.join('')
-}
-
-const isNearbyBlocks = (position1: Position, position2: Position) => {
-  const isNearbyX1 = (position1.x - position2.x) <= 80
-  const isNearbyX2 = (position1.x - position2.x) >= -160
-  const isNearbyY1 = (position2.y - position1.y) <= 65
-  const isNearbyY2 = (position2.y - position1.y) >= 30
-  return isNearbyX1 && isNearbyX2 && isNearbyY1 && isNearbyY2
 }
 
 export const blocksModule = getModule(Blocks)

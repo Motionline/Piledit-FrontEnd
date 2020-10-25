@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import svgZOrder from 'svgZOrder'
+import svgZOrder from 'svg-z-order'
 import { remote } from 'electron'
 const Menu = remote.Menu
 const MenuItem = remote.MenuItem
