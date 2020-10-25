@@ -49,7 +49,9 @@ class Blocks extends VuexModule implements BlockStateIF {
   }
 
   @Mutation
-  public addChild (blockUniqueKey: string, childBlockUniqueKey: string) {
+  public addChild (payload: { blockUniqueKey: string; childBlockUniqueKey: string }) {
+    const blockUniqueKey = payload.blockUniqueKey
+    const childBlockUniqueKey = payload.childBlockUniqueKey
     this.allBlocks[blockUniqueKey].childBlockUniqueKey = childBlockUniqueKey
     this.allBlocks[childBlockUniqueKey].parentBlockUniqueKey = blockUniqueKey
     if (this.allBlocks[blockUniqueKey].topBlockUniqueKey === '') {
@@ -164,7 +166,11 @@ class Blocks extends VuexModule implements BlockStateIF {
         // TODO: 正しく動いているか検証
         this.updateChildBlock(processedBlock)
         if (blockInSearch.childBlockUniqueKey === '') {
-          this.addChild(key, blockUniqueKey)
+          const payload = {
+            blockUniqueKey: key,
+            childBlockUniqueKey: blockUniqueKey
+          }
+          this.addChild(payload)
           if (blockInSearch.blockType === 'DefinitionComponentBlock') {
             const componentUniqueKey = VuexMixin.generateUuid()
             this.addRelationBlockAndComponent(key, componentUniqueKey)
