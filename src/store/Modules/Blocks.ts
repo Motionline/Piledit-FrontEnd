@@ -8,6 +8,7 @@ import {
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
 import { Position, Block } from '@/@types/piledit'
+import { VuexMixin } from '@/mixin/vuex'
 
 export interface BlockStateIF {
   allBlocks: { [key: string]: Block };
@@ -18,34 +19,6 @@ export interface BlockStateIF {
 class Blocks extends VuexModule implements BlockStateIF {
   allBlocks: { [key: string]: Block } = {}
   objectOfBlockAndComponent: { [key: string]: string } = {}
-
-  public calcHeight (blockName: string) {
-    if (blockName === 'DefinitionComponentBlock') {
-      return 51
-    } else {
-      return 37
-    }
-  }
-
-  public generateUuid () {
-    const material = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.split('')
-    for (let i = 0, len = material.length; i < len; i++) {
-      if (material[i] === 'x') {
-        material[i] = Math.floor(Math.random() * 16).toString(16)
-      } else if (material[i] === 'y') {
-        material[i] = (Math.floor(Math.random() * 4) + 8).toString(16)
-      }
-    }
-    return material.join('')
-  }
-
-  public isNearbyBlocks (position1: Position, position2: Position) {
-    const isNearbyX1 = (position1.x - position2.x) <= 80
-    const isNearbyX2 = (position1.x - position2.x) >= -160
-    const isNearbyY1 = (position2.y - position1.y) <= 65
-    const isNearbyY2 = (position2.y - position1.y) >= 30
-    return isNearbyX1 && isNearbyX2 && isNearbyY1 && isNearbyY2
-  }
 
   @Mutation
   public addBlock (block: Block) {
@@ -114,18 +87,20 @@ class Blocks extends VuexModule implements BlockStateIF {
     Vue.delete(this.objectOfBlockAndComponent, blockUniqueKey)
   }
 
-  @Action({})
-  public add (position: Position, blockType: string) {
-    const blockUniqueKey = this.generateUuid()
+  @Action({ rawError: true })
+  public add (context: { position: Position; blockType: string }) {
+    const blockUniqueKey = VuexMixin.generateUuid()
     const block: Block = {
-      position,
-      blockType,
+      position: context.position,
+      blockType: context.blockType,
       showShadow: false,
       childBlockUniqueKey: '',
       blockUniqueKey,
       parentBlockUniqueKey: '',
       topBlockUniqueKey: ''
     }
+    console.log(blockUniqueKey)
+    console.log(block)
     this.addBlock(block)
   }
 
@@ -193,7 +168,7 @@ class Blocks extends VuexModule implements BlockStateIF {
         if (blockInSearch.childBlockUniqueKey === '') {
           this.addChild(key, blockUniqueKey)
           if (blockInSearch.blockType === 'DefinitionComponentBlock') {
-            const componentUniqueKey = this.generateUuid()
+            const componentUniqueKey = VuexMixin.generateUuid()
             this.addRelationBlockAndComponent(key, componentUniqueKey)
             const componentArr = []
             let checkCurrentBlock = this.allBlocks[key]
@@ -252,6 +227,22 @@ class Blocks extends VuexModule implements BlockStateIF {
         }
       }
     }
+  }
+
+  public calcHeight (blockName: string) {
+    if (blockName === 'DefinitionComponentBlock') {
+      return 51
+    } else {
+      return 37
+    }
+  }
+
+  public isNearbyBlocks (position1: Position, position2: Position) {
+    const isNearbyX1 = (position1.x - position2.x) <= 80
+    const isNearbyX2 = (position1.x - position2.x) >= -160
+    const isNearbyY1 = (position2.y - position1.y) <= 65
+    const isNearbyY2 = (position2.y - position1.y) >= 30
+    return isNearbyX1 && isNearbyX2 && isNearbyY1 && isNearbyY2
   }
 }
 

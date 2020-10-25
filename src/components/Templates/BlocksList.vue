@@ -60,7 +60,11 @@ export default class BlocksList extends Vue {
       x: 0,
       y: 0
     }
-    blocksModule.add(position, blockType)
+    const context = {
+      position,
+      blockType
+    }
+    blocksModule.add(context)
   }
 
   public dragEnd (event: DragEvent, blockType: string) {
@@ -68,7 +72,11 @@ export default class BlocksList extends Vue {
       x: event.clientX,
       y: event.clientY
     }
-    blocksModule.add(position, blockType)
+    const context = {
+      position,
+      blockType
+    }
+    blocksModule.add(context)
     event.preventDefault()
   }
 }
