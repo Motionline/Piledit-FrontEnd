@@ -26,9 +26,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import svgZOrder from 'svg-z-order'
 import { remote } from 'electron'
+import { Position } from '@/@types/piledit'
 const Menu = remote.Menu
 const MenuItem = remote.MenuItem
 
@@ -63,32 +64,46 @@ export default class EventBlockBase extends Vue {
   public beforeMouseX = 0
   public beforeMouseY = 0
 
+  public mounted () {
+    document.addEventListener('mouseup', this.mouseUp)
+    document.addEventListener('mousemove', this.mouseMove)
+  }
+
+  public beforeDestroy () {
+    document.removeEventListener('mouseup', this.mouseUp)
+    document.removeEventListener('mousemove', this.mouseMove)
+  }
+
+  @Emit('stopDragging')
+  public mouseUp (event: MouseEvent) {
+    this.isDragging = false
+    this.beforeMouseX = 0
+    this.beforeMouseY = 0
+    event.preventDefault()
+    return this.blockUniqueKey
+  }
+
   public mouseDown (event: MouseEvent) {
     this.isDragging = true
     event.preventDefault()
   }
 
-  public mouseUp (event: MouseEvent) {
-    this.isDragging = false
-    this.beforeMouseX = 0
-    this.beforeMouseY = 0
-    this.$emit('stopDragging', {
-      blockUniqueKey: this.blockUniqueKey
-    })
-    event.preventDefault()
-  }
-
   public mouseMove (event: MouseEvent) {
     if (!this.isDragging) return
+    event.preventDefault()
     const blockElement = document.getElementById(this.blockUniqueKey)
     svgZOrder.element(blockElement).toTop()
-    // 座標を更新 -> Emit
     const newPosition = this.getNewPosition(event.offsetX, event.offsetY)
-    this.$emit('updatePosition', {
+    const context = {
       position: newPosition,
       blockUniqueKey: this.blockUniqueKey
-    })
-    event.preventDefault()
+    }
+    this.emitUpdatePosition(context)
+  }
+
+  @Emit('updatePosition')
+  public emitUpdatePosition (context: { position: Position; blockUniqueKey: string }) {
+    return context
   }
 
   public getNewPosition (offsetX: number, offsetY: number) {
