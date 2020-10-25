@@ -13,7 +13,7 @@ export type Block = {
   topBlockUniqueKey: string
 }
 
-export type Component = {
+export type BlockComponent = {
   componentUniqueKey: string
 }
 

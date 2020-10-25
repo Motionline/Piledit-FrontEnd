@@ -8,6 +8,7 @@ import {
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
 import { ComponentObject } from '@/@types/piledit'
+import { VuexMixin } from '@/mixin/vuex'
 
 export interface TimeLineStateIF {
   componentObjects: { [key: string]: ComponentObject };
@@ -32,9 +33,9 @@ class TimeLine extends VuexModule implements TimeLineStateIF {
     this.componentObjects[componentObject.componentObjectUniqueKey].width = componentObject.width
   }
 
-  @Action({})
+  @Action({ rawError: true })
   public add (componentUniqueKey: string) {
-    const componentObjectUniqueKey = this.generateUuid()
+    const componentObjectUniqueKey = VuexMixin.generateUuid()
     const componentObject: ComponentObject = {
       componentObjectUniqueKey,
       componentUniqueKey: componentUniqueKey,
@@ -47,26 +48,14 @@ class TimeLine extends VuexModule implements TimeLineStateIF {
     this.addComponentObject(componentObject)
   }
 
-  @Action({})
+  @Action({ rawError: true })
   public updatePosition (componentObject: ComponentObject) {
     this.updateComponentObjectPosition(componentObject)
   }
 
-  @Action({})
+  @Action({ rawError: true })
   public updateWidth (componentObject: ComponentObject) {
     this.updateComponentObjectWidth(componentObject)
-  }
-
-  public generateUuid () {
-    const material = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.split('')
-    for (let i = 0, len = material.length; i < len; i++) {
-      if (material[i] === 'x') {
-        material[i] = Math.floor(Math.random() * 16).toString(16)
-      } else if (material[i] === 'y') {
-        material[i] = (Math.floor(Math.random() * 4) + 8).toString(16)
-      }
-    }
-    return material.join('')
   }
 }
 

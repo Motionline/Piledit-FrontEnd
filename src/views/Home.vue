@@ -4,8 +4,8 @@
     <h2>タイムライン(svgで作る)</h2>
     <v-btn @click="outputMovieConfigurationFile">出力する</v-btn>
     <h3>全てのコンポーネント</h3>
-    <div v-for="(_, key) in allComponents" :key="key">
-      <v-btn @click="addComponentObject({ payload: { key } })">{{ key }}</v-btn>
+    <div v-for="(_, key) in allBlockComponents" :key="key">
+      <v-btn @click="addBlockComponentObject({ payload: { key } })">{{ key }}</v-btn>
     </div>
     <Timeline :componentObjects="componentObjects" />
   </div>
@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { componentsModule } from '@/store/Modules/Components'
+import { blockComponentsModule } from '@/store/Modules/BlockComponents'
 import { timelineModule } from '@/store/Modules/Timeline'
 import Timeline from '@/components/Templates/Timeline.vue'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
@@ -29,15 +29,15 @@ import { app } from 'electron'
   }
 })
 export default class Home extends Vue {
-  get allComponents () {
-    return componentsModule.allComponents
+  get allBlockComponents () {
+    return blockComponentsModule.allBlockComponents
   }
 
   get componentObjects () {
     return timelineModule.componentObjects
   }
 
-  // public addComponentObject ({ payload }) {
+  // public addBlockComponentObject ({ payload }) {
   //   this.$store.dispatch('Timeline/add', payload)
   // }
 

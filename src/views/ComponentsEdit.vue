@@ -17,7 +17,7 @@ import BlocksSandBox from '@/components/Templates/BlocksSandBox.vue'
 import BlocksList from '@/components/Templates/BlocksList.vue'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 import { blocksModule } from '@/store/Modules/Blocks'
-import { componentsModule } from '@/store/Modules/Components'
+import { blockComponentsModule } from '@/store/Modules/BlockComponents'
 @Component({
   components: {
     BlocksSandBox,
@@ -30,8 +30,8 @@ export default class ComponentsEdit extends Vue {
     return blocksModule.allBlocks
   }
 
-  get allComponents () {
-    return componentsModule.allComponents
+  get allBlockComponents () {
+    return blockComponentsModule.allBlockComponents
   }
 }
 </script>

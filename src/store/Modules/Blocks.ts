@@ -23,6 +23,7 @@ class Blocks extends VuexModule implements BlockStateIF {
   @Mutation
   public addBlock (block: Block) {
     Vue.set(this.allBlocks, block.blockUniqueKey, block)
+    console.log(this.allBlocks)
   }
 
   @Mutation
@@ -185,7 +186,7 @@ class Blocks extends VuexModule implements BlockStateIF {
               checkCurrentBlock = this.allBlocks[checkCurrentBlock.childBlockUniqueKey]
             }
             // TODO: 別のモジュールのActionを呼ぶ方法を調べる
-            // dispatch('Components/add', { componentUniqueKey, componentArr }, { root: true })
+            store.dispatch('Components/add', { componentUniqueKey, componentArr }, { root: true })
           }
           const topBlock = this.allBlocks[blockInSearch.topBlockUniqueKey]
           if (topBlock != null && topBlock.blockType === 'DefinitionComponentBlock') {
@@ -201,7 +202,7 @@ class Blocks extends VuexModule implements BlockStateIF {
               checkCurrentBlock = this.allBlocks[checkCurrentBlock.childBlockUniqueKey]
             }
             // TODO: 別のモジュールのActionを呼ぶ方法を調べる
-            // dispatch('Components/update', { componentUniqueKey, componentArr }, { root: true })
+            store.dispatch('Components/update', { componentUniqueKey, componentArr }, { root: true })
           }
         }
         this.hideShadow(key)
@@ -221,13 +222,14 @@ class Blocks extends VuexModule implements BlockStateIF {
             checkCurrentBlock = this.allBlocks[checkCurrentBlock.childBlockUniqueKey]
           }
           // TODO: 別のモジュールのActionを呼ぶ方法を調べる
-          // dispatch('Components/update', { componentUniqueKey, componentArr }, { root: true })
+          store.dispatch('Components/update', { componentUniqueKey, componentArr }, { root: true })
         }
         if (blockInSearch.blockType === 'DefinitionComponentBlock') {
           const componentUniqueKey = this.objectOfBlockAndComponent[key]
           this.removeRelationBlockAndComponent(key)
           // TODO: 別のモジュールのActionを呼ぶ方法を調べる
           // dispatch('Components/remove', componentUniqueKey, { root: true })
+          store.dispatch('Components/remove', componentUniqueKey, { root: true })
         }
       }
     }
