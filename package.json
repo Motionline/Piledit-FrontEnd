@@ -25,7 +25,6 @@
     "@types/node": "^14.14.2",
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
-    "opencv": "file:../opencv",
     "opencv-wasm": "^4.3.0-4",
     "svg-z-order": "^1.2.1",
     "vue": "^2.6.11",
