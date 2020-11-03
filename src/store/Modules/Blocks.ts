@@ -11,135 +11,139 @@ import { Position, Block, BlockComponent } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 import { blockComponentsModule } from '@/store/Modules/BlockComponents'
 
+// Block ... 編集ブロック
+// Clip ... ブロックの集合体、コンポーネント
+// Tab ... タブ
+
 export interface BlockStateIF {
-  allBlocks: { [key: string]: Block };
+  blocks: { [key: string]: Block };
   objectOfBlockAndComponent: { [key: string]: string };
 }
 
 @Module({ dynamic: true, store: store, name: 'Blocks', namespaced: true })
 class Blocks extends VuexModule implements BlockStateIF {
-  allBlocks: { [key: string]: Block } = {}
+  blocks: { [key: string]: Block } = {}
   objectOfBlockAndComponent: { [key: string]: string } = {}
 
   @Mutation
   public addBlock (block: Block) {
-    Vue.set(this.allBlocks, block.blockUniqueKey, block)
+    Vue.set(this.blocks, block.uuid, block)
   }
 
   @Mutation
-  public removeBlock (blockUniqueKey: string) {
-    Vue.delete(this.allBlocks, blockUniqueKey)
+  public removeBlock (uuid: string) {
+    Vue.delete(this.blocks, uuid)
   }
 
   @Mutation
   public updateBlock (block: Block) {
-    this.allBlocks[block.blockUniqueKey] = block
+    this.blocks[block.uuid] = block
   }
 
   @Mutation
   public updateChildBlock (block: Block) {
-    let blockInSearch = this.allBlocks[block.blockUniqueKey]
-    while (blockInSearch.childBlockUniqueKey !== '') {
-      const child = this.allBlocks[blockInSearch.childBlockUniqueKey]
+    let blockInSearch = this.blocks[block.uuid]
+    while (blockInSearch.childUuid !== '') {
+      const child = this.blocks[blockInSearch.childUuid]
       child.position = {
         x: blockInSearch.position.x,
-        y: blockInSearch.position.y + VuexMixin.calcHeight(blockInSearch.blockType)
+        y: blockInSearch.position.y + VuexMixin.calcHeight(blockInSearch.name)
       }
-      blockInSearch = this.allBlocks[blockInSearch.childBlockUniqueKey]
+      blockInSearch = this.blocks[blockInSearch.childUuid]
     }
   }
 
   @Mutation
-  public addChild (payload: { blockUniqueKey: string; childBlockUniqueKey: string }) {
-    const blockUniqueKey = payload.blockUniqueKey
-    const childBlockUniqueKey = payload.childBlockUniqueKey
-    this.allBlocks[blockUniqueKey].childBlockUniqueKey = childBlockUniqueKey
-    this.allBlocks[childBlockUniqueKey].parentBlockUniqueKey = blockUniqueKey
-    if (this.allBlocks[blockUniqueKey].topBlockUniqueKey === '') {
-      this.allBlocks[childBlockUniqueKey].topBlockUniqueKey = blockUniqueKey
+  public addChild (payload: { uuid: string; childUuid: string }) {
+    const uuid = payload.uuid
+    const childUuid = payload.childUuid
+    this.blocks[uuid].childUuid = childUuid
+    this.blocks[childUuid].parentUuid = uuid
+    if (this.blocks[uuid].topUuid === '') {
+      this.blocks[childUuid].topUuid = uuid
     } else {
-      this.allBlocks[childBlockUniqueKey].topBlockUniqueKey = this.allBlocks[blockUniqueKey].topBlockUniqueKey
+      this.blocks[childUuid].topUuid = this.blocks[uuid].topUuid
     }
   }
 
   @Mutation
-  public removeChild (blockUniqueKey: string) {
-    const childBlockUniqueKey = this.allBlocks[blockUniqueKey].childBlockUniqueKey
-    this.allBlocks[blockUniqueKey].childBlockUniqueKey = ''
-    this.allBlocks[childBlockUniqueKey].parentBlockUniqueKey = ''
-    this.allBlocks[blockUniqueKey].topBlockUniqueKey = ''
+  public removeChild (uuid: string) {
+    const childUuid = this.blocks[uuid].childUuid
+    this.blocks[uuid].childUuid = ''
+    this.blocks[childUuid].parentUuid = ''
+    this.blocks[uuid].topUuid = ''
   }
 
   @Mutation
-  public showShadow (blockUniqueKey: string) {
-    this.allBlocks[blockUniqueKey].showShadow = true
+  public showShadow (uuid: string) {
+    this.blocks[uuid].shadow = true
   }
 
   @Mutation
-  public hideShadow (blockUniqueKey: string) {
-    this.allBlocks[blockUniqueKey].showShadow = false
+  public hideShadow (uuid: string) {
+    this.blocks[uuid].shadow = false
   }
 
   @Mutation
-  public addRelationBlockAndComponent (blockUniqueKey: string, componentUniqueKey: string) {
-    Vue.set(this.objectOfBlockAndComponent, blockUniqueKey, componentUniqueKey)
+  public addRelationBlockAndComponent (uuid: string, componentUniqueKey: string) {
+    Vue.set(this.objectOfBlockAndComponent, uuid, componentUniqueKey)
   }
 
   @Mutation
-  public removeRelationBlockAndComponent (blockUniqueKey: string) {
-    Vue.delete(this.objectOfBlockAndComponent, blockUniqueKey)
+  public removeRelationBlockAndComponent (uuid: string) {
+    Vue.delete(this.objectOfBlockAndComponent, uuid)
   }
 
   @Action({ rawError: true })
-  public add (context: { position: Position; blockType: string }) {
-    const blockUniqueKey = VuexMixin.generateUuid()
+  public add (context: { position: Position; name: string }) {
+    const uuid = VuexMixin.generateUuid()
     const block: Block = {
       position: context.position,
-      blockType: context.blockType,
-      showShadow: false,
-      childBlockUniqueKey: '',
-      blockUniqueKey,
-      parentBlockUniqueKey: '',
-      topBlockUniqueKey: ''
+      name: context.name,
+      shadow: false,
+      uuid,
+      childUuid: '',
+      parentUuid: '',
+      topUuid: ''
     }
     this.addBlock(block)
   }
 
   @Action({ rawError: true })
-  public remove (blockUniqueKey: string) {
-    const block = this.allBlocks[blockUniqueKey]
-    const topBlock = this.allBlocks[block.topBlockUniqueKey]
-    if (topBlock != null && topBlock.blockType === 'DefinitionComponentBlock') {
-      const componentUniqueKey = this.objectOfBlockAndComponent[block.topBlockUniqueKey]
-      let checkCurrentBlock = this.allBlocks[block.topBlockUniqueKey]
+  public remove (uuid: string) {
+    const block = this.blocks[uuid]
+    const topBlock = this.blocks[block.topUuid]
+    if (topBlock != null && topBlock.name === 'DefinitionComponentBlock') {
+      const componentUniqueKey = this.objectOfBlockAndComponent[block.topUuid]
+      let checkCurrentBlock = this.blocks[block.topUuid]
       const componentArr = []
       while (true) {
         componentArr.push({
-          blockType: checkCurrentBlock.blockType,
+          blockType: checkCurrentBlock.name,
           value: {}
         })
-        checkCurrentBlock = this.allBlocks[checkCurrentBlock.childBlockUniqueKey]
-        if (checkCurrentBlock.blockUniqueKey === blockUniqueKey) break
+        checkCurrentBlock = this.blocks[checkCurrentBlock.childUuid]
+        if (checkCurrentBlock.name === uuid) break
       }
-      this.removeChild(block.parentBlockUniqueKey)
+      this.removeChild(block.parentUuid)
       store.dispatch('Components/update', { componentUniqueKey, componentArr }, { root: true })
     }
-    this.removeBlock(blockUniqueKey)
+    this.removeBlock(uuid)
   }
 
   @Action({ rawError: true })
   public update (blockArg: Block) {
     this.updateBlock(blockArg)
     this.updateChildBlock(blockArg)
-    const blockUniqueKey = blockArg.blockUniqueKey
-    const block = this.allBlocks[blockUniqueKey]
+    const uuid = blockArg.uuid
+    const block = this.blocks[uuid]
     const position = block.position
-    for (const key of Object.keys(this.allBlocks)) {
-      if (blockUniqueKey === key) continue
-      const blockInSearch = this.allBlocks[key]
+    for (const key of Object.keys(this.blocks)) {
+      if (uuid === key) continue
+      const blockInSearch = this.blocks[key]
       const positionInSearch = blockInSearch.position
       const isNearBy = VuexMixin.isNearbyBlocks(positionInSearch, position)
-      const notHaveChildRelation = blockInSearch.childBlockUniqueKey === ''
+      const notHaveChildRelation = blockInSearch.childUuid === ''
       if (isNearBy && notHaveChildRelation) {
         this.showShadow(key)
       } else {
@@ -149,39 +153,39 @@ class Blocks extends VuexModule implements BlockStateIF {
   }
 
   @Action({ rawError: true })
-  public stopDragging (blockUniqueKey: string) {
+  public stopDragging (uuid: string) {
     // ブロック全体から探す
-    const block = this.allBlocks[blockUniqueKey]
+    const block = this.blocks[uuid]
     const position = block.position
-    for (const key of Object.keys(this.allBlocks)) {
-      if (blockUniqueKey === key) continue
-      const blockInSearch = this.allBlocks[key]
+    for (const key of Object.keys(this.blocks)) {
+      if (uuid === key) continue
+      const blockInSearch = this.blocks[key]
       const positionInSearch = blockInSearch.position
       const isNearby = VuexMixin.isNearbyBlocks(positionInSearch, position)
       if (isNearby) {
         position.x = positionInSearch.x
         // TODO: 目視で48に設定してあるが、ブロックの高さに合わせて書くべき
-        position.y = positionInSearch.y + VuexMixin.calcHeight(blockInSearch.blockType)
-        const processedBlock = this.allBlocks[blockUniqueKey]
+        position.y = positionInSearch.y + VuexMixin.calcHeight(blockInSearch.name)
+        const processedBlock = this.blocks[uuid]
         processedBlock.position = position
         this.updateBlock(processedBlock)
         // TODO: 正しく動いているか検証
         this.updateChildBlock(processedBlock)
-        if (blockInSearch.childBlockUniqueKey === '') {
+        if (blockInSearch.childUuid === '') {
           const payload = {
-            blockUniqueKey: key,
-            childBlockUniqueKey: blockUniqueKey
+            uuid: key,
+            childUuid: uuid
           }
           this.addChild(payload)
-          if (blockInSearch.blockType === 'DefinitionComponentBlock') {
+          if (blockInSearch.name === 'DefinitionComponentBlock') {
             const blockComponentUniqueKey = VuexMixin.generateUuid()
             this.addRelationBlockAndComponent(key, blockComponentUniqueKey)
             const blocks: { [key: string]: Block } = {}
-            let currentBlock = this.allBlocks[key]
+            let currentBlock = this.blocks[key]
             while (true) {
-              blocks[currentBlock.blockUniqueKey] = currentBlock
-              if (currentBlock.childBlockUniqueKey === '') break
-              currentBlock = this.allBlocks[currentBlock.childBlockUniqueKey]
+              blocks[currentBlock.uuid] = currentBlock
+              if (currentBlock.childUuid === '') break
+              currentBlock = this.blocks[currentBlock.childUuid]
             }
             // TODO: 別のモジュールのActionを呼ぶ方法を調べる
             const blockComponent: BlockComponent = {
@@ -191,15 +195,15 @@ class Blocks extends VuexModule implements BlockStateIF {
             console.log(blockComponent)
             blockComponentsModule.add(blockComponent)
           }
-          const topBlock = this.allBlocks[blockInSearch.topBlockUniqueKey]
-          if (topBlock != null && topBlock.blockType === 'DefinitionComponentBlock') {
-            const blockComponentUniqueKey = this.objectOfBlockAndComponent[blockInSearch.topBlockUniqueKey]
+          const topBlock = this.blocks[blockInSearch.topUuid]
+          if (topBlock != null && topBlock.name === 'DefinitionComponentBlock') {
+            const blockComponentUniqueKey = this.objectOfBlockAndComponent[blockInSearch.topUuid]
             const blocks: { [key: string]: Block } = {}
-            let currentBlock = this.allBlocks[key]
+            let currentBlock = this.blocks[key]
             while (true) {
-              blocks[currentBlock.blockUniqueKey] = currentBlock
-              if (currentBlock.childBlockUniqueKey === '') break
-              currentBlock = this.allBlocks[currentBlock.childBlockUniqueKey]
+              blocks[currentBlock.uuid] = currentBlock
+              if (currentBlock.childUuid === '') break
+              currentBlock = this.blocks[currentBlock.childUuid]
             }
             // TODO: 別のモジュールのActionを呼ぶ方法を調べる
             const blockComponent: BlockComponent = {
@@ -210,17 +214,17 @@ class Blocks extends VuexModule implements BlockStateIF {
           }
         }
         this.hideShadow(key)
-      } else if (blockInSearch.childBlockUniqueKey === blockUniqueKey && blockUniqueKey !== key) {
+      } else if (blockInSearch.childUuid === uuid && uuid !== key) {
         this.removeChild(key)
-        const topBlock = this.allBlocks[blockInSearch.topBlockUniqueKey]
-        if (topBlock != null && topBlock.blockType === 'DefinitionComponentBlock') {
-          const blockComponentUniqueKey = this.objectOfBlockAndComponent[blockInSearch.topBlockUniqueKey]
+        const topBlock = this.blocks[blockInSearch.topUuid]
+        if (topBlock != null && topBlock.name === 'DefinitionComponentBlock') {
+          const blockComponentUniqueKey = this.objectOfBlockAndComponent[blockInSearch.topUuid]
           const blocks: { [key: string]: Block } = {}
-          let currentBlock = this.allBlocks[blockInSearch.topBlockUniqueKey]
+          let currentBlock = this.blocks[blockInSearch.topUuid]
           while (true) {
-            blocks[currentBlock.blockUniqueKey] = currentBlock
-            if (currentBlock.childBlockUniqueKey === '') break
-            currentBlock = this.allBlocks[currentBlock.childBlockUniqueKey]
+            blocks[currentBlock.uuid] = currentBlock
+            if (currentBlock.childUuid === '') break
+            currentBlock = this.blocks[currentBlock.childUuid]
           }
           const blockComponent: BlockComponent = {
             blockComponentUniqueKey,
@@ -228,7 +232,7 @@ class Blocks extends VuexModule implements BlockStateIF {
           }
           blockComponentsModule.update(blockComponent)
         }
-        if (blockInSearch.blockType === 'DefinitionComponentBlock') {
+        if (blockInSearch.name === 'DefinitionComponentBlock') {
           const blockComponentUniqueKey = this.objectOfBlockAndComponent[key]
           this.removeRelationBlockAndComponent(key)
           blockComponentsModule.remove(blockComponentUniqueKey)
