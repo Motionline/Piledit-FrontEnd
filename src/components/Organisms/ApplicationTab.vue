@@ -1,5 +1,5 @@
 <template>
-  <v-tabs>
+  <v-tabs vertical>
     <v-tab to="/">
       Home
     </v-tab>
