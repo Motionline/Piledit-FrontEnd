@@ -22,6 +22,16 @@ export default class App extends Vue {
             click: function (item, focusedWindow) {
               if (focusedWindow) { focusedWindow.reload() }
             }
+          },
+          {
+            label: 'Copy',
+            accelerator: 'CmdOrCtrl+C',
+            role: 'copy'
+          },
+          {
+            label: 'Paste',
+            accelerator: 'CmdOrCtrl+V',
+            role: 'paste'
           }
         ]
       },

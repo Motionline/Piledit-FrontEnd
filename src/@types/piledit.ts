@@ -24,3 +24,8 @@ export type ComponentObject = {
   position: Position
   width: number
 }
+
+export type PileditWindow = {
+  windowType: string
+  uuid: string
+}
