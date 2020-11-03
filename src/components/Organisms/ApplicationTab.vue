@@ -1,22 +1,21 @@
 <template>
   <v-tabs vertical>
-    <v-tab to="/">
-      Home
-    </v-tab>
-    <v-tab to="/components_edit">
-      コンポーネントエディタ
-    </v-tab>
     <v-tab
       v-for="(window, key) in windows"
       :key="key"
       :to="getUrl(window)"
+      :ripple="false"
     >
-      {{ window.uuid }}
+      {{ getText(window) }}
+      <v-btn
+        icon
+        x-small
+        @click.prevent="deleteWindow(window.uuid)"
+        :ripple="false"
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
     </v-tab>
-    {{ uuid1 }}
-    <v-btn @click="addWindow">test</v-btn>
-    <v-text-field v-model="uuid1"></v-text-field>
-    <v-btn @click="deleteWindow">delete</v-btn>
   </v-tabs>
 </template>
 
@@ -27,15 +26,32 @@ import { PileditWindow } from '@/@types/piledit'
 
 @Component
 export default class ApplicationTab extends Vue {
-  public uuid1 = ''
-
   get windows () {
     return windowsModule.windows
   }
 
+  mounted () {
+    const tabsCount = Object.keys(windowsModule.windows).length
+    if (tabsCount === 0) {
+      windowsModule.add({ windowType: 'TimeLine' })
+    }
+  }
+
   public getUrl (pileditWindow: PileditWindow) {
-    if (pileditWindow.windowType === 'test') {
+    const windowType = pileditWindow.windowType
+    if (windowType === 'TimeLine') {
+      return '/'
+    } else if (pileditWindow.windowType === 'componentsEditor') {
       return '/components_edit'
+    }
+  }
+
+  public getText (pileditWindow: PileditWindow) {
+    const windowType = pileditWindow.windowType
+    if (windowType === 'TimeLine') {
+      return 'タイムライン'
+    } else if (pileditWindow.windowType === 'componentsEditor') {
+      return 'コンポーネントエディタ'
     }
   }
 
@@ -46,9 +62,9 @@ export default class ApplicationTab extends Vue {
     windowsModule.add(context)
   }
 
-  public deleteWindow () {
+  public deleteWindow (uuid: string) {
     const context = {
-      uuid: this.uuid1
+      uuid
     }
     windowsModule.remove(context)
   }
