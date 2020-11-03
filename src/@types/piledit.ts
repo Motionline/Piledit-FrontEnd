@@ -21,6 +21,18 @@ export type Block = {
   position: Position
 }
 
+export type Component = {
+  uuid: string
+  blocks: { [key: string]: Block }
+}
+
+export type Clip = {
+  uuid: string
+  componentUuid: string
+  position: Position
+  width: number
+}
+
 export type BlockComponent = {
   blockComponentUniqueKey: string
   blocks: { [ key: string ]: Block }
