@@ -9,19 +9,20 @@ import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
 import { Position, Block, BlockComponent } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
-import { blockComponentsModule } from '@/store/Modules/BlockComponents'
+import { blockComponentsModule } from '@/store/Modules/Components'
 
 // Block ... 編集ブロック
-// Clip ... ブロックの集合体、コンポーネント
+// Component ... ブロックの集合体
+// Clip ... タイムラインに載せるやつ　実体はComponent
 // Tab ... タブ
 
-export interface BlockStateIF {
+export interface BlocksStateIF {
   blocks: { [key: string]: Block };
   objectOfBlockAndComponent: { [key: string]: string };
 }
 
 @Module({ dynamic: true, store: store, name: 'Blocks', namespaced: true })
-class Blocks extends VuexModule implements BlockStateIF {
+class Blocks extends VuexModule implements BlocksStateIF {
   blocks: { [key: string]: Block } = {}
   objectOfBlockAndComponent: { [key: string]: string } = {}
 
