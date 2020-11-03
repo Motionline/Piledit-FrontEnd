@@ -17,7 +17,7 @@ import BlocksSandBox from '@/components/Templates/BlocksSandBox.vue'
 import BlocksList from '@/components/Templates/BlocksList.vue'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 import { blocksModule } from '@/store/Modules/Blocks'
-import { blockComponentsModule } from '@/store/Modules/BlockComponents'
+import { blockComponentsModule } from '@/store/Modules/Components'
 @Component({
   components: {
     BlocksSandBox,

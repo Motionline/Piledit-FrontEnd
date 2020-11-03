@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { blockComponentsModule } from '@/store/Modules/BlockComponents'
+import { blockComponentsModule } from '@/store/Modules/Components'
 import { timelineModule } from '@/store/Modules/Timeline'
 import Timeline from '@/components/Templates/Timeline.vue'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
