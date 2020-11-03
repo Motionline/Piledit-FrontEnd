@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { timelineModule } from '@/store/Modules/Timeline'
+import { clipsModule } from '@/store/Modules/Clips'
 import SVGText from '@/components/Atoms/SVGText.vue'
 import ComponentObject from '@/components/Molecules/ComponentObject.vue'
 @Component({

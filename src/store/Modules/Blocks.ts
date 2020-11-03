@@ -13,7 +13,7 @@ import { blockComponentsModule } from '@/store/Modules/Components'
 
 // Block ... 編集ブロック
 // Component ... ブロックの集合体
-// Clip ... タイムラインに載せるやつ　実体はComponent
+// Clip ... タイムラインに載せるやつ。実体はComponent
 // Tab ... タブ
 
 export interface BlocksStateIF {

@@ -33,18 +33,6 @@ export type Clip = {
   width: number
 }
 
-export type BlockComponent = {
-  blockComponentUniqueKey: string
-  blocks: { [ key: string ]: Block }
-}
-
-export type ComponentObject = {
-  componentObjectUniqueKey: string
-  componentUniqueKey: string
-  position: Position
-  width: number
-}
-
 export type Tab = {
   name: string
   uuid: string
