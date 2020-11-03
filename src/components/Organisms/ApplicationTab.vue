@@ -1,16 +1,16 @@
 <template>
   <v-tabs vertical>
     <v-tab
-      v-for="(window, key) in windows"
+      v-for="(tab, key) in tabs"
       :key="key"
-      :to="getUrl(window)"
+      :to="getUrl(tab)"
       :ripple="false"
     >
-      {{ getText(window) }}
+      {{ getText(tab) }}
       <v-btn
         icon
         x-small
-        @click.prevent="deleteWindow(window.uuid)"
+        @click.prevent="deleteWindow(tab.uuid)"
         :ripple="false"
       >
         <v-icon>mdi-close</v-icon>
@@ -21,56 +21,52 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { windowsModule } from '@/store/Modules/Windows'
-import { PileditWindow } from '@/@types/piledit'
+import { tabsModule } from '@/store/Modules/Tabs'
+import { Tab } from '@/@types/piledit'
 
 @Component
 export default class ApplicationTab extends Vue {
-  get windows () {
-    return windowsModule.windows
+  get tabs () {
+    return tabsModule.tabs
   }
 
   mounted () {
-    const tabsCount = Object.keys(windowsModule.windows).length
+    const tabsCount = Object.keys(tabsModule.tabs).length
     if (tabsCount === 0) {
-      windowsModule.add({ windowType: 'TimeLine' })
+      tabsModule.add({ name: 'TimeLine' })
     }
   }
 
-  public getUrl (pileditWindow: PileditWindow) {
-    const windowType = pileditWindow.windowType
-    if (windowType === 'TimeLine') {
+  public getUrl (tab: Tab) {
+    const name = tab.name
+    if (name === 'TimeLine') {
       return '/'
-    } else if (pileditWindow.windowType === 'componentsEditor') {
+    } else if (name === 'componentsEditor') {
       return '/components_edit'
     }
   }
 
-  public getText (pileditWindow: PileditWindow) {
-    const windowType = pileditWindow.windowType
-    if (windowType === 'TimeLine') {
+  public getText (tab: Tab) {
+    const name = tab.name
+    if (name === 'TimeLine') {
       return 'タイムライン'
-    } else if (pileditWindow.windowType === 'componentsEditor') {
+    } else if (name === 'componentsEditor') {
       return 'コンポーネントエディタ'
     }
   }
 
   public addWindow () {
     const context = {
-      windowType: 'test'
+      name: 'test'
     }
-    windowsModule.add(context)
+    tabsModule.add(context)
   }
 
   public deleteWindow (uuid: string) {
     const context = {
       uuid
     }
-    windowsModule.remove(context)
+    tabsModule.remove(context)
   }
 }
 </script>
-
-<style scoped>
-
-</style>

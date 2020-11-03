@@ -7,7 +7,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { remote } from 'electron'
-import { windowsModule } from '@/store/Modules/Windows'
+import { tabsModule } from '@/store/Modules/Tabs'
 const Menu = remote.Menu
 
 @Component
@@ -40,7 +40,7 @@ export default class App extends Vue {
         label: 'Window',
         submenu: [
           {
-            label: 'General Windows',
+            label: 'General Tabs',
             submenu: [
               {
                 label: 'TimeLine Window'
@@ -51,12 +51,12 @@ export default class App extends Vue {
             ]
           },
           {
-            label: 'Editor Windows',
+            label: 'Editor Tabs',
             submenu: [
               {
                 label: 'Components Editor',
                 accelerator: 'CmdOrCtrl+Option+C',
-                click: () => { this.addWindow('componentsEditor') }
+                click: () => { this.addTab('componentsEditor') }
               },
               {
                 label: 'Scripting Editor',
@@ -78,11 +78,11 @@ export default class App extends Vue {
     Menu.setApplicationMenu(menu)
   }
 
-  public addWindow (windowType: string) {
+  public addTab (name: string) {
     const context = {
-      windowType
+      name
     }
-    windowsModule.add(context)
+    tabsModule.add(context)
   }
 }
 </script>

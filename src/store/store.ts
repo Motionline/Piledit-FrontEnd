@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import { BlockStateIF } from '@/store/Modules/Blocks'
 import { BlockComponentsStateIF } from '@/store/Modules/BlockComponents'
 import { TimeLineStateIF } from '@/store/Modules/Timeline'
-import { WindowStateIF } from '@/store/Modules/Windows'
+import { TabStateIF } from '@/store/Modules/Tabs'
 
 Vue.use(Vuex)
 
@@ -11,6 +11,6 @@ export interface State {
   blocks: BlockStateIF;
   components: BlockComponentsStateIF;
   timeline: TimeLineStateIF;
-  windows: WindowStateIF;
+  tabs: TabStateIF;
 }
 export default new Vuex.Store<State>({})
