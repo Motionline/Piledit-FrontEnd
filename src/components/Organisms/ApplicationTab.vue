@@ -42,7 +42,7 @@ export default class ApplicationTab extends Vue {
     if (name === 'TimeLine') {
       return '/'
     } else if (name === 'componentsEditor') {
-      return `/components_edit/${tab.uuid}`
+      return '/components_edit'
     }
   }
 

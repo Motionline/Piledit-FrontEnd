@@ -20,7 +20,7 @@ const routes: Array<RouteConfig> = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
-    path: '/components_edit/:uuid',
+    path: '/components_edit',
     name: 'ComponentsEdit',
     component: ComponentsEdit
   }
