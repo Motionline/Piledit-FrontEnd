@@ -1,37 +1,26 @@
 <template>
   <div id="Home">
     <ApplicationTab />
-    <svg height="1500" width="1500">
-      <BlocksSandBox :allBlocks="allBlocks" />
-      <BlocksList />
-    </svg>
+    <ComponentsEditor :tab-uuid="tabUuid" />
   </div>
 </template>
 
-<style scoped>
-</style>
-
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import BlocksSandBox from '@/components/Templates/BlocksSandBox.vue'
-import BlocksList from '@/components/Templates/BlocksList.vue'
+import { Component, Watch, Vue } from 'vue-property-decorator'
+import ComponentsEditor from '@/components/Templates/ComponentsEditor.vue'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
-import { blocksModule } from '@/store/Modules/Blocks'
-import { blockComponentsModule } from '@/store/Modules/Components'
 @Component({
   components: {
-    BlocksSandBox,
-    BlocksList,
+    ComponentsEditor,
     ApplicationTab
   }
 })
 export default class ComponentsEdit extends Vue {
-  get allBlocks () {
-    return blocksModule.allBlocks
-  }
+  public tabUuid = this.$route.params.uuid
 
-  get allBlockComponents () {
-    return blockComponentsModule.allBlockComponents
+  @Watch('$route')
+  onUrlsChanged (newRoute: any, _: any) {
+    this.tabUuid = newRoute.params.uuid
   }
 }
 </script>
