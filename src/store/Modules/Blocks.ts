@@ -7,9 +7,9 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-import { Position, Block, BlockComponent } from '@/@types/piledit'
+import { Position, Block, Component } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
-import { blockComponentsModule } from '@/store/Modules/Components'
+import { componentsModule } from '@/store/Modules/Components'
 
 // Block ... 編集ブロック
 // Component ... ブロックの集合体
@@ -179,8 +179,8 @@ class Blocks extends VuexModule implements BlocksStateIF {
           }
           this.addChild(payload)
           if (blockInSearch.name === 'DefinitionComponentBlock') {
-            const blockComponentUniqueKey = VuexMixin.generateUuid()
-            this.addRelationBlockAndComponent(key, blockComponentUniqueKey)
+            const uuid = VuexMixin.generateUuid()
+            this.addRelationBlockAndComponent(key, uuid)
             const blocks: { [key: string]: Block } = {}
             let currentBlock = this.blocks[key]
             while (true) {
@@ -188,17 +188,15 @@ class Blocks extends VuexModule implements BlocksStateIF {
               if (currentBlock.childUuid === '') break
               currentBlock = this.blocks[currentBlock.childUuid]
             }
-            // TODO: 別のモジュールのActionを呼ぶ方法を調べる
-            const blockComponent: BlockComponent = {
-              blockComponentUniqueKey,
+            const blockComponent: Component = {
+              uuid,
               blocks
             }
-            console.log(blockComponent)
-            blockComponentsModule.add(blockComponent)
+            componentsModule.add(blockComponent)
           }
           const topBlock = this.blocks[blockInSearch.topUuid]
           if (topBlock != null && topBlock.name === 'DefinitionComponentBlock') {
-            const blockComponentUniqueKey = this.objectOfBlockAndComponent[blockInSearch.topUuid]
+            const uuid = this.objectOfBlockAndComponent[blockInSearch.topUuid]
             const blocks: { [key: string]: Block } = {}
             let currentBlock = this.blocks[key]
             while (true) {
@@ -207,11 +205,11 @@ class Blocks extends VuexModule implements BlocksStateIF {
               currentBlock = this.blocks[currentBlock.childUuid]
             }
             // TODO: 別のモジュールのActionを呼ぶ方法を調べる
-            const blockComponent: BlockComponent = {
-              blockComponentUniqueKey,
+            const blockComponent: Component = {
+              uuid,
               blocks
             }
-            blockComponentsModule.update(blockComponent)
+            componentsModule.update(blockComponent)
           }
         }
         this.hideShadow(key)
@@ -219,7 +217,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
         this.removeChild(key)
         const topBlock = this.blocks[blockInSearch.topUuid]
         if (topBlock != null && topBlock.name === 'DefinitionComponentBlock') {
-          const blockComponentUniqueKey = this.objectOfBlockAndComponent[blockInSearch.topUuid]
+          const uuid = this.objectOfBlockAndComponent[blockInSearch.topUuid]
           const blocks: { [key: string]: Block } = {}
           let currentBlock = this.blocks[blockInSearch.topUuid]
           while (true) {
@@ -227,16 +225,16 @@ class Blocks extends VuexModule implements BlocksStateIF {
             if (currentBlock.childUuid === '') break
             currentBlock = this.blocks[currentBlock.childUuid]
           }
-          const blockComponent: BlockComponent = {
-            blockComponentUniqueKey,
+          const blockComponent: Component = {
+            uuid,
             blocks
           }
-          blockComponentsModule.update(blockComponent)
+          componentsModule.update(blockComponent)
         }
         if (blockInSearch.name === 'DefinitionComponentBlock') {
-          const blockComponentUniqueKey = this.objectOfBlockAndComponent[key]
+          const uuid = this.objectOfBlockAndComponent[key]
           this.removeRelationBlockAndComponent(key)
-          blockComponentsModule.remove(blockComponentUniqueKey)
+          componentsModule.remove(uuid)
         }
       }
     }

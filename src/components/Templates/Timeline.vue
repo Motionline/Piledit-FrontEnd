@@ -49,6 +49,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { clipsModule } from '@/store/Modules/Clips'
+import { Clip } from '@/@types/piledit'
 import SVGText from '@/components/Atoms/SVGText.vue'
 import ComponentObject from '@/components/Molecules/ComponentObject.vue'
 @Component({
@@ -59,8 +60,7 @@ import ComponentObject from '@/components/Molecules/ComponentObject.vue'
 })
 export default class Timeline extends Vue {
   @Prop({ required: true })
-  // TODO: componentObject型をプロジェクト全体で使えるようにする
-  public componentObjects: undefined
+  public clips!: { [key: string]: Clip }
 
   public width = 4000
   public beforeMouseX = 0
@@ -104,11 +104,11 @@ export default class Timeline extends Vue {
   }
 
   public updatePosition (position: Position) {
-    // timelineModule.updatePosition(position)
+    // clipsModule.updatePosition()
   }
 
   public updateWidth (width: number) {
-    // timelineModule.updateWidth(width)
+    // clipsModule.updateWidth()
   }
 }
 </script>

@@ -49,4 +49,4 @@ class Components extends VuexModule implements ComponentsStateIF {
   }
 }
 
-export const blockComponentsModule = getModule(Components)
+export const componentsModule = getModule(Components)

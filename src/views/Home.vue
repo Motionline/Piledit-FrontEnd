@@ -5,10 +5,10 @@
     <v-btn @click="outputBC"></v-btn>
     <v-btn @click="outputMovieConfigurationFile">出力する</v-btn>
     <h3>全てのコンポーネント</h3>
-    <div v-for="(_, key) in allBlockComponents" :key="key">
+    <div v-for="(_, key) in components" :key="key">
       <v-btn @click="addBlockComponentObject(key)">{{ key }}</v-btn>
     </div>
-    <Timeline :componentObjects="componentObjects" />
+    <Timeline :clips="clips" />
   </div>
 </template>
 
@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { blockComponentsModule } from '@/store/Modules/Components'
+import { componentsModule } from '@/store/Modules/Components'
 import { clipsModule } from '@/store/Modules/Clips'
 import Timeline from '@/components/Templates/Timeline.vue'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
@@ -30,25 +30,25 @@ import { app } from 'electron'
   }
 })
 export default class Home extends Vue {
-  get allBlockComponents () {
-    return blockComponentsModule.allBlockComponents
+  get components () {
+    return componentsModule.components
   }
 
-  get componentObjects () {
-    return timelineModule.componentObjects
+  get clips () {
+    return clipsModule.clips
   }
 
   public outputBC () {
-    console.log(this.allBlockComponents)
+    console.log(this.components)
   }
 
-  public addBlockComponentObject (uniqueKey: string) {
-    timelineModule.add(uniqueKey)
+  public addBlockComponentObject (uuid: string) {
+    clipsModule.add(uuid)
   }
 
   public outputMovieConfigurationFile () {
-    for (const key of Object.keys(this.componentObjects)) {
-      const componentObject = this.componentObjects[key]
+    for (const key of Object.keys(this.clips)) {
+      const clip = this.clips[key]
       const appPath = app.getAppPath()
       const path = appPath + '/JSON'
       if (!fs.existsSync(path)) {
@@ -58,9 +58,9 @@ export default class Home extends Vue {
         `${path}/${key}.json`,
         JSON.stringify({
           Frame: {
-            Begin: componentObject.position.x,
-            End: componentObject.position.x + componentObject.width,
-            Length: componentObject.width
+            Begin: clip.position.x,
+            End: clip.position.x + clip.width,
+            Length: clip.width
           }
         }, undefined, 2), 'utf-8')
     }
