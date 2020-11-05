@@ -1,6 +1,7 @@
 <template>
   <div>
     <SandBox :blocks="blocks" />
+    <BlocksDisplay />
   </div>
 </template>
 
@@ -8,10 +9,12 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { blocksModule } from '@/store/Modules/Blocks'
 import SandBox from '@/components/Organisms/SandBox.vue'
+import BlocksDisplay from '@/components/Organisms/BlocksDisplay.vue'
 
 @Component({
   components: {
-    SandBox
+    SandBox,
+    BlocksDisplay
   }
 })
 export default class ComponentsEditor extends Vue {
