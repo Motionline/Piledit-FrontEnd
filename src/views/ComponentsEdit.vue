@@ -1,6 +1,5 @@
 <template>
   <div id="Home">
-    <ApplicationTab />
     <ComponentsEditor :tab-uuid="tabUuid" />
   </div>
 </template>
@@ -8,11 +7,9 @@
 <script lang="ts">
 import { Component, Watch, Vue } from 'vue-property-decorator'
 import ComponentsEditor from '@/components/Templates/ComponentsEditor.vue'
-import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 @Component({
   components: {
-    ComponentsEditor,
-    ApplicationTab
+    ComponentsEditor
   }
 })
 export default class ComponentsEdit extends Vue {

@@ -1,5 +1,5 @@
 <template>
-  <v-tabs vertical>
+  <v-tabs vertical hide-slider light>
     <v-tab
       v-for="(tab, key) in tabs"
       :key="key"

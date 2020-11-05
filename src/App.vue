@@ -1,6 +1,15 @@
 <template>
-  <v-app>
-    <router-view />
+  <v-app id="app">
+    <v-container fluid>
+      <v-row class="flex-nowrap">
+        <v-col>
+          <application-tab />
+        </v-col>
+        <v-col>
+          <router-view />
+        </v-col>
+      </v-row>
+    </v-container>
   </v-app>
 </template>
 
@@ -8,9 +17,14 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { remote } from 'electron'
 import { tabsModule } from '@/store/Modules/Tabs'
+import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 const Menu = remote.Menu
 
-@Component
+@Component({
+  components: {
+    ApplicationTab
+  }
+})
 export default class App extends Vue {
   mounted () {
     const templateMenu: Electron.MenuItemConstructorOptions[] = [

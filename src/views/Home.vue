@@ -1,6 +1,5 @@
 <template>
   <div id="Home">
-    <ApplicationTab />
     <h2>タイムライン(svgで作る)</h2>
     <v-btn @click="outputBC"></v-btn>
     <v-btn @click="outputMovieConfigurationFile">出力する</v-btn>
@@ -20,13 +19,11 @@ import { Component, Vue } from 'vue-property-decorator'
 import { componentsModule } from '@/store/Modules/Components'
 import { clipsModule } from '@/store/Modules/Clips'
 import Timeline from '@/components/Templates/Timeline.vue'
-import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 import fs from 'fs'
 import { app } from 'electron'
 @Component({
   components: {
-    Timeline,
-    ApplicationTab
+    Timeline
   }
 })
 export default class Home extends Vue {
