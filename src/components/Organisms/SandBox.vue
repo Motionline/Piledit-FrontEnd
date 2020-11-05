@@ -1,5 +1,5 @@
 <template>
-  <svg height="2000" width="2000">
+  <svg height="500" width="2000">
     <rect x="3" y="3" stroke="black" stroke-width="3px" height="380" width="1180" fill-opacity="0" />
     <component
       v-for="(block, uuid, index) in blocks"
@@ -9,8 +9,8 @@
       :position="block.position"
       :shadow="block.shadow"
       :sample-block="false"
-      @mouse-up="stopDragging"
-      @mouse-move="updatePosition"
+      @stopDragging="stopDragging"
+      @updatePosition="updatePosition"
       @remove="removeBlock"
     />
   </svg>
@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { Block } from '@/@types/piledit'
+import { Block, Position } from '@/@types/piledit'
 import { blocksModule } from '@/store/Modules/Blocks'
 import DebugBlock from '@/components/Molecules/DebugBlock.vue'
 
@@ -43,8 +43,11 @@ export default class SandBox extends Vue {
     blocksModule.stopDragging(uuid)
   }
 
-  public updatePosition (block: Block) {
-    console.log(block)
+  public updatePosition (context: { position: Position; uuid: string }) {
+    const block = this.blocks[context.uuid]
+    block.uuid = context.uuid
+    block.position = context.position
+    blocksModule.update(block)
   }
 
   public removeBlock (uuid: string) {

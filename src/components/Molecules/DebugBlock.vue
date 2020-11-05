@@ -7,6 +7,9 @@
     :fill-color="fillColor"
     :path="path"
     :sample-block="sampleBlock"
+    @stopDragging="stopDragging"
+    @updatePosition="updatePosition"
+    @remove="removeBlock"
   >
     <SVGText x="10" y="30" color="white">
       {{ uuid }}
@@ -15,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { Position } from '@/@types/piledit'
 import AbstractBlock from '@/components/Atoms/AbstractBlock.vue'
 import SVGText from '@/components/Atoms/SVGText.vue'
@@ -45,6 +48,21 @@ export default class DebugBlock extends Vue {
   public fillColor = '#e83929'
   public width = 350
   public path = `m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H ${this.width} a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z`
+
+  @Emit('stopDragging')
+  public stopDragging (uuid: string) {
+    return uuid
+  }
+
+  @Emit('updatePosition')
+  public updatePosition (context: { position: Position; uuid: string }) {
+    return context
+  }
+
+  @Emit('remove')
+  public removeBlock (uuid: string) {
+    return uuid
+  }
 }
 </script>
 

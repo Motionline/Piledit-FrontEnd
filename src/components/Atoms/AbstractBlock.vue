@@ -76,7 +76,7 @@ export default class AbstractBlock extends Vue {
     document.removeEventListener('mousemove', this.mouseMove)
   }
 
-  @Emit('mouseUp')
+  @Emit('stopDragging')
   public mouseUp (event: MouseEvent) {
     this.isDragging = false
     this.beforeMouseX = 0
@@ -98,13 +98,13 @@ export default class AbstractBlock extends Vue {
     const newPosition: Position = this.getNewPosition(event.offsetX, event.offsetY)
     const context = {
       position: newPosition,
-      blockUniqueKey: this.uuid
+      uuid: this.uuid
     }
     this.emitUpdatePosition(context)
   }
 
-  @Emit('mouseMove')
-  public emitUpdatePosition (context: { position: Position; blockUniqueKey: string }) {
+  @Emit('updatePosition')
+  public emitUpdatePosition (context: { position: Position; uuid: string }) {
     return context
   }
 
