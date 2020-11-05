@@ -11,6 +11,7 @@ export type Position = {
 // childUuid: 直下Blockの固有ID
 // shadow: Block-Shadowの表示有無
 // position: 座標
+// tabUuid: そのBlockが存在しているTabの固有ID
 export type Block = {
   name: string
   uuid: string
@@ -19,6 +20,7 @@ export type Block = {
   childUuid: string
   shadow: boolean
   position: Position
+  tabUuid: string
 }
 
 export type Component = {

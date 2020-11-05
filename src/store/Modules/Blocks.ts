@@ -96,7 +96,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
   }
 
   @Action({ rawError: true })
-  public add (context: { position: Position; name: string }) {
+  public add (context: { position: Position; name: string; tabUuid: string }) {
     const uuid = VuexMixin.generateUuid()
     const block: Block = {
       position: context.position,
@@ -105,7 +105,8 @@ class Blocks extends VuexModule implements BlocksStateIF {
       uuid,
       childUuid: '',
       parentUuid: '',
-      topUuid: ''
+      topUuid: '',
+      tabUuid: context.tabUuid
     }
     this.addBlock(block)
   }

@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { blocksModule } from '@/store/Modules/Blocks'
 import { Position } from '@/@types/piledit'
 import DebugBlock from '@/components/Molecules/DebugBlock.vue'
@@ -32,6 +32,9 @@ import DebugBlock from '@/components/Molecules/DebugBlock.vue'
   components: { DebugBlock }
 })
 export default class BlocksDisplay extends Vue {
+  @Prop({ required: true })
+  public tabUuid!: string
+
   public pos: Position = {
     x: 1,
     y: 100
@@ -52,7 +55,8 @@ export default class BlocksDisplay extends Vue {
       position: {
         x: 0,
         y: 0
-      }
+      },
+      tabUuid: this.tabUuid
     }
   }
 }
