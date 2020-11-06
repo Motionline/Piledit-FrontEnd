@@ -12,11 +12,13 @@ import store from '@/store/store'
 
 export interface TabStateIF {
   tabs: { [key: string]: Tab };
+  currentViewingTabUuid: string;
 }
 
 @Module({ dynamic: true, store: store, name: 'Tabs', namespaced: true })
 class Tabs extends VuexModule implements TabStateIF {
   tabs: { [key: string]: Tab } = {}
+  currentViewingTabUuid = ''
 
   @Mutation
   public addTab (tab: Tab) {
@@ -26,6 +28,11 @@ class Tabs extends VuexModule implements TabStateIF {
   @Mutation
   public removeTab (uuid: string) {
     Vue.delete(this.tabs, uuid)
+  }
+
+  @Mutation
+  public setCurrentViewingTabUuid (uuid: string) {
+    this.currentViewingTabUuid = uuid
   }
 
   @Action({ rawError: true })
@@ -41,6 +48,11 @@ class Tabs extends VuexModule implements TabStateIF {
   @Action({ rawError: true })
   public remove (context: { uuid: string }) {
     this.removeTab(context.uuid)
+  }
+
+  @Action({ rawError: true })
+  public updateCurrentViewingTabUuid (context: { uuid: string }) {
+    this.setCurrentViewingTabUuid(context.uuid)
   }
 }
 

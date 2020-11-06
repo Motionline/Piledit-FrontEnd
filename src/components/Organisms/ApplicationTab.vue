@@ -1,16 +1,20 @@
 <template>
-  <v-tabs vertical hide-slider light>
+  <v-tabs vertical hide-slider align-with-title fixed-tabs color="red" grow>
+    <v-tab to="/" :ripple="false">
+      タイムライン
+    </v-tab>
     <v-tab
       v-for="(tab, key) in tabs"
       :key="key"
       :to="getUrl(tab)"
       :ripple="false"
+      @click="updateCurrentViewingTabUuid(tab.uuid)"
     >
       {{ getText(tab) }}
       <v-btn
         icon
         x-small
-        @click.prevent="deleteWindow(tab.uuid)"
+        @click.prevent="deleteTab(tab.uuid)"
         :ripple="false"
       >
         <v-icon>mdi-close</v-icon>
@@ -18,6 +22,12 @@
     </v-tab>
   </v-tabs>
 </template>
+
+<style lang="scss">
+#applicationTab {
+  text-align: left !important;
+}
+</style>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
@@ -30,41 +40,40 @@ export default class ApplicationTab extends Vue {
     return tabsModule.tabs
   }
 
+  get currentViewingTabUuid () {
+    return tabsModule.currentViewingTabUuid
+  }
+
   mounted () {
-    const tabsCount = Object.keys(tabsModule.tabs).length
-    if (tabsCount === 0) {
-      tabsModule.add({ name: 'TimeLine' })
+    if (this.$route.path !== '/') {
+      this.$router.push('/')
     }
+  }
+
+  public updateCurrentViewingTabUuid (uuid: string) {
+    tabsModule.updateCurrentViewingTabUuid({ uuid })
   }
 
   public getUrl (tab: Tab) {
     const name = tab.name
-    if (name === 'TimeLine') {
-      return '/'
-    } else if (name === 'componentsEditor') {
+    if (name === 'componentsEditor') {
       return `/components_edit/${tab.uuid}`
     }
   }
 
   public getText (tab: Tab) {
     const name = tab.name
-    if (name === 'TimeLine') {
-      return 'タイムライン'
-    } else if (name === 'componentsEditor') {
+    if (name === 'componentsEditor') {
       return 'コンポーネントエディタ'
     }
   }
 
-  public addWindow () {
-    const context = {
-      name: 'test'
-    }
-    tabsModule.add(context)
-  }
-
-  public deleteWindow (uuid: string) {
+  public deleteTab (uuid: string) {
     const context = {
       uuid
+    }
+    if (uuid === this.currentViewingTabUuid) {
+      this.$router.push('/')
     }
     tabsModule.remove(context)
   }
