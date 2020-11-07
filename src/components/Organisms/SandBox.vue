@@ -1,6 +1,6 @@
 <template>
-  <svg height="500" width="2000">
-    <rect x="3" y="3" stroke="black" stroke-width="3px" height="380" width="1180" fill-opacity="0" />
+  <svg height="60vh" width="60vw" id="SandBox">
+<!--    <rect x="3" y="3" stroke="black" stroke-width="3px" height="80vh" width="500" fill-opacity="0" />-->
     <component
       v-for="(block, uuid, index) in blocks"
       :is="block.name"
@@ -57,5 +57,7 @@ export default class SandBox extends Vue {
 </script>
 
 <style scoped>
-
+#SandBox {
+  border: 2px solid black;
+}
 </style>

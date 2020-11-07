@@ -1,17 +1,18 @@
 <template>
   <div id="Home">
-    <h2>タイムライン(svgで作る)</h2>
-    <v-btn @click="outputBC"></v-btn>
-    <v-btn @click="outputMovieConfigurationFile">出力する</v-btn>
     <h3>全てのコンポーネント</h3>
-    <div v-for="(_, key) in components" :key="key">
-      <v-btn @click="addBlockComponentObject(key)">{{ key }}</v-btn>
+    <div v-for="(_, uuid) in components" :key="uuid">
+      <v-btn @click="addClip(uuid)">{{ uuid }}</v-btn>
     </div>
     <Timeline :clips="clips" />
   </div>
 </template>
 
 <style scoped>
+  /*#Home {*/
+  /*  max-height: 80vh;*/
+  /*  max-width: 100vw;*/
+  /*}*/
 </style>
 
 <script lang="ts">
@@ -39,7 +40,7 @@ export default class Home extends Vue {
     console.log(this.components)
   }
 
-  public addBlockComponentObject (uuid: string) {
+  public addClip (uuid: string) {
     clipsModule.add(uuid)
   }
 

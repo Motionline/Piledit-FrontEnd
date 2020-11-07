@@ -1,38 +1,19 @@
 <template>
-  <svg height="1000" width="1200" id="blocksDisplay">
-    <foreignObject height="200" width="340" y="100">
-      <p>test</p>
-      <v-btn
-        :ripple="false"
-        @click="addBlock('DebugBlock')"
-        elevation="0"
-        class="dragBlock-btn"
-        text
-      >
-        <DebugBlock
-          :sample-block="true"
-          :block="sampleBlock"
-          class="dragBlock-btn"
-          transform="translate(1,20)"
-        />
-      </v-btn>
-    </foreignObject>
-    <foreignObject height="200" width="340" y="300">
-      <v-btn
-        :ripple="false"
-        @click="addBlock('DefineComponentBlock')"
-        elevation="0"
-        class="dragBlock-btn"
-        text
-      >
-        <DefineComponentBlock
-          :sample-block="true"
-          :block="sampleBlock"
-          class="dragBlock-btn"
-          transform="translate(1,50)"
-        />
-      </v-btn>
-    </foreignObject>
+  <svg height="100vh" width="25vw" id="blocksDisplay">
+    <DebugBlock
+      @click="addBlock('DebugBlock')"
+      :sample-block="true"
+      :block="sampleBlock"
+      class="dragBlock-btn"
+      transform="translate(1,20)"
+    />
+    <DefineComponentBlock
+      @click="addBlock('DefineComponentBlock')"
+      :sample-block="true"
+      :block="sampleBlock2"
+      class="dragBlock-btn"
+      transform="translate(1,50)"
+    />
   </svg>
 </template>
 
@@ -67,6 +48,20 @@ export default class BlocksDisplay extends Vue {
     }
   }
 
+  public sampleBlock2: Block = {
+    uuid: 'sampleBlock',
+    name: 'sampleBlock',
+    topUuid: '',
+    childUuid: '',
+    parentUuid: '',
+    tabUuid: '',
+    shadow: false,
+    position: {
+      x: 0,
+      y: 300
+    }
+  }
+
   public pos: Position = {
     x: 1,
     y: 100
@@ -95,6 +90,9 @@ export default class BlocksDisplay extends Vue {
 </script>
 
 <style scoped>
+  #blocksDisplay {
+    border: 2px black solid;
+  }
   .dragBlock-btn::before {
     color: transparent;
   }

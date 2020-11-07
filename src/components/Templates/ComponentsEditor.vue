@@ -1,21 +1,36 @@
 <template>
   <div>
-    <SandBox :blocks="filteredBlocks()" />
-    <BlocksDisplay :tab-uuid="tabUuid" />
+    <v-row class="componentsEditor--row ma-0 pa-0">
+      <v-col class="ma-0 pa-0">
+        <v-row class="ma-0 pa-0">
+          <SandBox :blocks="filteredBlocks()" />
+        </v-row>
+        <v-row class="ma-0 pa-0">
+          <BlockDetailedPanel />
+        </v-row>
+      </v-col>
+      <v-col class="ma-0 pa-0">
+        <v-row class="ma-0 pa-0">
+          <BlocksDisplay :tab-uuid="tabUuid" />
+        </v-row>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { blocksModule } from '@/store/Modules/Blocks'
+import { Block } from '@/@types/piledit'
 import SandBox from '@/components/Organisms/SandBox.vue'
 import BlocksDisplay from '@/components/Organisms/BlocksDisplay.vue'
-import { Block } from '@/@types/piledit'
+import BlockDetailedPanel from '@/components/Organisms/BlockDetailedPanel.vue'
 
 @Component({
   components: {
     SandBox,
-    BlocksDisplay
+    BlocksDisplay,
+    BlockDetailedPanel
   }
 })
 export default class ComponentsEditor extends Vue {
@@ -40,5 +55,7 @@ export default class ComponentsEditor extends Vue {
 </script>
 
 <style scoped>
-
+.componentsEditor--row {
+  height: 70vh;
+}
 </style>

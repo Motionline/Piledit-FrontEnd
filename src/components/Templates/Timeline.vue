@@ -1,5 +1,5 @@
 <template>
-  <svg id="timeline" width="2200" height="800" @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp">
+  <svg id="timeline" width="2200" height="500" @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp">
     <g :transform="`translate(${this.timelinePositionX}, 0)`">
       <rect
         x="1"

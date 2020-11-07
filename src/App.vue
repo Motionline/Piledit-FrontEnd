@@ -1,15 +1,13 @@
 <template>
-  <v-app id="app">
-    <v-container fluid>
-      <v-row class="flex-nowrap">
-        <v-col>
-          <application-tab />
-        </v-col>
-        <v-col>
-          <router-view />
-        </v-col>
-      </v-row>
-    </v-container>
+  <v-app id="app" class="ma-0 pa-0">
+    <v-row class="flex-nowrap ma-0 pa-0">
+      <v-col cols="2" id="applicationTab" class="ma-0 pa-0">
+        <application-tab />
+      </v-col>
+      <v-col cols="12" class="ma-0 pa-0">
+        <router-view />
+      </v-col>
+    </v-row>
   </v-app>
 </template>
 
@@ -100,3 +98,13 @@ export default class App extends Vue {
   }
 }
 </script>
+
+<style>
+  /*#app {*/
+  /*  max-height: 100vh;*/
+  /*  max-width: 100vw;*/
+  /*}*/
+  #applicationTab {
+    border-right: 2px black solid;
+  }
+</style>

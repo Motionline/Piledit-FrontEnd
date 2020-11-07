@@ -1,6 +1,6 @@
 <template>
-  <v-tabs vertical hide-slider align-with-title fixed-tabs color="red" grow>
-    <v-tab to="/" :ripple="false">
+  <v-tabs vertical hide-slider color="black" grow align-with-title left>
+    <v-tab to="/" :ripple="false" class="applicationTab--tab">
       タイムライン
     </v-tab>
     <v-tab
@@ -9,6 +9,7 @@
       :to="getUrl(tab)"
       :ripple="false"
       @click="updateCurrentViewingTabUuid(tab.uuid)"
+      class="applicationTab--tab"
     >
       {{ getText(tab) }}
       <v-btn
@@ -24,8 +25,9 @@
 </template>
 
 <style lang="scss">
-#applicationTab {
-  text-align: left !important;
+.applicationTab--tab {
+  height: 30px !important;
+  font-size: 12px !important;
 }
 </style>
 
