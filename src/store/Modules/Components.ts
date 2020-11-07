@@ -20,7 +20,6 @@ class Components extends VuexModule implements ComponentsStateIF {
   @Mutation
   public addComponent (component: Component) {
     Vue.set(this.components, component.uuid, component)
-    console.log(this.components)
   }
 
   @Mutation

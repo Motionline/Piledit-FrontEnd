@@ -36,10 +36,6 @@ export default class Home extends Vue {
     return clipsModule.clips
   }
 
-  public outputBC () {
-    console.log(this.components)
-  }
-
   public addClip (uuid: string) {
     clipsModule.add(uuid)
   }
