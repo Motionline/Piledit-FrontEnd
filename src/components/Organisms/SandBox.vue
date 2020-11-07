@@ -1,6 +1,5 @@
 <template>
-  <svg height="60vh" width="60vw" id="SandBox">
-<!--    <rect x="3" y="3" stroke="black" stroke-width="3px" height="80vh" width="500" fill-opacity="0" />-->
+  <svg height="60vh" width="90vw" id="SandBox" class="ma-0 pa-0">
     <component
       v-for="(block, uuid, index) in blocks"
       :is="block.name"
@@ -11,6 +10,10 @@
       @updatePosition="updatePosition"
       @remove="removeBlock"
     />
+
+    <line x1="58vw" x2="58vw" y1="0" y2="100vh" stroke="black" />
+
+    <BlocksDisplay :tab-uuid="tabUuid" />
   </svg>
 </template>
 
@@ -18,18 +21,23 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Block, Position } from '@/@types/piledit'
 import { blocksModule } from '@/store/Modules/Blocks'
+import BlocksDisplay from '@/components/Organisms/BlocksDisplay.vue'
 import DebugBlock from '@/components/Molecules/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/DefineComponentBlock.vue'
 
 @Component({
   components: {
     DebugBlock,
-    DefineComponentBlock
+    DefineComponentBlock,
+    BlocksDisplay
   }
 })
 export default class SandBox extends Vue {
   @Prop({ required: true })
   public blocks!: { [key: string]: Block }
+
+  @Prop({ required: true })
+  public tabUuid!: string
 
   public getBlock (uuid: string) {
     return this.blocks[uuid]

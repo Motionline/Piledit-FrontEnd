@@ -5,10 +5,13 @@
     :fill-color="fillColor"
     :path="path"
     :sample-block="sampleBlock"
+    :new-block-uuid="newBlockUuid"
     @stopDragging="stopDragging"
     @updatePosition="updatePosition"
     @remove="removeBlock"
     @click="onClick"
+    @newBlockGenerate="emitNewBlockGenerate"
+    @newBlockMove="emitNewBlockMove"
   >
     <SVGText x="10" y="80" color="white">
       {{ block.uuid }}
@@ -37,6 +40,9 @@ export default class DebugBlock extends Vue {
   @Prop({ required: true })
   public block!: Block
 
+  @Prop()
+  public newBlockUuid!: string
+
   public strokeColor = '#c53d43'
   public fillColor = '#e83929'
   public width = 350
@@ -60,6 +66,16 @@ export default class DebugBlock extends Vue {
   @Emit('click')
   public onClick (event: Event) {
     return event
+  }
+
+  @Emit('newBlockGenerate')
+  public emitNewBlockGenerate (position: Position) {
+    return { position, name: 'DebugBlock' }
+  }
+
+  @Emit('newBlockMove')
+  public emitNewBlockMove (context: { uuid: string; position: Position }) {
+    return context
   }
 }
 </script>

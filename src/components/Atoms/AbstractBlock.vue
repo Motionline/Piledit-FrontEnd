@@ -63,6 +63,12 @@ export default class AbstractBlock extends Vue {
   @Prop({ required: true })
   public path!: string
 
+  @Prop()
+  public newBlockUuid!: string
+
+  @Prop()
+  public newBlockPosition!: Position
+
   public isDragging = false
   public beforeMouseX = 0
   public beforeMouseY = 0
@@ -93,20 +99,47 @@ export default class AbstractBlock extends Vue {
 
   public mouseDown (event: MouseEvent) {
     this.isDragging = true
+    if (this.sampleBlock) {
+      this.emitNewBlockGenerate({
+        x: event.clientX - 340,
+        y: event.clientY - 70
+      })
+    }
     event.preventDefault()
+  }
+
+  @Emit('newBlockGenerate')
+  public emitNewBlockGenerate (position: Position) {
+    return position
   }
 
   public mouseMove (event: MouseEvent) {
     if (!this.isDragging) return
     event.preventDefault()
-    const blockElement = document.getElementById(this.block.uuid)
-    svgZOrder.element(blockElement).toTop()
-    const newPosition: Position = this.getNewPosition(event.offsetX, event.offsetY)
-    const context = {
-      position: newPosition,
-      uuid: this.block.uuid
+    if (this.sampleBlock) {
+      this.emitNewBlockMove({
+        uuid: this.newBlockUuid,
+        position: {
+          x: event.clientX - 250,
+          y: event.clientY - 70
+        }
+      })
+    } else {
+      const blockElement = document.getElementById(this.block.uuid)
+      svgZOrder.element(blockElement).toTop()
+      const newPosition: Position = this.getNewPosition(event.offsetX, event.offsetY, this.block)
+      const context = {
+        position: newPosition,
+        uuid: this.block.uuid
+      }
+      this.emitUpdatePosition(context)
     }
-    this.emitUpdatePosition(context)
+  }
+
+  @Emit('newBlockMove')
+  public emitNewBlockMove (context: { uuid: string; position: Position }) {
+    console.log(context.position)
+    return context
   }
 
   @Emit('updatePosition')
@@ -114,7 +147,7 @@ export default class AbstractBlock extends Vue {
     return context
   }
 
-  public getNewPosition (offsetX: number, offsetY: number) {
+  public getNewPosition (offsetX: number, offsetY: number, block: Block) {
     const mouseX = offsetX
     const mouseY = offsetY
     let dx, dy
@@ -125,10 +158,10 @@ export default class AbstractBlock extends Vue {
     }
     this.beforeMouseX = mouseX
     this.beforeMouseY = mouseY
-    const tempX = dx + Number(this.block.position.x)
-    const tempY = dy + Number(this.block.position.y)
-    const x = tempX > 0 ? tempX : this.block.position.x
-    const y = tempY > 0 ? tempY : this.block.position.y
+    const tempX = dx + block.position.x
+    const tempY = dy + block.position.y
+    const x = tempX > 0 ? tempX : block.position.x
+    const y = tempY > 0 ? tempY : block.position.y
     return { x: x, y: y }
   }
 

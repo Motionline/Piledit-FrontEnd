@@ -1,7 +1,10 @@
 <template>
-  <svg height="100vh" width="25vw" id="blocksDisplay">
+  <svg id="blocksDisplay" x="60vw">
     <DebugBlock
       @click="addBlock('DebugBlock')"
+      @newBlockGenerate="newBlockGenerate"
+      @newBlockMove="newBlockMove"
+      :new-block-uuid="newBlockUuid"
       :sample-block="true"
       :block="sampleBlock"
       class="dragBlock-btn"
@@ -34,6 +37,8 @@ export default class BlocksDisplay extends Vue {
   @Prop({ required: true })
   public tabUuid!: string
 
+  public newBlockUuid = ''
+
   public sampleBlock: Block = {
     uuid: 'sampleBlock',
     name: 'sampleBlock',
@@ -60,6 +65,20 @@ export default class BlocksDisplay extends Vue {
       x: 0,
       y: 300
     }
+  }
+
+  get blocks () {
+    return blocksModule.blocks
+  }
+
+  public async newBlockGenerate (context: { position: Position; name: string }) {
+    this.newBlockUuid = await blocksModule.add({ position: context.position, name: context.name, tabUuid: this.tabUuid })
+  }
+
+  public newBlockMove (context: { position: Position; uuid: string }) {
+    const block = this.blocks[context.uuid]
+    block.position = context.position
+    blocksModule.updateBlock(block)
   }
 
   public pos: Position = {
