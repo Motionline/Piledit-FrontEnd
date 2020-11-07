@@ -23,10 +23,6 @@ export class VuexMixin extends Vue {
   }
 
   static calcHeight (blockName: string) {
-    if (blockName === 'DefineComponentBlock') {
-      return 51
-    } else {
-      return 37
-    }
+    return 37
   }
 }

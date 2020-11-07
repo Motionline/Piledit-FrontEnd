@@ -21,7 +21,7 @@
       stroke-width="2"
       fill="#d3d3d8"
       :d="path"
-      transform="translate(1,37) scale(0.75, 0.75)"
+      transform="translate(1,87) scale(0.75, 0.75)"
     />
   </svg>
 </template>
@@ -145,7 +145,6 @@ export default class AbstractBlock extends Vue {
 
   @Emit('newBlockMove')
   public emitNewBlockMove (context: { uuid: string; position: Position }) {
-    console.log(context.position)
     return context
   }
 
