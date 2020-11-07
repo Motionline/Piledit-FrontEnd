@@ -115,7 +115,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
   public remove (uuid: string) {
     const block = this.blocks[uuid]
     const topBlock = this.blocks[block.topUuid]
-    if (topBlock != null && topBlock.name === 'DefinitionComponentBlock') {
+    if (topBlock != null && topBlock.name === 'DefineComponentBlock') {
       const componentUniqueKey = this.objectOfBlockAndComponent[block.topUuid]
       let checkCurrentBlock = this.blocks[block.topUuid]
       const componentArr = []
@@ -179,7 +179,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
             childUuid: uuid
           }
           this.addChild(payload)
-          if (blockInSearch.name === 'DefinitionComponentBlock') {
+          if (blockInSearch.name === 'DefineComponentBlock') {
             const uuid = VuexMixin.generateUuid()
             this.addRelationBlockAndComponent(key, uuid)
             const blocks: { [key: string]: Block } = {}
@@ -196,7 +196,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
             componentsModule.add(blockComponent)
           }
           const topBlock = this.blocks[blockInSearch.topUuid]
-          if (topBlock != null && topBlock.name === 'DefinitionComponentBlock') {
+          if (topBlock != null && topBlock.name === 'DefineComponentBlock') {
             const uuid = this.objectOfBlockAndComponent[blockInSearch.topUuid]
             const blocks: { [key: string]: Block } = {}
             let currentBlock = this.blocks[key]
@@ -217,7 +217,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
       } else if (blockInSearch.childUuid === uuid && uuid !== key) {
         this.removeChild(key)
         const topBlock = this.blocks[blockInSearch.topUuid]
-        if (topBlock != null && topBlock.name === 'DefinitionComponentBlock') {
+        if (topBlock != null && topBlock.name === 'DefineComponentBlock') {
           const uuid = this.objectOfBlockAndComponent[blockInSearch.topUuid]
           const blocks: { [key: string]: Block } = {}
           let currentBlock = this.blocks[blockInSearch.topUuid]
@@ -232,7 +232,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
           }
           componentsModule.update(blockComponent)
         }
-        if (blockInSearch.name === 'DefinitionComponentBlock') {
+        if (blockInSearch.name === 'DefineComponentBlock') {
           const uuid = this.objectOfBlockAndComponent[key]
           this.removeRelationBlockAndComponent(key)
           componentsModule.remove(uuid)

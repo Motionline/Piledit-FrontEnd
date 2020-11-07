@@ -9,7 +9,7 @@
     @updatePosition="updatePosition"
     @remove="removeBlock"
   >
-    <SVGText x="10" y="30" color="white">
+    <SVGText x="10" y="80" color="white">
       {{ block.uuid }}
     </SVGText>
   </AbstractBlock>

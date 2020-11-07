@@ -17,6 +17,22 @@
         />
       </v-btn>
     </foreignObject>
+    <foreignObject height="200" width="340" y="300">
+      <v-btn
+        :ripple="false"
+        @click="addBlock('DefineComponentBlock')"
+        elevation="0"
+        class="dragBlock-btn"
+        text
+      >
+        <DefineComponentBlock
+          :sample-block="true"
+          :block="sampleBlock"
+          class="dragBlock-btn"
+          transform="translate(1,50)"
+        />
+      </v-btn>
+    </foreignObject>
   </svg>
 </template>
 
@@ -25,9 +41,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { blocksModule } from '@/store/Modules/Blocks'
 import { Block, Position } from '@/@types/piledit'
 import DebugBlock from '@/components/Molecules/DebugBlock.vue'
+import DefineComponentBlock from '@/components/Molecules/DefineComponentBlock.vue'
 
 @Component({
-  components: { DebugBlock }
+  components: {
+    DebugBlock,
+    DefineComponentBlock
+  }
 })
 export default class BlocksDisplay extends Vue {
   @Prop({ required: true })

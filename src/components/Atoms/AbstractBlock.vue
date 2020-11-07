@@ -12,7 +12,7 @@
       :stroke="strokeColor"
       :fill="fillColor"
       stroke-width="2"
-      transform="translate(1,1) scale(0.75, 0.75)"
+      transform="translate(1,50) scale(0.75, 0.75)"
     />
     <slot></slot>
     <path

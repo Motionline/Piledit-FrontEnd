@@ -19,10 +19,12 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Block, Position } from '@/@types/piledit'
 import { blocksModule } from '@/store/Modules/Blocks'
 import DebugBlock from '@/components/Molecules/DebugBlock.vue'
+import DefineComponentBlock from '@/components/Molecules/DefineComponentBlock.vue'
 
 @Component({
   components: {
-    DebugBlock
+    DebugBlock,
+    DefineComponentBlock
   }
 })
 export default class SandBox extends Vue {
