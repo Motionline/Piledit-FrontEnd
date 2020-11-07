@@ -12,7 +12,7 @@
       />
       <SVGText
         v-for="i in 20"
-        :key="i"
+        :key="`SVGText-${i}`"
         :x="`${10 + (i-1) * 200}`"
         y="16"
         color="black"
@@ -22,7 +22,7 @@
       <g transform="translate(0, 20)">
         <ClipOnLayer
           v-for="(clip, uuid, index) in clips"
-          :key="index"
+          :key="`Clip-${uuid}-${index}`"
           :clip="clip"
           @updatePosition="updatePosition"
           @updateWidth="updateWidth"
@@ -57,10 +57,6 @@ import ClipOnLayer from '@/components/Molecules/ClipOnLayer.vue'
 export default class Timeline extends Vue {
   @Prop({ required: true })
   public clips!: { [key: string]: Clip }
-
-  mounted () {
-    clipsModule.add('sampleComponentUuid')
-  }
 
   public width = 4000
   public beforeMouseX = 0
@@ -105,12 +101,10 @@ export default class Timeline extends Vue {
 
   public updatePosition (context: { position: Position; uuid: string }) {
     clipsModule.updatePosition(context)
-    console.log(context)
   }
 
   public updateWidth (context: { width: number; uuid: string }) {
     clipsModule.updateWidth(context)
-    console.log(context)
   }
 }
 </script>
