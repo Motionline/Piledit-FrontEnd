@@ -1,7 +1,7 @@
 <template>
   <div>
-    <SandBox :blocks="filteredBlocks()" :tab-uuid="tabUuid" />
-    <BlockDetailedPanel />
+    <SandBox :blocks="filteredBlocks()" :tab-uuid="tabUuid" @openingMenu="openingMenu" />
+    <BlockDetailedPanel :block-uuid="blockUuid" />
   </div>
 </template>
 
@@ -23,6 +23,8 @@ export default class ComponentsEditor extends Vue {
   public tabUuid!: string
   // TabのUUID。BlocksからそのTabに存在するBlockのみフィルターする
 
+  public blockUuid = ''
+
   get blocks () {
     return blocksModule.blocks
   }
@@ -35,6 +37,10 @@ export default class ComponentsEditor extends Vue {
       }
     }
     return filtered
+  }
+
+  public openingMenu (uuid: string) {
+    this.blockUuid = uuid
   }
 }
 </script>

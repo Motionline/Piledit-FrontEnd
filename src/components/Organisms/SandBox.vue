@@ -9,6 +9,7 @@
       @stopDragging="stopDragging"
       @updatePosition="updatePosition"
       @remove="removeBlock"
+      @openingMenu="emitOpeningMenu"
     />
 
     <line x1="58vw" x2="58vw" y1="0" y2="100vh" stroke="black" />
@@ -18,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { Block, Position } from '@/@types/piledit'
 import { blocksModule } from '@/store/Modules/Blocks'
 import BlocksDisplay from '@/components/Organisms/BlocksDisplay.vue'
@@ -60,6 +61,11 @@ export default class SandBox extends Vue {
 
   public removeBlock (uuid: string) {
     blocksModule.remove(uuid)
+  }
+
+  @Emit('openingMenu')
+  public emitOpeningMenu (uuid: string) {
+    return uuid
   }
 }
 </script>

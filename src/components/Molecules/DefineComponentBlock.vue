@@ -13,6 +13,7 @@
     @newBlockGenerate="emitNewBlockGenerate"
     @newBlockMove="emitNewBlockMove"
     @newBlockMouseUp="emitNewBlockMouseUp"
+    @openingMenu="emitOpeningMenu"
   >
     <SVGText x="10" y="75" color="white">
       コンポーネント定義
@@ -79,6 +80,11 @@ export default class DefineComponentBlock extends Vue {
 
   @Emit('newBlockMouseUp')
   public emitNewBlockMouseUp (uuid: string) {
+    return uuid
+  }
+
+  @Emit('openingMenu')
+  public emitOpeningMenu (uuid: string) {
     return uuid
   }
 }

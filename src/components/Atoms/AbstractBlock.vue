@@ -192,7 +192,13 @@ export default class AbstractBlock extends Vue {
       })
     )
     menu.append(new MenuItem({ type: 'separator' }))
-    menu.append(new MenuItem({ label: '詳細メニューを開く', accelerator: 'CmdOrCtrl+M' }))
+    menu.append(
+      new MenuItem({
+        label: '詳細メニューを開く',
+        accelerator: 'CmdOrCtrl+M',
+        click: this.calledByOpenDetailedMenuItem
+      })
+    )
     menu.append(new MenuItem({ label: '非表示', accelerator: 'CmdOrCtrl+,' }))
     menu.append(new MenuItem({ label: '親ブロックとの接続を切る', enabled: false }))
     return menu
@@ -200,6 +206,11 @@ export default class AbstractBlock extends Vue {
 
   @Emit('remove')
   public calledByRemoveMenuItem () {
+    return this.block.uuid
+  }
+
+  @Emit('openingMenu')
+  public calledByOpenDetailedMenuItem () {
     return this.block.uuid
   }
 }
