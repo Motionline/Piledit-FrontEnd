@@ -3,9 +3,9 @@
     @click.right.prevent="popupContextMenu($event)"
   >
     <rect
-      :x="x"
-      :y="y"
-      :width="width"
+      :x="clip.position.x"
+      :y="clip.position.y"
+      :width="clip.width"
       height="50"
       fill="gray"
       stroke="none"
@@ -13,19 +13,20 @@
       :class="{ colResize : isTouchStart || isTouchEnd }"
     />
     <SVGText
-      :x="x.toString()"
-      :y="(y+30).toString()"
+      :x="clip.position.x.toString()"
+      :y="(clip.position.y + 30).toString()"
       color="white"
     >
-      {{ name }}
+      {{ clip.name }}
     </SVGText>
   </svg>
 </template>
 
 <script lang="ts">
-import SVGText from '@/components/Atoms/SVGText.vue'
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { remote } from 'electron'
+import SVGText from '@/components/Atoms/SVGText.vue'
+import { Clip, Position } from '@/@types/piledit'
 const Menu = remote.Menu
 const MenuItem = remote.MenuItem
 
@@ -34,21 +35,9 @@ const MenuItem = remote.MenuItem
     SVGText
   }
 })
-export default class ComponentObject extends Vue {
+export default class ClipOnLayer extends Vue {
   @Prop({ required: true })
-  public name!: string
-
-  @Prop({ required: true })
-  public componentObjectUniqueKey!: string
-
-  @Prop({ required: true })
-  public x!: number
-
-  @Prop({ required: true })
-  public y!: number
-
-  @Prop({ required: true })
-  public width!: number
+  public clip!: Clip
 
   public beforeMouseX = 0
   public isDragging = false
@@ -77,36 +66,47 @@ export default class ComponentObject extends Vue {
     event.preventDefault()
   }
 
+  @Emit('updatePosition')
+  public emitUpdatePosition (position: Position, uuid: string) {
+    return {
+      position,
+      uuid
+    }
+  }
+
+  @Emit('updateWidth')
+  public emitUpdateWidth (width: number, uuid: string) {
+    return {
+      width,
+      uuid
+    }
+  }
+
   public mouseMove (event: MouseEvent) {
-    const resX = this.x + event.offsetX - this.beforeMouseX
+    const clipX = this.clip.position.x
+    const clipY = this.clip.position.y
+    const clipWidth = this.clip.width
+    const clipUuid = this.clip.uuid
+    const resX = clipX + event.offsetX - this.beforeMouseX
     if (!this.isDragging) {
-      this.isTouchStart = event.offsetX <= (this.x + 10)
-      this.isTouchEnd = event.offsetX >= this.x + this.width - 10
+      this.isTouchStart = event.offsetX <= (clipX + 10)
+      this.isTouchEnd = event.offsetX >= clipX + clipWidth - 10
       return
     }
     if (this.isTouchStart) {
-      const res = this.x - event.offsetX
-      const newWidth = this.width - res >= 60 ? this.width + res : 0
-      const newPosition = {
-        x: this.width - res >= 60 ? this.x - res : 0,
-        y: this.y
+      const res = clipX - event.offsetX
+      const newWidth = clipWidth - res >= 60 ? clipWidth + res : 0
+      const newPosition: Position = {
+        x: clipWidth - res >= 60 ? clipX - res : 0,
+        y: clipY
       }
-      this.$emit('updatePosition', {
-        position: newPosition,
-        componentObjectUniqueKey: this.componentObjectUniqueKey
-      })
-      this.$emit('updateWidth', {
-        width: newWidth,
-        componentObjectUniqueKey: this.componentObjectUniqueKey
-      })
+      this.emitUpdatePosition(newPosition, clipUuid)
+      this.emitUpdateWidth(newWidth, clipUuid)
       return
     } else if (this.isTouchEnd) {
-      const res = event.offsetX - this.x
+      const res = event.offsetX - clipX
       const newWidth = res >= 60 ? res : 60
-      this.$emit('updateWidth', {
-        width: newWidth,
-        componentObjectUniqueKey: this.componentObjectUniqueKey
-      })
+      this.emitUpdateWidth(newWidth, clipUuid)
       return
     }
     this.isTouchStart = false
@@ -114,13 +114,10 @@ export default class ComponentObject extends Vue {
     const resY = Math.floor((event.offsetY - 30) / 50) * 50 + 1
     this.beforeMouseX = event.offsetX
     const newPosition = {
-      x: resX >= 0 ? resX : this.x,
-      y: resY > 0 ? resY : this.y
+      x: resX >= 0 ? resX : clipX,
+      y: resY > 0 ? resY : clipY
     }
-    this.$emit('updatePosition', {
-      position: newPosition,
-      componentObjectUniqueKey: this.componentObjectUniqueKey
-    })
+    this.emitUpdatePosition(newPosition, clipUuid)
     event.preventDefault()
   }
 
@@ -137,17 +134,15 @@ export default class ComponentObject extends Vue {
     event.preventDefault()
   }
 
+  @Emit('removeClip')
   public calledByRemoveMenuItem () {
-    // ブロックを削除 -> Emit
-    this.$emit('removeComponentObject', {
-      componentObjectKey: this.componentObjectUniqueKey
-    })
+    return this.clip.uuid
   }
 }
 </script>
 
 <style scoped>
-.colResize {
-  cursor: col-resize;
-}
+  .colResize {
+    cursor: col-resize;
+  }
 </style>

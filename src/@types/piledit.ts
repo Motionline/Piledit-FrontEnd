@@ -30,6 +30,7 @@ export type Component = {
 
 export type Clip = {
   uuid: string
+  name: string
   componentUuid: string
   position: Position
   width: number

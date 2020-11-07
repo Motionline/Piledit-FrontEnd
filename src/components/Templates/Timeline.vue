@@ -20,14 +20,10 @@
         {{ getTimeDisplay(i) }}
       </SVGText>
       <g transform="translate(0, 20)">
-        <ComponentObject
-          v-for="(value, key, index) in componentObjects"
-          :key="index + key"
-          :componentObjectUniqueKey="key"
-          :name="value.componentUniqueKey"
-          :x="value.position.x"
-          :y="value.position.y"
-          :width="value.width"
+        <ClipOnLayer
+          v-for="(clip, uuid, index) in clips"
+          :key="index"
+          :clip="clip"
           @updatePosition="updatePosition"
           @updateWidth="updateWidth"
         />
@@ -49,18 +45,22 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { clipsModule } from '@/store/Modules/Clips'
-import { Clip } from '@/@types/piledit'
+import { Clip, Position } from '@/@types/piledit'
 import SVGText from '@/components/Atoms/SVGText.vue'
-import ComponentObject from '@/components/Molecules/ComponentObject.vue'
+import ClipOnLayer from '@/components/Molecules/ClipOnLayer.vue'
 @Component({
   components: {
     SVGText,
-    ComponentObject
+    ClipOnLayer
   }
 })
 export default class Timeline extends Vue {
   @Prop({ required: true })
   public clips!: { [key: string]: Clip }
+
+  mounted () {
+    clipsModule.add('sampleComponentUuid')
+  }
 
   public width = 4000
   public beforeMouseX = 0
@@ -103,12 +103,14 @@ export default class Timeline extends Vue {
     event.preventDefault()
   }
 
-  public updatePosition (position: Position) {
-    // clipsModule.updatePosition()
+  public updatePosition (context: { position: Position; uuid: string }) {
+    clipsModule.updatePosition(context)
+    console.log(context)
   }
 
-  public updateWidth (width: number) {
-    // clipsModule.updateWidth()
+  public updateWidth (context: { width: number; uuid: string }) {
+    clipsModule.updateWidth(context)
+    console.log(context)
   }
 }
 </script>

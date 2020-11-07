@@ -7,7 +7,7 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-import { Clip } from '@/@types/piledit'
+import { Clip, Position } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 
 export interface ClipsStateIF {
@@ -48,18 +48,24 @@ class Clips extends VuexModule implements ClipsStateIF {
         x: 0,
         y: 1
       },
-      width: 200
+      width: 200,
+      // TODO: コンポーネント名を設定する
+      name: uuid
     }
     this.addClip(clip)
   }
 
   @Action({ rawError: true })
-  public updatePosition (clip: Clip) {
+  public updatePosition (context: { position: Position; uuid: string }) {
+    const clip = this.clips[context.uuid]
+    clip.position = context.position
     this.updateClipPosition(clip)
   }
 
   @Action({ rawError: true })
-  public updateWidth (clip: Clip) {
+  public updateWidth (context: { width: number; uuid: string }) {
+    const clip = this.clips[context.uuid]
+    clip.width = context.width
     this.updateClipWidth(clip)
   }
 }
