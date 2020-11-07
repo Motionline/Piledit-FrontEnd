@@ -1,9 +1,9 @@
 <template>
   <svg id="blocksDisplay" x="60vw">
     <DebugBlock
-      @click="addBlock('DebugBlock')"
       @newBlockGenerate="newBlockGenerate"
       @newBlockMove="newBlockMove"
+      @newBlockMouseUp="newBlockMouseUp"
       :new-block-uuid="newBlockUuid"
       :sample-block="true"
       :block="sampleBlock"
@@ -11,7 +11,6 @@
       transform="translate(1,20)"
     />
     <DefineComponentBlock
-      @click="addBlock('DefineComponentBlock')"
       :sample-block="true"
       :block="sampleBlock2"
       class="dragBlock-btn"
@@ -81,18 +80,11 @@ export default class BlocksDisplay extends Vue {
     blocksModule.updateBlock(block)
   }
 
-  public pos: Position = {
-    x: 1,
-    y: 100
-  }
-
-  public addBlock (name: string) {
-    blocksModule.add(this.getContext(name))
-  }
-
-  public dragEnd (event: DragEvent, name: string) {
-    blocksModule.add(this.getContext(name))
-    event.preventDefault()
+  public newBlockMouseUp (uuid: string) {
+    const block = this.blocks[uuid]
+    if (block.position.x >= 430) {
+      blocksModule.remove(uuid)
+    }
   }
 
   public getContext (name: string) {

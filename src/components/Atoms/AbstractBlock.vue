@@ -66,9 +66,6 @@ export default class AbstractBlock extends Vue {
   @Prop()
   public newBlockUuid!: string
 
-  @Prop()
-  public newBlockPosition!: Position
-
   public isDragging = false
   public beforeMouseX = 0
   public beforeMouseY = 0
@@ -94,7 +91,17 @@ export default class AbstractBlock extends Vue {
     this.beforeMouseX = 0
     this.beforeMouseY = 0
     event.preventDefault()
+
+    if (this.sampleBlock) {
+      this.emitNewBlockMouseUp(this.newBlockUuid)
+      return
+    }
     return this.block.uuid
+  }
+
+  @Emit('newBlockMouseUp')
+  public emitNewBlockMouseUp (uuid: string) {
+    return uuid
   }
 
   public mouseDown (event: MouseEvent) {

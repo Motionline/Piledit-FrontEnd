@@ -12,6 +12,7 @@
     @click="onClick"
     @newBlockGenerate="emitNewBlockGenerate"
     @newBlockMove="emitNewBlockMove"
+    @newBlockMouseUp="emitNewBlockMouseUp"
   >
     <SVGText x="10" y="80" color="white">
       {{ block.uuid }}
@@ -76,6 +77,11 @@ export default class DebugBlock extends Vue {
   @Emit('newBlockMove')
   public emitNewBlockMove (context: { uuid: string; position: Position }) {
     return context
+  }
+
+  @Emit('newBlockMouseUp')
+  public emitNewBlockMouseUp (uuid: string) {
+    return uuid
   }
 }
 </script>
