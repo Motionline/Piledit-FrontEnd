@@ -1,8 +1,6 @@
 <template>
   <AbstractBlock
-    :uuid="uuid"
-    :position="position"
-    :shadow="shadow"
+    :block="block"
     :stroke-color="strokeColor"
     :fill-color="fillColor"
     :path="path"
@@ -12,14 +10,14 @@
     @remove="removeBlock"
   >
     <SVGText x="10" y="30" color="white">
-      {{ uuid }}
+      {{ block.uuid }}
     </SVGText>
   </AbstractBlock>
 </template>
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { Position } from '@/@types/piledit'
+import { Block, Position } from '@/@types/piledit'
 import AbstractBlock from '@/components/Atoms/AbstractBlock.vue'
 import SVGText from '@/components/Atoms/SVGText.vue'
 
@@ -33,16 +31,10 @@ import SVGText from '@/components/Atoms/SVGText.vue'
 })
 export default class DebugBlock extends Vue {
   @Prop({ required: true })
-  public uuid!: string
-
-  @Prop({ required: true })
-  public position!: Position
-
-  @Prop({ required: true })
-  public shadow!: boolean
-
-  @Prop({ required: true })
   public sampleBlock!: boolean
+
+  @Prop({ required: true })
+  public block!: Block
 
   public strokeColor = '#c53d43'
   public fillColor = '#e83929'

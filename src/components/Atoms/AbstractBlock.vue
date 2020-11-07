@@ -3,9 +3,9 @@
     @mousedown.left="mouseDown($event)"
     @click.right.prevent="popupContextMenu($event)"
     preserveAspectRatio="xMidYMid meet"
-    :x="position.x"
-    :y="position.y"
-    :id="uuid"
+    :x="block.position.x"
+    :y="block.position.y"
+    :id="block.uuid"
   >
     <path
       :d="path"
@@ -16,7 +16,7 @@
     />
     <slot></slot>
     <path
-      v-if="shadow"
+      v-if="block.shadow"
       stroke-width="2"
       fill="#d3d3d8"
       :d="path"
@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
-import { Position } from '@/@types/piledit'
+import { Block, Position } from '@/@types/piledit'
 import svgZOrder from 'svg-z-order'
 import { remote } from 'electron'
 const Menu = remote.Menu
@@ -45,13 +45,7 @@ export default class AbstractBlock extends Vue {
   public sampleBlock!: boolean
 
   @Prop({ required: true })
-  public uuid!: string
-
-  @Prop({ required: true })
-  public position!: Position
-
-  @Prop({ required: true })
-  public shadow!: boolean
+  public block!: Block
 
   @Prop({ required: true })
   public strokeColor!: string
@@ -82,7 +76,7 @@ export default class AbstractBlock extends Vue {
     this.beforeMouseX = 0
     this.beforeMouseY = 0
     event.preventDefault()
-    return this.uuid
+    return this.block.uuid
   }
 
   public mouseDown (event: MouseEvent) {
@@ -93,12 +87,12 @@ export default class AbstractBlock extends Vue {
   public mouseMove (event: MouseEvent) {
     if (!this.isDragging) return
     event.preventDefault()
-    const blockElement = document.getElementById(this.uuid)
+    const blockElement = document.getElementById(this.block.uuid)
     svgZOrder.element(blockElement).toTop()
     const newPosition: Position = this.getNewPosition(event.offsetX, event.offsetY)
     const context = {
       position: newPosition,
-      uuid: this.uuid
+      uuid: this.block.uuid
     }
     this.emitUpdatePosition(context)
   }
@@ -119,10 +113,10 @@ export default class AbstractBlock extends Vue {
     }
     this.beforeMouseX = mouseX
     this.beforeMouseY = mouseY
-    const tempX = dx + Number(this.position.x)
-    const tempY = dy + Number(this.position.y)
-    const x = tempX > 0 ? tempX : this.position.x
-    const y = tempY > 0 ? tempY : this.position.y
+    const tempX = dx + Number(this.block.position.x)
+    const tempY = dy + Number(this.block.position.y)
+    const x = tempX > 0 ? tempX : this.block.position.x
+    const y = tempY > 0 ? tempY : this.block.position.y
     return { x: x, y: y }
   }
 
@@ -154,7 +148,7 @@ export default class AbstractBlock extends Vue {
 
   @Emit('remove')
   public calledByRemoveMenuItem () {
-    return this.uuid
+    return this.block.uuid
   }
 }
 </script>

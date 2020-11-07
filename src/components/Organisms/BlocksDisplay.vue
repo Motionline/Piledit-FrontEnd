@@ -10,10 +10,8 @@
         text
       >
         <DebugBlock
-          uuid="sample-debug-block"
           :sample-block="true"
-          :shadow="false"
-          :position="pos"
+          :block="sampleBlock"
           class="dragBlock-btn"
           transform="translate(1,20)"
         />
@@ -25,7 +23,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { blocksModule } from '@/store/Modules/Blocks'
-import { Position } from '@/@types/piledit'
+import { Block, Position } from '@/@types/piledit'
 import DebugBlock from '@/components/Molecules/DebugBlock.vue'
 
 @Component({
@@ -34,6 +32,20 @@ import DebugBlock from '@/components/Molecules/DebugBlock.vue'
 export default class BlocksDisplay extends Vue {
   @Prop({ required: true })
   public tabUuid!: string
+
+  public sampleBlock: Block = {
+    uuid: 'sampleBlock',
+    name: 'sampleBlock',
+    topUuid: '',
+    childUuid: '',
+    parentUuid: '',
+    tabUuid: '',
+    shadow: false,
+    position: {
+      x: 0,
+      y: 100
+    }
+  }
 
   public pos: Position = {
     x: 1,
