@@ -1,5 +1,13 @@
 <template>
-  <svg id="timeline" width="2200" height="500" @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp">
+  <svg
+    id="timeline"
+    width="2200"
+    height="500"
+    @mousedown="mouseDown"
+    @mousemove="mouseMove"
+    @mouseup="mouseUp"
+    @click.right.prevent="popupContextMenu"
+  >
     <g :transform="`translate(${this.timelinePositionX}, 0)`">
       <rect
         x="1"
@@ -45,9 +53,13 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { clipsModule } from '@/store/Modules/Clips'
-import { Clip, Position } from '@/@types/piledit'
+import { Clip, Position, Component as PComponent } from '@/@types/piledit'
+import { remote } from 'electron'
 import SVGText from '@/components/Atoms/SVGText.vue'
 import ClipOnLayer from '@/components/Molecules/ClipOnLayer.vue'
+const Menu = remote.Menu
+const MenuItem = remote.MenuItem
+
 @Component({
   components: {
     SVGText,
@@ -57,6 +69,9 @@ import ClipOnLayer from '@/components/Molecules/ClipOnLayer.vue'
 export default class Timeline extends Vue {
   @Prop({ required: true })
   public clips!: { [key: string]: Clip }
+
+  @Prop({ required: true })
+  public components!: { [key: string]: PComponent }
 
   public width = 4000
   public beforeMouseX = 0
@@ -74,6 +89,27 @@ export default class Timeline extends Vue {
 
   public getLinePosY (i: number) {
     return (i - 1) * 50 + 1
+  }
+
+  public popupContextMenu (event: Event) {
+    console.log('menu')
+    const menu = this.buildContextMenu()
+    const currentWindow = remote.getCurrentWindow()
+    menu.popup({ window: currentWindow })
+    event.preventDefault()
+  }
+
+  public buildContextMenu () {
+    const menu = new Menu()
+    for (const [key, value] of Object.entries(this.components)) {
+      console.log(key, value)
+      menu.append(
+        new MenuItem(({
+          label: key
+        }))
+      )
+    }
+    return menu
   }
 
   public mouseDown (event: MouseEvent) {

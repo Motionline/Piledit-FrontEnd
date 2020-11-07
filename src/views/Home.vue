@@ -4,7 +4,7 @@
     <div v-for="(_, uuid) in components" :key="uuid">
       <v-btn @click="addClip(uuid)">{{ uuid }}</v-btn>
     </div>
-    <Timeline :clips="clips" />
+    <Timeline :clips="clips" :components="components" />
   </div>
 </template>
 
