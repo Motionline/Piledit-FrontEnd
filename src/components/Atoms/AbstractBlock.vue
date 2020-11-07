@@ -8,6 +8,7 @@
     :id="block.uuid"
   >
     <path
+      @click="onClick"
       :d="path"
       :stroke="strokeColor"
       :fill="fillColor"
@@ -24,6 +25,12 @@
     />
   </svg>
 </template>
+
+<style lang="scss" scoped>
+svg {
+  cursor: pointer;
+}
+</style>
 
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
@@ -59,6 +66,11 @@ export default class AbstractBlock extends Vue {
   public isDragging = false
   public beforeMouseX = 0
   public beforeMouseY = 0
+
+  @Emit('click')
+  public onClick (event: Event) {
+    return event
+  }
 
   private mounted () {
     document.addEventListener('mouseup', this.mouseUp)

@@ -8,6 +8,7 @@
     @stopDragging="stopDragging"
     @updatePosition="updatePosition"
     @remove="removeBlock"
+    @click="onClick"
   >
     <SVGText x="10" y="75" color="white">
       コンポーネント定義
@@ -52,6 +53,11 @@ export default class DefineComponentBlock extends Vue {
   @Emit('remove')
   public removeBlock (uuid: string) {
     return uuid
+  }
+
+  @Emit('click')
+  public onClick (event: Event) {
+    return event
   }
 }
 </script>

@@ -8,6 +8,7 @@
     @stopDragging="stopDragging"
     @updatePosition="updatePosition"
     @remove="removeBlock"
+    @click="onClick"
   >
     <SVGText x="10" y="80" color="white">
       {{ block.uuid }}
@@ -54,6 +55,11 @@ export default class DebugBlock extends Vue {
   @Emit('remove')
   public removeBlock (uuid: string) {
     return uuid
+  }
+
+  @Emit('click')
+  public onClick (event: Event) {
+    return event
   }
 }
 </script>
