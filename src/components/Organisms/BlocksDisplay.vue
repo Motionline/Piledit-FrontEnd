@@ -11,6 +11,10 @@
       transform="translate(1,20)"
     />
     <DefineComponentBlock
+      @newBlockGenerate="newBlockGenerate"
+      @newBlockMove="newBlockMove"
+      @newBlockMouseUp="newBlockMouseUp"
+      :new-block-uuid="newBlockUuid"
       :sample-block="true"
       :block="sampleBlock2"
       class="dragBlock-btn"

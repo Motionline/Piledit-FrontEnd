@@ -5,10 +5,14 @@
     :stroke-color="strokeColor"
     :fill-color="fillColor"
     :path="path"
+    :new-block-uuid="newBlockUuid"
     @stopDragging="stopDragging"
     @updatePosition="updatePosition"
     @remove="removeBlock"
     @click="onClick"
+    @newBlockGenerate="emitNewBlockGenerate"
+    @newBlockMove="emitNewBlockMove"
+    @newBlockMouseUp="emitNewBlockMouseUp"
   >
     <SVGText x="10" y="75" color="white">
       コンポーネント定義
@@ -35,6 +39,9 @@ export default class DefineComponentBlock extends Vue {
   @Prop({ required: true })
   public sampleBlock!: boolean
 
+  @Prop()
+  public newBlockUuid!: string
+
   public strokeColor = '#e9bc00'
   public fillColor = '#fcc800'
   public width = 300
@@ -58,6 +65,21 @@ export default class DefineComponentBlock extends Vue {
   @Emit('click')
   public onClick (event: Event) {
     return event
+  }
+
+  @Emit('newBlockGenerate')
+  public emitNewBlockGenerate (position: Position) {
+    return { position, name: 'DefineComponentBlock' }
+  }
+
+  @Emit('newBlockMove')
+  public emitNewBlockMove (context: { uuid: string; position: Position }) {
+    return context
+  }
+
+  @Emit('newBlockMouseUp')
+  public emitNewBlockMouseUp (uuid: string) {
+    return uuid
   }
 }
 </script>
