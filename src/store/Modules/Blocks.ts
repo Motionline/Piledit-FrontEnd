@@ -11,11 +11,6 @@ import { Position, Block, Component } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 import { componentsModule } from '@/store/Modules/Components'
 
-// Block ... 編集ブロック
-// Component ... ブロックの集合体
-// Clip ... タイムラインに載せるやつ。実体はComponent
-// Tab ... タブ
-
 export interface BlocksStateIF {
   blocks: { [key: string]: Block };
   objectOfBlockAndComponent: { [key: string]: string };
@@ -41,19 +36,21 @@ class Blocks extends VuexModule implements BlocksStateIF {
     this.blocks[block.uuid] = block
   }
 
+  // 親ブロックから子ブロックに連鎖して座標を更新
   @Mutation
   public updateChildBlock (block: Block) {
-    let blockInSearch = this.blocks[block.uuid]
-    while (blockInSearch.childUuid !== '') {
-      const child = this.blocks[blockInSearch.childUuid]
-      child.position = {
-        x: blockInSearch.position.x,
-        y: blockInSearch.position.y + VuexMixin.calcHeight(blockInSearch.name)
+    let parentBlock = block
+    while (parentBlock.childUuid !== '') {
+      const childBlock = this.blocks[parentBlock.childUuid]
+      childBlock.position = {
+        x: parentBlock.position.x,
+        y: parentBlock.position.y + VuexMixin.calcHeight(parentBlock.name)
       }
-      blockInSearch = this.blocks[blockInSearch.childUuid]
+      parentBlock = childBlock
     }
   }
 
+  // 子ブロックを追加
   @Mutation
   public addChild (payload: { uuid: string; childUuid: string }) {
     const uuid = payload.uuid
@@ -227,11 +224,11 @@ class Blocks extends VuexModule implements BlocksStateIF {
             if (currentBlock.childUuid === '') break
             currentBlock = this.blocks[currentBlock.childUuid]
           }
-          const blockComponent: Component = {
+          const component: Component = {
             uuid,
             blocks
           }
-          componentsModule.update(blockComponent)
+          componentsModule.update(component)
         }
         if (blockInSearch.name === 'DefineComponentBlock') {
           const uuid = this.objectOfBlockAndComponent[key]

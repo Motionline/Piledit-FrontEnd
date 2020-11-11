@@ -6,7 +6,7 @@
     @mousedown="mouseDown"
     @mousemove="mouseMove"
     @mouseup="mouseUp"
-    @click.right.prevent="popupContextMenu"
+    @click.right="popupContextMenu"
   >
     <g :transform="`translate(${this.timelinePositionX}, 0)`">
       <rect
@@ -91,12 +91,12 @@ export default class Timeline extends Vue {
     return (i - 1) * 50 + 1
   }
 
-  public popupContextMenu (event: Event) {
-    console.log('menu')
+  public popupContextMenu (event: any) {
+    event.preventDefault()
+    console.log(event.clientY)
     const menu = this.buildContextMenu()
     const currentWindow = remote.getCurrentWindow()
     menu.popup({ window: currentWindow })
-    event.preventDefault()
   }
 
   public buildContextMenu () {
@@ -105,11 +105,16 @@ export default class Timeline extends Vue {
       console.log(key, value)
       menu.append(
         new MenuItem(({
-          label: key
+          label: key,
+          click: () => this.setClip(key)
         }))
       )
     }
     return menu
+  }
+
+  public setClip (uuid: string) {
+    clipsModule.add(uuid)
   }
 
   public mouseDown (event: MouseEvent) {

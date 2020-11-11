@@ -1,7 +1,10 @@
 <template>
   <div class="BlockDetailedPanel">
     <div v-if="blockUuid !== ''">
-      <v-text-field label="クリップ名" v-model="clipName"></v-text-field>
+      <v-text-field
+        label="コンポーネント名"
+        v-model="componentName"
+      ></v-text-field>
     </div>
   </div>
 </template>
@@ -15,7 +18,7 @@ export default class BlockDetailedPanel extends Vue {
   @Prop()
   public blockUuid!: string
 
-  public clipName = ''
+  public componentName = ''
 
   get blocks () {
     return blocksModule.blocks
