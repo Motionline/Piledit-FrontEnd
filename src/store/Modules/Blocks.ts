@@ -7,18 +7,18 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-import { Position, Block, Component } from '@/@types/piledit'
+import { Position, Block, Blocks as TBlocks } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 import { componentsModule } from '@/store/Modules/Components'
 
 export interface BlocksStateIF {
-  blocks: { [key: string]: Block };
+  blocks: TBlocks;
   objectOfBlockAndComponent: { [key: string]: string };
 }
 
 @Module({ dynamic: true, store: store, name: 'Blocks', namespaced: true })
 class Blocks extends VuexModule implements BlocksStateIF {
-  blocks: { [key: string]: Block } = {}
+  blocks: TBlocks = {}
   objectOfBlockAndComponent: { [key: string]: string } = {}
   DEFINE_COMPONENT_BLOCK = 'DefineComponentBlock'
 

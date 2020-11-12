@@ -23,9 +23,13 @@ export type Block = {
   tabUuid: string
 }
 
+export type Blocks = {
+  [key: string]: Block
+}
+
 export type Component = {
   uuid: string
-  blocks: { [key: string]: Block }
+  blocks: Blocks
 }
 
 export type Clip = {

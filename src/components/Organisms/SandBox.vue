@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { Block, Position } from '@/@types/piledit'
+import { Blocks, Position } from '@/@types/piledit'
 import { blocksModule } from '@/store/Modules/Blocks'
 import BlocksDisplay from '@/components/Organisms/BlocksDisplay.vue'
 import DebugBlock from '@/components/Molecules/DebugBlock.vue'
@@ -35,7 +35,7 @@ import DefineComponentBlock from '@/components/Molecules/DefineComponentBlock.vu
 })
 export default class SandBox extends Vue {
   @Prop({ required: true })
-  public blocks!: { [key: string]: Block }
+  public blocks!: Blocks
 
   @Prop({ required: true })
   public tabUuid!: string
