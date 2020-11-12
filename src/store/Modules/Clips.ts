@@ -7,16 +7,16 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-import { Clip, Position } from '@/@types/piledit'
+import { Clip, Clips as TClips, Position } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 
 export interface ClipsStateIF {
-  clips: { [key: string]: Clip };
+  clips: TClips;
 }
 
 @Module({ dynamic: true, store: store, name: 'Clips', namespaced: true })
 class Clips extends VuexModule implements ClipsStateIF {
-  clips: { [key: string]: Clip } = {}
+  clips: TClips = {}
 
   @Mutation
   public addClip (clip: Clip) {

@@ -7,17 +7,17 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import { VuexMixin } from '@/mixin/vuex'
-import { Tab } from '@/@types/piledit'
+import { Tab, Tabs as TTabs } from '@/@types/piledit'
 import store from '@/store/store'
 
 export interface TabStateIF {
-  tabs: { [key: string]: Tab };
+  tabs: TTabs;
   currentViewingTabUuid: string;
 }
 
 @Module({ dynamic: true, store: store, name: 'Tabs', namespaced: true })
 class Tabs extends VuexModule implements TabStateIF {
-  tabs: { [key: string]: Tab } = {}
+  tabs: TTabs = {}
   currentViewingTabUuid = ''
 
   @Mutation

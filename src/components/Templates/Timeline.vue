@@ -53,7 +53,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { clipsModule } from '@/store/Modules/Clips'
-import { Clip, Position, Component as PComponent } from '@/@types/piledit'
+import { Clip, Clips, Position, Component as PComponent } from '@/@types/piledit'
 import { remote } from 'electron'
 import SVGText from '@/components/Atoms/SVGText.vue'
 import ClipOnLayer from '@/components/Molecules/ClipOnLayer.vue'
@@ -68,7 +68,7 @@ const MenuItem = remote.MenuItem
 })
 export default class Timeline extends Vue {
   @Prop({ required: true })
-  public clips!: { [key: string]: Clip }
+  public clips!: Clips
 
   @Prop({ required: true })
   public components!: { [key: string]: PComponent }

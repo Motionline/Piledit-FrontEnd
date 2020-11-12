@@ -32,6 +32,10 @@ export type Component = {
   blocks: Blocks
 }
 
+export type Components = {
+  [key: string]: Component
+}
+
 export type Clip = {
   uuid: string
   name: string
@@ -40,7 +44,15 @@ export type Clip = {
   width: number
 }
 
+export type Clips = {
+  [key: string]: Clip
+}
+
 export type Tab = {
   name: string
   uuid: string
+}
+
+export type Tabs = {
+  [key: string]: Tab
 }

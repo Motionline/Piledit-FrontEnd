@@ -7,15 +7,15 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-import { Component } from '@/@types/piledit'
+import { Component, Components as TComponents } from '@/@types/piledit'
 
 export interface ComponentsStateIF {
-  components: { [key: string]: Component };
+  components: TComponents;
 }
 
 @Module({ dynamic: true, store: store, name: 'Components', namespaced: true })
 class Components extends VuexModule implements ComponentsStateIF {
-  components: { [key: string]: Component } = {}
+  components: TComponents = {}
 
   @Mutation
   public addComponent (component: Component) {
