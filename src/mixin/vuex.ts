@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import { Position } from '@/@types/piledit'
+import { Block, Position } from '@/@types/piledit'
+import { componentsModule } from '@/store/Modules/Components'
 
 export class VuexMixin extends Vue {
   static generateUuid (): string {
@@ -14,7 +15,7 @@ export class VuexMixin extends Vue {
     return material.join('')
   }
 
-  static isNearbyBlocks (position1: Position, position2: Position) {
+  static isNearbyBlocks (position1: Position, position2: Position): boolean {
     const isNearbyX1 = (position1.x - position2.x) <= 80
     const isNearbyX2 = (position1.x - position2.x) >= -160
     const isNearbyY1 = (position2.y - position1.y) <= 65
@@ -22,7 +23,18 @@ export class VuexMixin extends Vue {
     return isNearbyX1 && isNearbyX2 && isNearbyY1 && isNearbyY2
   }
 
-  static calcHeight (blockName: string) {
+  static calcHeight (blockName: string): number {
     return 37
+  }
+
+  static searchChildrenOfBlock (topBlock: Block, blocks: { [key: string]: Block }): { [key: string]: Block } {
+    const blocksFamily: { [key: string]: Block } = {}
+    let searchedBlock: Block = topBlock
+    while (true) {
+      blocksFamily[searchedBlock.uuid] = searchedBlock
+      if (searchedBlock.childUuid === '') break
+      searchedBlock = blocks[searchedBlock.childUuid]
+    }
+    return blocksFamily
   }
 }

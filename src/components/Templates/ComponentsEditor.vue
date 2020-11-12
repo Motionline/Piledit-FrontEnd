@@ -1,5 +1,8 @@
 <template>
   <div>
+    <p>{{ jsonFilteredBlocks() }}</p>
+    <hr>
+    <p>{{ jsonFilteredComponents() }}</p>
     <SandBox :blocks="filteredBlocks()" :tab-uuid="tabUuid" @openingMenu="openingMenu" />
     <BlockDetailedPanel :block-uuid="blockUuid" />
   </div>
@@ -8,6 +11,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { blocksModule } from '@/store/Modules/Blocks'
+import { componentsModule } from '@/store/Modules/Components'
 import { Block } from '@/@types/piledit'
 import SandBox from '@/components/Organisms/SandBox.vue'
 import BlockDetailedPanel from '@/components/Organisms/BlockDetailedPanel.vue'
@@ -27,6 +31,22 @@ export default class ComponentsEditor extends Vue {
 
   get blocks () {
     return blocksModule.blocks
+  }
+
+  get components () {
+    return componentsModule.components
+  }
+
+  public jsonFilteredBlocks () {
+    const data = JSON.stringify(this.blocks, null, 2)
+    // console.log(data)
+    return data
+  }
+
+  public jsonFilteredComponents () {
+    const data = JSON.stringify(this.components, null, 2)
+    // console.log(data)
+    return data
   }
 
   public filteredBlocks () {

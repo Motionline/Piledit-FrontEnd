@@ -20,6 +20,7 @@ export interface BlocksStateIF {
 class Blocks extends VuexModule implements BlocksStateIF {
   blocks: { [key: string]: Block } = {}
   objectOfBlockAndComponent: { [key: string]: string } = {}
+  DEFINE_COMPONENT_BLOCK = 'DefineComponentBlock'
 
   @Mutation
   public addBlock (block: Block) {
@@ -69,7 +70,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
     const childUuid = this.blocks[uuid].childUuid
     this.blocks[uuid].childUuid = ''
     this.blocks[childUuid].parentUuid = ''
-    this.blocks[uuid].topUuid = ''
+    this.blocks[childUuid].topUuid = ''
   }
 
   @Mutation
@@ -113,8 +114,8 @@ class Blocks extends VuexModule implements BlocksStateIF {
   public remove (uuid: string) {
     const block = this.blocks[uuid]
     const topBlock = this.blocks[block.topUuid]
-    if (topBlock != null && topBlock.name === 'DefineComponentBlock') {
-      const componentUniqueKey = this.objectOfBlockAndComponent[block.topUuid]
+    if (topBlock != null && topBlock.name === this.DEFINE_COMPONENT_BLOCK) {
+      const componentUuid = this.objectOfBlockAndComponent[block.topUuid]
       let checkCurrentBlock = this.blocks[block.topUuid]
       const componentArr = []
       while (true) {
@@ -126,7 +127,12 @@ class Blocks extends VuexModule implements BlocksStateIF {
         if (checkCurrentBlock.name === uuid) break
       }
       this.removeChild(block.parentUuid)
-      store.dispatch('Components/update', { componentUniqueKey, componentArr }, { root: true })
+      // const component: Component = {
+      //   uuid: componentUuid,
+      //   blocks
+      // }
+      // componentsModule.update()
+      // store.dispatch('Components/update', { componentUniqueKey, componentArr }, { root: true })
     }
     this.removeBlock(uuid)
   }
@@ -153,87 +159,63 @@ class Blocks extends VuexModule implements BlocksStateIF {
   }
 
   @Action({ rawError: true })
-  public stopDragging (uuid: string) {
-    // ブロック全体から探す
-    const block = this.blocks[uuid]
-    const position = block.position
-    for (const key of Object.keys(this.blocks)) {
-      if (uuid === key) continue
-      const blockInSearch = this.blocks[key]
-      const positionInSearch = blockInSearch.position
-      const isNearby = VuexMixin.isNearbyBlocks(positionInSearch, position)
+  public stopDragging (triggeredBlockUuid: string) {
+    // イベント発火元
+    const triggeredBlock = this.blocks[triggeredBlockUuid]
+
+    for (const blockKey of Object.keys(this.blocks)) {
+      if (triggeredBlock.uuid === blockKey) continue
+
+      const block = this.blocks[blockKey]
+      const blockPosition = block.position
+      const topBlock = this.blocks[block.topUuid]
+      const topBlockIsDefineCompBlock = (topBlock != null && topBlock.name === this.DEFINE_COMPONENT_BLOCK)
+
+      const isNearby = VuexMixin.isNearbyBlocks(blockPosition, triggeredBlock.position)
+
+      // triggeredBlockが他のブロックに近ければ接続する
       if (isNearby) {
-        position.x = positionInSearch.x
-        // TODO: 目視で48に設定してあるが、ブロックの高さに合わせて書くべき
-        position.y = positionInSearch.y + VuexMixin.calcHeight(blockInSearch.name)
-        const processedBlock = this.blocks[uuid]
-        processedBlock.position = position
-        this.updateBlock(processedBlock)
-        // TODO: 正しく動いているか検証
-        this.updateChildBlock(processedBlock)
-        if (blockInSearch.childUuid === '') {
-          const payload = {
-            uuid: key,
-            childUuid: uuid
+        triggeredBlock.position.x = blockPosition.x
+        triggeredBlock.position.y = blockPosition.y + VuexMixin.calcHeight(block.name)
+        this.updateBlock(triggeredBlock)
+        this.updateChildBlock(triggeredBlock)
+
+        // 接続したブロックのchildUuidにtriggeredBlockのuuidを追加
+        if (block.childUuid === '') {
+          this.addChild({ uuid: blockKey, childUuid: triggeredBlockUuid })
+
+          // 接続したブロックがコンポーネント定義ブロックならコンポーネントを更新
+          if (block.name === this.DEFINE_COMPONENT_BLOCK) {
+            // TODO: ここでuuidを生成せず、コンポーネント定義ブロックを置いた時にcomponentを作成する
+            const componentUuid = VuexMixin.generateUuid()
+            this.addRelationBlockAndComponent(blockKey, triggeredBlockUuid)
+            const blocksFamily = VuexMixin.searchChildrenOfBlock(block, this.blocks)
+            componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
           }
-          this.addChild(payload)
-          if (blockInSearch.name === 'DefineComponentBlock') {
-            const uuid = VuexMixin.generateUuid()
-            this.addRelationBlockAndComponent(key, uuid)
-            const blocks: { [key: string]: Block } = {}
-            let currentBlock = this.blocks[key]
-            while (true) {
-              blocks[currentBlock.uuid] = currentBlock
-              if (currentBlock.childUuid === '') break
-              currentBlock = this.blocks[currentBlock.childUuid]
-            }
-            const blockComponent: Component = {
-              uuid,
-              blocks
-            }
-            componentsModule.add(blockComponent)
-          }
-          const topBlock = this.blocks[blockInSearch.topUuid]
-          if (topBlock != null && topBlock.name === 'DefineComponentBlock') {
-            const uuid = this.objectOfBlockAndComponent[blockInSearch.topUuid]
-            const blocks: { [key: string]: Block } = {}
-            let currentBlock = this.blocks[key]
-            while (true) {
-              blocks[currentBlock.uuid] = currentBlock
-              if (currentBlock.childUuid === '') break
-              currentBlock = this.blocks[currentBlock.childUuid]
-            }
-            // TODO: 別のモジュールのActionを呼ぶ方法を調べる
-            const blockComponent: Component = {
-              uuid,
-              blocks
-            }
-            componentsModule.update(blockComponent)
+
+          // 接続したブロックがコンポーネント定義ブロックの子ならコンポーネントを更新
+          if (topBlockIsDefineCompBlock) {
+            const componentUuid = this.objectOfBlockAndComponent[topBlock.uuid]
+            const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
+            componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
           }
         }
-        this.hideShadow(key)
-      } else if (blockInSearch.childUuid === uuid && uuid !== key) {
-        this.removeChild(key)
-        const topBlock = this.blocks[blockInSearch.topUuid]
-        if (topBlock != null && topBlock.name === 'DefineComponentBlock') {
-          const uuid = this.objectOfBlockAndComponent[blockInSearch.topUuid]
-          const blocks: { [key: string]: Block } = {}
-          let currentBlock = this.blocks[blockInSearch.topUuid]
-          while (true) {
-            blocks[currentBlock.uuid] = currentBlock
-            if (currentBlock.childUuid === '') break
-            currentBlock = this.blocks[currentBlock.childUuid]
-          }
-          const component: Component = {
-            uuid,
-            blocks
-          }
-          componentsModule.update(component)
+
+        this.hideShadow(blockKey)
+      } else if (block.childUuid === triggeredBlockUuid) {
+        // すでにtriggeredBlockが子ブロックで、かつ近くない = ブロックの接続を切る時
+        this.removeChild(blockKey)
+
+        if (topBlockIsDefineCompBlock) {
+          const componentUuid = this.objectOfBlockAndComponent[topBlock.uuid]
+          const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
+          componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
         }
-        if (blockInSearch.name === 'DefineComponentBlock') {
-          const uuid = this.objectOfBlockAndComponent[key]
-          this.removeRelationBlockAndComponent(key)
-          componentsModule.remove(uuid)
+
+        if (block.name === this.DEFINE_COMPONENT_BLOCK) {
+          const componentUuid = this.objectOfBlockAndComponent[blockKey]
+          this.removeRelationBlockAndComponent(blockKey)
+          componentsModule.remove(componentUuid)
         }
       }
     }
