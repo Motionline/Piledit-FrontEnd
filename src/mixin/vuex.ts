@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import { Block, Position } from '@/@types/piledit'
-import { componentsModule } from '@/store/Modules/Components'
 
 export class VuexMixin extends Vue {
   static generateUuid (): string {

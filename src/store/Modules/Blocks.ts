@@ -84,8 +84,8 @@ class Blocks extends VuexModule implements BlocksStateIF {
   }
 
   @Mutation
-  public addRelationBlockAndComponent (uuid: string, componentUniqueKey: string) {
-    Vue.set(this.objectOfBlockAndComponent, uuid, componentUniqueKey)
+  public addRelationBlockAndComponent (payload: { uuid: string; componentUuid: string }) {
+    Vue.set(this.objectOfBlockAndComponent, payload.uuid, payload.componentUuid)
   }
 
   @Mutation
@@ -107,6 +107,12 @@ class Blocks extends VuexModule implements BlocksStateIF {
       tabUuid: context.tabUuid
     }
     this.addBlock(block)
+    // 追加したブロックがコンポーネント定義ブロックならコンポーネントを作成
+    if (context.name === this.DEFINE_COMPONENT_BLOCK) {
+      const componentUuid = VuexMixin.generateUuid()
+      this.addRelationBlockAndComponent({ uuid, componentUuid })
+      componentsModule.add({ uuid: componentUuid, blocks: { uuid: block } })
+    }
     return uuid
   }
 
@@ -115,25 +121,14 @@ class Blocks extends VuexModule implements BlocksStateIF {
     const block = this.blocks[uuid]
     const topBlock = this.blocks[block.topUuid]
     if (topBlock != null && topBlock.name === this.DEFINE_COMPONENT_BLOCK) {
-      const componentUuid = this.objectOfBlockAndComponent[block.topUuid]
-      let checkCurrentBlock = this.blocks[block.topUuid]
-      const componentArr = []
-      while (true) {
-        componentArr.push({
-          blockType: checkCurrentBlock.name,
-          value: {}
-        })
-        checkCurrentBlock = this.blocks[checkCurrentBlock.childUuid]
-        if (checkCurrentBlock.name === uuid) break
-      }
       this.removeChild(block.parentUuid)
-      // const component: Component = {
-      //   uuid: componentUuid,
-      //   blocks
-      // }
-      // componentsModule.update()
-      // store.dispatch('Components/update', { componentUniqueKey, componentArr }, { root: true })
+      const componentUuid = this.objectOfBlockAndComponent[topBlock.uuid]
+      console.log(componentUuid)
+      const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
+      console.log(blocksFamily)
+      componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
     }
+    // TODO: ブロック接続状態でブロックを削除した時、ドラッグアップ時に4つエラーが出る
     this.removeBlock(uuid)
   }
 
@@ -186,9 +181,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
 
           // 接続したブロックがコンポーネント定義ブロックならコンポーネントを更新
           if (block.name === this.DEFINE_COMPONENT_BLOCK) {
-            // TODO: ここでuuidを生成せず、コンポーネント定義ブロックを置いた時にcomponentを作成する
-            const componentUuid = VuexMixin.generateUuid()
-            this.addRelationBlockAndComponent(blockKey, triggeredBlockUuid)
+            const componentUuid = this.objectOfBlockAndComponent[block.uuid]
             const blocksFamily = VuexMixin.searchChildrenOfBlock(block, this.blocks)
             componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
           }
@@ -214,8 +207,8 @@ class Blocks extends VuexModule implements BlocksStateIF {
 
         if (block.name === this.DEFINE_COMPONENT_BLOCK) {
           const componentUuid = this.objectOfBlockAndComponent[blockKey]
-          this.removeRelationBlockAndComponent(blockKey)
-          componentsModule.remove(componentUuid)
+          const blocksFamily = VuexMixin.searchChildrenOfBlock(block, this.blocks)
+          componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
         }
       }
     }
