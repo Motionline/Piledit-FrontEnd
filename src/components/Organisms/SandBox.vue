@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { Blocks, Position } from '@/@types/piledit'
+import { PBlocks, PPosition } from '@/@types/piledit'
 import { blocksModule } from '@/store/Modules/Blocks'
 import BlocksDisplay from '@/components/Organisms/BlocksDisplay.vue'
 import DebugBlock from '@/components/Molecules/DebugBlock.vue'
@@ -35,7 +35,7 @@ import DefineComponentBlock from '@/components/Molecules/DefineComponentBlock.vu
 })
 export default class SandBox extends Vue {
   @Prop({ required: true })
-  public blocks!: Blocks
+  public blocks!: PBlocks
 
   @Prop({ required: true })
   public tabUuid!: string
@@ -52,7 +52,7 @@ export default class SandBox extends Vue {
     blocksModule.stopDragging(uuid)
   }
 
-  public updatePosition (context: { position: Position; uuid: string }) {
+  public updatePosition (context: { position: PPosition; uuid: string }) {
     const block = this.blocks[context.uuid]
     block.uuid = context.uuid
     block.position = context.position

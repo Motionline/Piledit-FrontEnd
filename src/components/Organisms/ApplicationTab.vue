@@ -34,7 +34,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { tabsModule } from '@/store/Modules/Tabs'
-import { Tab } from '@/@types/piledit'
+import { PTab } from '@/@types/piledit'
 
 @Component
 export default class ApplicationTab extends Vue {
@@ -56,14 +56,14 @@ export default class ApplicationTab extends Vue {
     tabsModule.updateCurrentViewingTabUuid({ uuid })
   }
 
-  public getUrl (tab: Tab) {
+  public getUrl (tab: PTab) {
     const name = tab.name
     if (name === 'componentsEditor') {
       return `/components_edit/${tab.uuid}`
     }
   }
 
-  public getText (tab: Tab) {
+  public getText (tab: PTab) {
     const name = tab.name
     if (name === 'componentsEditor') {
       return 'コンポーネントエディタ'

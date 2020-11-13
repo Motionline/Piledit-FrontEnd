@@ -7,21 +7,21 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import { VuexMixin } from '@/mixin/vuex'
-import { Tab, Tabs as TTabs } from '@/@types/piledit'
+import { PTab, PTabs } from '@/@types/piledit'
 import store from '@/store/store'
 
 export interface TabStateIF {
-  tabs: TTabs;
+  tabs: PTabs;
   currentViewingTabUuid: string;
 }
 
 @Module({ dynamic: true, store: store, name: 'Tabs', namespaced: true })
 class Tabs extends VuexModule implements TabStateIF {
-  tabs: TTabs = {}
+  tabs: PTabs = {}
   currentViewingTabUuid = ''
 
   @Mutation
-  public addTab (tab: Tab) {
+  public addTab (tab: PTab) {
     Vue.set(this.tabs, tab.uuid, tab)
   }
 
@@ -38,10 +38,10 @@ class Tabs extends VuexModule implements TabStateIF {
   @Action({ rawError: true })
   public add (context: { name: string }) {
     const uuid = VuexMixin.generateUuid()
-    const tab: Tab = {
-      name: context.name,
+    const tab = new PTab(
+      context.name,
       uuid
-    }
+    )
     this.addTab(tab)
   }
 

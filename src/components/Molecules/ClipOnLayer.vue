@@ -26,7 +26,7 @@
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { remote } from 'electron'
 import SVGText from '@/components/Atoms/SVGText.vue'
-import { Clip, Position } from '@/@types/piledit'
+import { PClip, PPosition } from '@/@types/piledit'
 const Menu = remote.Menu
 const MenuItem = remote.MenuItem
 
@@ -37,7 +37,7 @@ const MenuItem = remote.MenuItem
 })
 export default class ClipOnLayer extends Vue {
   @Prop({ required: true })
-  public clip!: Clip
+  public clip!: PClip
 
   public beforeMouseX = 0
   public isDragging = false
@@ -67,7 +67,7 @@ export default class ClipOnLayer extends Vue {
   }
 
   @Emit('updatePosition')
-  public emitUpdatePosition (position: Position, uuid: string) {
+  public emitUpdatePosition (position: PPosition, uuid: string) {
     return {
       position,
       uuid
@@ -96,7 +96,7 @@ export default class ClipOnLayer extends Vue {
     if (this.isTouchStart) {
       const res = clipX - event.offsetX
       const newWidth = clipWidth - res >= 60 ? clipWidth + res : 0
-      const newPosition: Position = {
+      const newPosition: PPosition = {
         x: clipWidth - res >= 60 ? clipX - res : 0,
         y: clipY
       }

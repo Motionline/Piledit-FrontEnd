@@ -1,29 +1,23 @@
-import {
-  Module,
-  VuexModule,
-  Mutation,
-  Action,
-  getModule
-} from 'vuex-module-decorators'
+import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-import { Position, Block, Blocks as TBlocks } from '@/@types/piledit'
+import { PBlock, PBlocks, PBlockKind, PPosition } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 import { componentsModule } from '@/store/Modules/Components'
 
 export interface BlocksStateIF {
-  blocks: TBlocks;
+  blocks: PBlocks;
   objectOfBlockAndComponent: { [key: string]: string };
 }
 
 @Module({ dynamic: true, store: store, name: 'Blocks', namespaced: true })
 class Blocks extends VuexModule implements BlocksStateIF {
-  blocks: TBlocks = {}
+  blocks: PBlocks = {}
   objectOfBlockAndComponent: { [key: string]: string } = {}
   DEFINE_COMPONENT_BLOCK = 'DefineComponentBlock'
 
   @Mutation
-  public addBlock (block: Block) {
+  public addBlock (block: PBlock) {
     Vue.set(this.blocks, block.uuid, block)
   }
 
@@ -33,13 +27,13 @@ class Blocks extends VuexModule implements BlocksStateIF {
   }
 
   @Mutation
-  public updateBlock (block: Block) {
+  public updateBlock (block: PBlock) {
     this.blocks[block.uuid] = block
   }
 
   // 親ブロックから子ブロックに連鎖して座標を更新
   @Mutation
-  public updateChildBlock (block: Block) {
+  public updateChildBlock (block: PBlock) {
     let parentBlock = block
     while (parentBlock.childUuid !== '') {
       const childBlock = this.blocks[parentBlock.childUuid]
@@ -94,18 +88,20 @@ class Blocks extends VuexModule implements BlocksStateIF {
   }
 
   @Action({ rawError: true })
-  public async add (context: { position: Position; name: string; tabUuid: string }) {
+  public async add (context: { position: PPosition; name: string; tabUuid: string; kind: PBlockKind }) {
     const uuid = VuexMixin.generateUuid()
-    const block: Block = {
-      position: context.position,
-      name: context.name,
-      shadow: false,
+    const block = new PBlock(
+      context.name,
       uuid,
-      childUuid: '',
-      parentUuid: '',
-      topUuid: '',
-      tabUuid: context.tabUuid
-    }
+      '',
+      '',
+      '',
+      false,
+      context.position,
+      context.tabUuid,
+      false,
+      context.kind
+    )
     this.addBlock(block)
     // 追加したブロックがコンポーネント定義ブロックならコンポーネントを作成
     if (context.name === this.DEFINE_COMPONENT_BLOCK) {
@@ -123,9 +119,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
     if (topBlock != null && topBlock.name === this.DEFINE_COMPONENT_BLOCK) {
       this.removeChild(block.parentUuid)
       const componentUuid = this.objectOfBlockAndComponent[topBlock.uuid]
-      console.log(componentUuid)
       const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
-      console.log(blocksFamily)
       componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
     }
     // TODO: ブロック接続状態でブロックを削除した時、ドラッグアップ時に4つエラーが出る
@@ -133,7 +127,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
   }
 
   @Action({ rawError: true })
-  public update (blockArg: Block) {
+  public update (blockArg: PBlock) {
     this.updateBlock(blockArg)
     this.updateChildBlock(blockArg)
     const uuid = blockArg.uuid

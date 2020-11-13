@@ -26,7 +26,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { blocksModule } from '@/store/Modules/Blocks'
-import { Block, Position } from '@/@types/piledit'
+import { PBlock, PBlockKind, PPosition } from '@/@types/piledit'
 import DebugBlock from '@/components/Molecules/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/DefineComponentBlock.vue'
 
@@ -42,7 +42,7 @@ export default class BlocksDisplay extends Vue {
 
   public newBlockUuid = ''
 
-  public sampleBlock: Block = {
+  public sampleBlock: PBlock = {
     uuid: 'sampleBlock',
     name: 'sampleBlock',
     topUuid: '',
@@ -53,10 +53,15 @@ export default class BlocksDisplay extends Vue {
     position: {
       x: 0,
       y: 100
-    }
+    },
+    shadowPath: '',
+    strokeColor: '',
+    fillColor: '',
+    isSample: true,
+    path: ''
   }
 
-  public sampleBlock2: Block = {
+  public sampleBlock2: PBlock = {
     uuid: 'sampleBlock',
     name: 'sampleBlock',
     topUuid: '',
@@ -67,18 +72,28 @@ export default class BlocksDisplay extends Vue {
     position: {
       x: 0,
       y: 300
-    }
+    },
+    shadowPath: '',
+    strokeColor: '',
+    fillColor: '',
+    isSample: true,
+    path: ''
   }
 
   get blocks () {
     return blocksModule.blocks
   }
 
-  public async newBlockGenerate (context: { position: Position; name: string }) {
-    this.newBlockUuid = await blocksModule.add({ position: context.position, name: context.name, tabUuid: this.tabUuid })
+  public async newBlockGenerate (context: { position: PPosition; name: string; kind: PBlockKind }) {
+    this.newBlockUuid = await blocksModule.add({
+      position: context.position,
+      name: context.name,
+      tabUuid: this.tabUuid,
+      kind: context.kind
+    })
   }
 
-  public newBlockMove (context: { position: Position; uuid: string }) {
+  public newBlockMove (context: { position: PPosition; uuid: string }) {
     const block = this.blocks[context.uuid]
     block.position = context.position
     blocksModule.updateBlock(block)

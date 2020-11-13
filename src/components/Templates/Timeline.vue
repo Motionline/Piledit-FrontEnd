@@ -53,7 +53,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { clipsModule } from '@/store/Modules/Clips'
-import { Clip, Clips, Position, Component as PComponent } from '@/@types/piledit'
+import { PClips, PPosition, PComponent } from '@/@types/piledit'
 import { remote } from 'electron'
 import SVGText from '@/components/Atoms/SVGText.vue'
 import ClipOnLayer from '@/components/Molecules/ClipOnLayer.vue'
@@ -68,7 +68,7 @@ const MenuItem = remote.MenuItem
 })
 export default class Timeline extends Vue {
   @Prop({ required: true })
-  public clips!: Clips
+  public clips!: PClips
 
   @Prop({ required: true })
   public components!: { [key: string]: PComponent }
@@ -102,7 +102,6 @@ export default class Timeline extends Vue {
   public buildContextMenu () {
     const menu = new Menu()
     for (const [key, value] of Object.entries(this.components)) {
-      console.log(key, value)
       menu.append(
         new MenuItem(({
           label: key,
@@ -140,7 +139,7 @@ export default class Timeline extends Vue {
     event.preventDefault()
   }
 
-  public updatePosition (context: { position: Position; uuid: string }) {
+  public updatePosition (context: { position: PPosition; uuid: string }) {
     clipsModule.updatePosition(context)
   }
 

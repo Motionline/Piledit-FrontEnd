@@ -7,19 +7,19 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-import { Clip, Clips as TClips, Position } from '@/@types/piledit'
+import { PClip, PClips, PPosition } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 
 export interface ClipsStateIF {
-  clips: TClips;
+  clips: PClips;
 }
 
 @Module({ dynamic: true, store: store, name: 'Clips', namespaced: true })
 class Clips extends VuexModule implements ClipsStateIF {
-  clips: TClips = {}
+  clips: PClips = {}
 
   @Mutation
-  public addClip (clip: Clip) {
+  public addClip (clip: PClip) {
     Vue.set(this.clips, clip.uuid, clip)
   }
 
@@ -29,34 +29,34 @@ class Clips extends VuexModule implements ClipsStateIF {
   }
 
   @Mutation
-  public updateClipPosition (clip: Clip) {
+  public updateClipPosition (clip: PClip) {
     this.clips[clip.uuid].position = clip.position
   }
 
   @Mutation
-  public updateClipWidth (clip: Clip) {
+  public updateClipWidth (clip: PClip) {
     this.clips[clip.uuid].width = clip.width
   }
 
   @Action({ rawError: true })
   public add (componentUuid: string) {
     const uuid = VuexMixin.generateUuid()
-    const clip: Clip = {
+    const clip = new PClip(
+      uuid,
+      // TODO: コンポーネント名を設定する
       uuid,
       componentUuid,
-      position: {
+      {
         x: 0,
         y: 1
       },
-      width: 200,
-      // TODO: コンポーネント名を設定する
-      name: uuid
-    }
+      200
+    )
     this.addClip(clip)
   }
 
   @Action({ rawError: true })
-  public updatePosition (context: { position: Position; uuid: string }) {
+  public updatePosition (context: { position: PPosition; uuid: string }) {
     const clip = this.clips[context.uuid]
     clip.position = context.position
     this.updateClipPosition(clip)

@@ -7,18 +7,18 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-import { Component, Components as TComponents } from '@/@types/piledit'
+import { PComponent, PComponents } from '@/@types/piledit'
 
 export interface ComponentsStateIF {
-  components: TComponents;
+  components: PComponents;
 }
 
 @Module({ dynamic: true, store: store, name: 'Components', namespaced: true })
 class Components extends VuexModule implements ComponentsStateIF {
-  components: TComponents = {}
+  components: PComponents = {}
 
   @Mutation
-  public addComponent (component: Component) {
+  public addComponent (component: PComponent) {
     Vue.set(this.components, component.uuid, component)
   }
 
@@ -28,13 +28,13 @@ class Components extends VuexModule implements ComponentsStateIF {
   }
 
   @Mutation
-  public updateComponent (component: Component) {
+  public updateComponent (component: PComponent) {
     console.log(component)
     this.components[component.uuid] = component
   }
 
   @Action({ rawError: true })
-  public add (component: Component) {
+  public add (component: PComponent) {
     this.addComponent(component)
   }
 
@@ -44,7 +44,7 @@ class Components extends VuexModule implements ComponentsStateIF {
   }
 
   @Action({ rawError: true })
-  public update (component: Component) {
+  public update (component: PComponent) {
     this.updateComponent(component)
   }
 }

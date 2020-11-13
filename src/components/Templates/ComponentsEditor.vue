@@ -9,7 +9,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { blocksModule } from '@/store/Modules/Blocks'
 import { componentsModule } from '@/store/Modules/Components'
-import { Blocks } from '@/@types/piledit'
+import { PBlocks } from '@/@types/piledit'
 import SandBox from '@/components/Organisms/SandBox.vue'
 import BlockDetailedPanel from '@/components/Organisms/BlockDetailedPanel.vue'
 
@@ -35,7 +35,7 @@ export default class ComponentsEditor extends Vue {
   }
 
   public filteredBlocks () {
-    const filtered: Blocks = {}
+    const filtered: PBlocks = {}
     for (const [key, value] of Object.entries(this.blocks)) {
       if (value.tabUuid === this.tabUuid) {
         filtered[key] = value

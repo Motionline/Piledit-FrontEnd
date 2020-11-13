@@ -1,10 +1,6 @@
 <template>
   <AbstractBlock
     :block="block"
-    :sample-block="sampleBlock"
-    :stroke-color="strokeColor"
-    :fill-color="fillColor"
-    :path="path"
     :new-block-uuid="newBlockUuid"
     @stopDragging="stopDragging"
     @updatePosition="updatePosition"
@@ -23,7 +19,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { Block, Position } from '@/@types/piledit'
+import { PBlock, PPosition } from '@/@types/piledit'
 import AbstractBlock from '@/components/Atoms/AbstractBlock.vue'
 import SVGText from '@/components/Atoms/SVGText.vue'
 
@@ -35,10 +31,7 @@ import SVGText from '@/components/Atoms/SVGText.vue'
 })
 export default class DefineComponentBlock extends Vue {
   @Prop({ required: true })
-  public block!: Block
-
-  @Prop({ required: true })
-  public sampleBlock!: boolean
+  public block!: PBlock
 
   @Prop()
   public newBlockUuid!: string
@@ -54,7 +47,7 @@ export default class DefineComponentBlock extends Vue {
   }
 
   @Emit('updatePosition')
-  public updatePosition (context: { position: Position; uuid: string }) {
+  public updatePosition (context: { position: PPosition; uuid: string }) {
     return context
   }
 
@@ -69,12 +62,12 @@ export default class DefineComponentBlock extends Vue {
   }
 
   @Emit('newBlockGenerate')
-  public emitNewBlockGenerate (position: Position) {
+  public emitNewBlockGenerate (position: PPosition) {
     return { position, name: 'DefineComponentBlock' }
   }
 
   @Emit('newBlockMove')
-  public emitNewBlockMove (context: { uuid: string; position: Position }) {
+  public emitNewBlockMove (context: { uuid: string; position: PPosition }) {
     return context
   }
 

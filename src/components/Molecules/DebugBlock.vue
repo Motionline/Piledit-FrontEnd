@@ -1,10 +1,6 @@
 <template>
   <AbstractBlock
     :block="block"
-    :stroke-color="strokeColor"
-    :fill-color="fillColor"
-    :path="path"
-    :sample-block="sampleBlock"
     :new-block-uuid="newBlockUuid"
     @stopDragging="stopDragging"
     @updatePosition="updatePosition"
@@ -22,7 +18,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { Block, Position } from '@/@types/piledit'
+import { PBlock, PPosition } from '@/@types/piledit'
 import AbstractBlock from '@/components/Atoms/AbstractBlock.vue'
 import SVGText from '@/components/Atoms/SVGText.vue'
 
@@ -36,18 +32,10 @@ import SVGText from '@/components/Atoms/SVGText.vue'
 })
 export default class DebugBlock extends Vue {
   @Prop({ required: true })
-  public sampleBlock!: boolean
-
-  @Prop({ required: true })
-  public block!: Block
+  public block!: PBlock
 
   @Prop()
   public newBlockUuid!: string
-
-  public strokeColor = '#c53d43'
-  public fillColor = '#e83929'
-  public width = 350
-  public path = `m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H ${this.width} a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z`
 
   @Emit('stopDragging')
   public stopDragging (uuid: string) {
@@ -55,7 +43,7 @@ export default class DebugBlock extends Vue {
   }
 
   @Emit('updatePosition')
-  public updatePosition (context: { position: Position; uuid: string }) {
+  public updatePosition (context: { position: PPosition; uuid: string }) {
     return context
   }
 
@@ -70,12 +58,12 @@ export default class DebugBlock extends Vue {
   }
 
   @Emit('newBlockGenerate')
-  public emitNewBlockGenerate (position: Position) {
+  public emitNewBlockGenerate (position: PPosition) {
     return { position, name: 'DebugBlock' }
   }
 
   @Emit('newBlockMove')
-  public emitNewBlockMove (context: { uuid: string; position: Position }) {
+  public emitNewBlockMove (context: { uuid: string; position: PPosition }) {
     return context
   }
 

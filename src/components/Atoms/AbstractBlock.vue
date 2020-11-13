@@ -9,9 +9,9 @@
   >
     <path
       @click="onClick"
-      :d="path"
-      :stroke="strokeColor"
-      :fill="fillColor"
+      :d="block.path"
+      :stroke="block.strokeColor"
+      :fill="block.fillColor"
       stroke-width="2"
       transform="translate(1,50) scale(0.75, 0.75)"
     />
@@ -20,7 +20,7 @@
       v-if="block.shadow"
       stroke-width="2"
       fill="#d3d3d8"
-      :d="path"
+      :d="block.shadowPath"
       transform="translate(1,87) scale(0.75, 0.75)"
     />
   </svg>
@@ -34,7 +34,7 @@ svg {
 
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
-import { Block, Position } from '@/@types/piledit'
+import { PBlock, PPosition } from '@/@types/piledit'
 import svgZOrder from 'svg-z-order'
 import { remote } from 'electron'
 const Menu = remote.Menu
@@ -49,19 +49,7 @@ export default class AbstractBlock extends Vue {
   // ブロック一覧にあるサンプルかどうか
   // サンプルなら、mouseUpでcopyし、編集可能範囲外でも自動削除しない
   @Prop({ required: true })
-  public sampleBlock!: boolean
-
-  @Prop({ required: true })
-  public block!: Block
-
-  @Prop({ required: true })
-  public strokeColor!: string
-
-  @Prop({ required: true })
-  public fillColor!: string
-
-  @Prop({ required: true })
-  public path!: string
+  public block!: PBlock
 
   @Prop()
   public newBlockUuid!: string
@@ -92,7 +80,7 @@ export default class AbstractBlock extends Vue {
     this.beforeMouseY = 0
     event.preventDefault()
 
-    if (this.sampleBlock) {
+    if (this.block.isSample) {
       this.emitNewBlockMouseUp(this.newBlockUuid)
       return
     }
@@ -106,7 +94,7 @@ export default class AbstractBlock extends Vue {
 
   public mouseDown (event: MouseEvent) {
     this.isDragging = true
-    if (this.sampleBlock) {
+    if (this.block.isSample) {
       this.emitNewBlockGenerate({
         x: event.clientX - 340,
         y: event.clientY - 70
@@ -116,14 +104,14 @@ export default class AbstractBlock extends Vue {
   }
 
   @Emit('newBlockGenerate')
-  public emitNewBlockGenerate (position: Position) {
+  public emitNewBlockGenerate (position: PPosition) {
     return position
   }
 
   public mouseMove (event: MouseEvent) {
     if (!this.isDragging) return
     event.preventDefault()
-    if (this.sampleBlock) {
+    if (this.block.isSample) {
       this.emitNewBlockMove({
         uuid: this.newBlockUuid,
         position: {
@@ -134,7 +122,7 @@ export default class AbstractBlock extends Vue {
     } else {
       const blockElement = document.getElementById(this.block.uuid)
       svgZOrder.element(blockElement).toTop()
-      const newPosition: Position = this.getNewPosition(event.offsetX, event.offsetY, this.block)
+      const newPosition: PPosition = this.getNewPosition(event.offsetX, event.offsetY, this.block)
       const context = {
         position: newPosition,
         uuid: this.block.uuid
@@ -144,16 +132,16 @@ export default class AbstractBlock extends Vue {
   }
 
   @Emit('newBlockMove')
-  public emitNewBlockMove (context: { uuid: string; position: Position }) {
+  public emitNewBlockMove (context: { uuid: string; position: PPosition }) {
     return context
   }
 
   @Emit('updatePosition')
-  public emitUpdatePosition (context: { position: Position; uuid: string }) {
+  public emitUpdatePosition (context: { position: PPosition; uuid: string }) {
     return context
   }
 
-  public getNewPosition (offsetX: number, offsetY: number, block: Block) {
+  public getNewPosition (offsetX: number, offsetY: number, block: PBlock) {
     const mouseX = offsetX
     const mouseY = offsetY
     let dx, dy
