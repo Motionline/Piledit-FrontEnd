@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { PBlock, PBlocks, PPosition } from '@/@types/piledit'
+import { PBlock, PBlocks, PBlockKind, PPosition } from '@/@types/piledit'
 
 export class VuexMixin extends Vue {
   static generateUuid (): string {
@@ -22,7 +22,7 @@ export class VuexMixin extends Vue {
     return isNearbyX1 && isNearbyX2 && isNearbyY1 && isNearbyY2
   }
 
-  static calcHeight (blockName: string): number {
+  static calcHeight (kind: PBlockKind): number {
     return 37
   }
 

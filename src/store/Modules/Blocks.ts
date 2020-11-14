@@ -1,7 +1,7 @@
 import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-import { PBlock, PBlocks, PBlockKind, PPosition } from '@/@types/piledit'
+import { PBlock, PBlockKind, PBlocks, PPosition } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 import { componentsModule } from '@/store/Modules/Components'
 
@@ -39,7 +39,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
       const childBlock = this.blocks[parentBlock.childUuid]
       childBlock.position = {
         x: parentBlock.position.x,
-        y: parentBlock.position.y + VuexMixin.calcHeight(parentBlock.name)
+        y: parentBlock.position.y + VuexMixin.calcHeight(parentBlock.kind)
       }
       parentBlock = childBlock
     }
@@ -116,7 +116,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
   public remove (uuid: string) {
     const block = this.blocks[uuid]
     const topBlock = this.blocks[block.topUuid]
-    if (topBlock != null && topBlock.name === this.DEFINE_COMPONENT_BLOCK) {
+    if (topBlock != null && topBlock.kind === PBlockKind.DefineComponentBlock) {
       this.removeChild(block.parentUuid)
       const componentUuid = this.objectOfBlockAndComponent[topBlock.uuid]
       const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
@@ -158,14 +158,14 @@ class Blocks extends VuexModule implements BlocksStateIF {
       const block = this.blocks[blockKey]
       const blockPosition = block.position
       const topBlock = this.blocks[block.topUuid]
-      const topBlockIsDefineCompBlock = (topBlock != null && topBlock.name === this.DEFINE_COMPONENT_BLOCK)
+      const topBlockIsDefineCompBlock = (topBlock != null && topBlock.kind === PBlockKind.DefineComponentBlock)
 
       const isNearby = VuexMixin.isNearbyBlocks(blockPosition, triggeredBlock.position)
 
       // triggeredBlockが他のブロックに近ければ接続する
       if (isNearby) {
         triggeredBlock.position.x = blockPosition.x
-        triggeredBlock.position.y = blockPosition.y + VuexMixin.calcHeight(block.name)
+        triggeredBlock.position.y = blockPosition.y + VuexMixin.calcHeight(block.kind)
         this.updateBlock(triggeredBlock)
         this.updateChildBlock(triggeredBlock)
 
@@ -174,7 +174,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
           this.addChild({ uuid: blockKey, childUuid: triggeredBlockUuid })
 
           // 接続したブロックがコンポーネント定義ブロックならコンポーネントを更新
-          if (block.name === this.DEFINE_COMPONENT_BLOCK) {
+          if (block.kind === PBlockKind.DefineComponentBlock) {
             const componentUuid = this.objectOfBlockAndComponent[block.uuid]
             const blocksFamily = VuexMixin.searchChildrenOfBlock(block, this.blocks)
             componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
@@ -199,7 +199,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
           componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
         }
 
-        if (block.name === this.DEFINE_COMPONENT_BLOCK) {
+        if (block.kind === PBlockKind.DefineComponentBlock) {
           const componentUuid = this.objectOfBlockAndComponent[blockKey]
           const blocksFamily = VuexMixin.searchChildrenOfBlock(block, this.blocks)
           componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })

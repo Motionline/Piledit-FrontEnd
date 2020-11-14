@@ -5,6 +5,7 @@ export type PPosition = {
 
 export interface PBlockIF {
   name: string;
+  kind: PBlockKind;
   uuid: string;
   topUuid: string;
   parentUuid: string;
@@ -26,6 +27,7 @@ export enum PBlockKind {
 
 export class PBlock implements PBlockIF {
   public name: string
+  public kind: PBlockKind
   public uuid: string
   public topUuid: string
   public parentUuid: string
@@ -52,6 +54,7 @@ export class PBlock implements PBlockIF {
     kind: PBlockKind
   ) {
     this.name = name
+    this.kind = kind
     this.uuid = uuid
     this.topUuid = topUuid
     this.parentUuid = parentUuid
