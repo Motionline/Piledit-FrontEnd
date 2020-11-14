@@ -6,7 +6,7 @@
       @newBlockMouseUp="newBlockMouseUp"
       :new-block-uuid="newBlockUuid"
       :sample-block="true"
-      :block="samp"
+      :block="getPBlock({ x: 0, y: 100 }, PBlockKind.DebugBlock)"
       class="dragBlock-btn"
       transform="translate(1,20)"
     />
@@ -16,9 +16,19 @@
       @newBlockMouseUp="newBlockMouseUp"
       :new-block-uuid="newBlockUuid"
       :sample-block="true"
-      :block="samp2"
+      :block="getPBlock({ x: 0, y: 50 }, PBlockKind.DefineComponentBlock)"
       class="dragBlock-btn"
       transform="translate(1,50)"
+    />
+    <MovieLoadingBlock
+      @newBlockGenerate="newBlockGenerate"
+      @newBlockMove="newBlockMove"
+      @newBlockMouseUp="newBlockMouseUp"
+      :new-block-uuid="newBlockUuid"
+      :sample-block="true"
+      :block="getPBlock({ x: 0, y: 150 }, PBlockKind.MovieLoadingBlock)"
+      class="dragBlock-btn"
+      transform="translate(1,20)"
     />
   </svg>
 </template>
@@ -29,9 +39,11 @@ import { blocksModule } from '@/store/Modules/Blocks'
 import { PBlock, PBlockKind, PPosition } from '@/@types/piledit'
 import DebugBlock from '@/components/Molecules/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/DefineComponentBlock.vue'
+import MovieLoadingBlock from '@/components/Molecules/MovieLoadingBlock.vue'
 
   @Component({
     components: {
+      MovieLoadingBlock,
       DebugBlock,
       DefineComponentBlock
     }
@@ -40,76 +52,63 @@ export default class BlocksDisplay extends Vue {
   @Prop({ required: true })
   public tabUuid!: string
 
+  get PBlockKind () {
+    return PBlockKind
+  }
+
   public newBlockUuid = ''
 
-  public samp = new PBlock(
-    'sample',
-    'dummyUuid',
-    '',
-    '',
-    '',
-    false,
-    {
-      x: 0,
-      y: 100
-    },
-    '',
-    true,
-    PBlockKind.DebugBlock
-  )
-
-    public samp2 = new PBlock(
-      'sample',
-      'dummyUuid',
+  public getPBlock (position: PPosition, kind: PBlockKind) {
+    return new PBlock(
+      kind,
+      kind,
       '',
       '',
       '',
       false,
-      {
-        x: 0,
-        y: 300
-      },
+      position,
       '',
       true,
-      PBlockKind.DefineComponentBlock
+      kind
     )
+  }
 
-    get blocks () {
-      return blocksModule.blocks
-    }
+  get blocks () {
+    return blocksModule.blocks
+  }
 
-    public async newBlockGenerate (context: { position: PPosition; name: string; kind: PBlockKind }) {
-      this.newBlockUuid = await blocksModule.add({
-        position: context.position,
-        name: context.name,
-        tabUuid: this.tabUuid,
-        kind: context.kind
-      })
-    }
+  public async newBlockGenerate (context: { position: PPosition; name: string; kind: PBlockKind }) {
+    this.newBlockUuid = await blocksModule.add({
+      position: context.position,
+      name: context.name,
+      tabUuid: this.tabUuid,
+      kind: context.kind
+    })
+  }
 
-    public newBlockMove (context: { position: PPosition; uuid: string }) {
-      const block = this.blocks[context.uuid]
-      block.position = context.position
-      blocksModule.updateBlock(block)
-    }
+  public newBlockMove (context: { position: PPosition; uuid: string }) {
+    const block = this.blocks[context.uuid]
+    block.position = context.position
+    blocksModule.updateBlock(block)
+  }
 
-    public newBlockMouseUp (uuid: string) {
-      const block = this.blocks[uuid]
-      if (block.position.x >= 430) {
-        blocksModule.remove(uuid)
-      }
+  public newBlockMouseUp (uuid: string) {
+    const block = this.blocks[uuid]
+    if (block != null && block.position.x >= 430) {
+      blocksModule.remove(uuid)
     }
+  }
 
-    public getContext (name: string) {
-      return {
-        name,
-        position: {
-          x: 0,
-          y: 0
-        },
-        tabUuid: this.tabUuid
-      }
+  public getContext (name: string) {
+    return {
+      name,
+      position: {
+        x: 0,
+        y: 0
+      },
+      tabUuid: this.tabUuid
     }
+  }
 }
 </script>
 

@@ -21,8 +21,9 @@ export interface PBlockIF {
 }
 
 export enum PBlockKind {
-  DebugBlock,
-  DefineComponentBlock
+  DebugBlock = 'DebugBlock',
+  DefineComponentBlock = 'DefineComponentBlock',
+  MovieLoadingBlock = 'MovieLoadingBlock'
 }
 
 export function blockParameter (kind: PBlockKind) {
@@ -35,6 +36,11 @@ export function blockParameter (kind: PBlockKind) {
     const path = 'm 0,0 c 25,-22 71,-22 96,0 H 300 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
     const strokeColor = '#e9bc00'
     const fillColor = '#fcc800'
+    return { path, strokeColor, fillColor }
+  } else if (kind === PBlockKind.MovieLoadingBlock) {
+    const path = 'm 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 300 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
+    const strokeColor = '#ffa02c'
+    const fillColor = '#ff7f1e'
     return { path, strokeColor, fillColor }
   } else {
     throw new Error('登録されていないBlockです')

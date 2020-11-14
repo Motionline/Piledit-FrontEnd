@@ -25,12 +25,14 @@ import { blocksModule } from '@/store/Modules/Blocks'
 import BlocksDisplay from '@/components/Organisms/BlocksDisplay.vue'
 import DebugBlock from '@/components/Molecules/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/DefineComponentBlock.vue'
+import MovieLoadingBlock from '@/components/Molecules/MovieLoadingBlock.vue'
 
 @Component({
   components: {
     DebugBlock,
     DefineComponentBlock,
-    BlocksDisplay
+    BlocksDisplay,
+    MovieLoadingBlock
   }
 })
 export default class SandBox extends Vue {
