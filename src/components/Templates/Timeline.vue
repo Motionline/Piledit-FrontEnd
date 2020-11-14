@@ -3,10 +3,10 @@
     id="timeline"
     width="2200"
     height="500"
-    @mousedown="mouseDown"
-    @mousemove="mouseMove"
-    @mouseup="mouseUp"
-    @click.right="popupContextMenu"
+    @mousedown.left="mouseDown"
+    @mousemove.left="mouseMove"
+    @mouseup.left="mouseUp"
+    @click.right.stop="popupContextMenu"
   >
     <g :transform="`translate(${this.timelinePositionX}, 0)`">
       <rect
@@ -94,7 +94,6 @@ export default class Timeline extends Vue {
 
   public popupContextMenu (event: any) {
     event.preventDefault()
-    console.log(event.clientY)
     const menu = this.buildContextMenu()
     const currentWindow = remote.getCurrentWindow()
     menu.popup({ window: currentWindow })
