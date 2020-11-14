@@ -1,5 +1,6 @@
 <template>
   <div id="Home">
+    <v-btn @click="showClips"></v-btn>
     <h3>全てのコンポーネント</h3>
     <div v-for="(_, uuid) in components" :key="uuid">
       <v-btn @click="addClip(uuid)">{{ uuid }}</v-btn>
@@ -38,6 +39,10 @@ export default class Home extends Vue {
 
   public addClip (uuid: string) {
     clipsModule.add(uuid)
+  }
+
+  public showClips () {
+    console.log(this.clips)
   }
 
   public outputMovieConfigurationFile () {

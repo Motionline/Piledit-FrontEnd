@@ -1,7 +1,15 @@
 import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-import { PBlock, PBlockKind, PBlocks, PPosition } from '@/@types/piledit'
+import {
+  PBlock,
+  PBlockKind,
+  PBlocks,
+  PPosition,
+  TDebugBlock,
+  TDefineComponentBlock,
+  TMovieLoadingBlock
+} from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 import { componentsModule } from '@/store/Modules/Components'
 
@@ -95,18 +103,29 @@ class Blocks extends VuexModule implements BlocksStateIF {
   @Action({ rawError: true })
   public async add (context: { position: PPosition; name: string; tabUuid: string; kind: PBlockKind }) {
     const uuid = VuexMixin.generateUuid()
-    const block = new PBlock(
-      context.name,
+    const init: Partial<PBlock> = {
+      name: context.name,
       uuid,
-      '',
-      '',
-      '',
-      false,
-      context.position,
-      context.tabUuid,
-      false,
-      context.kind
-    )
+      topUuid: '',
+      parentUuid: '',
+      childUuid: '',
+      shadow: false,
+      position: context.position,
+      tabUuid: context.tabUuid,
+      isSample: false,
+      kind: context.kind
+    }
+    const block: PBlock = ((kind) => {
+      if (kind === PBlockKind.DebugBlock) {
+        return new TDebugBlock(init)
+      } else if (kind === PBlockKind.DefineComponentBlock) {
+        return new TDefineComponentBlock(init)
+      } else if (kind === PBlockKind.MovieLoadingBlock) {
+        return new TMovieLoadingBlock(init)
+      } else {
+        throw new Error('登録されていないブロックです')
+      }
+    })(context.kind)
     this.addBlock(block)
     // 追加したブロックがコンポーネント定義ブロックならコンポーネントを作成
     if (context.name === this.DEFINE_COMPONENT_BLOCK) {

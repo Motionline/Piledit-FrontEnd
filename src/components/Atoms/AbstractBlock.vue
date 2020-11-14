@@ -1,6 +1,7 @@
 <template>
   <svg
     @mousedown.left="mouseDown($event)"
+    @dblclick.left="calledByOpenDetailedMenuItem"
     @click.right.prevent="popupContextMenu($event)"
     preserveAspectRatio="xMidYMid meet"
     :x="block.position.x"

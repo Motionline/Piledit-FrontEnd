@@ -15,6 +15,8 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { remote } from 'electron'
 import { tabsModule } from '@/store/Modules/Tabs'
+import { clipsModule } from '@/store/Modules/Clips'
+import { componentsModule } from '@/store/Modules/Components'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 const Menu = remote.Menu
 
@@ -45,6 +47,16 @@ export default class App extends Vue {
             label: 'Paste',
             accelerator: 'CmdOrCtrl+V',
             role: 'paste'
+          }
+        ]
+      },
+      {
+        label: 'Movie',
+        submenu: [
+          {
+            label: 'Encode',
+            accelerator: 'CmdOrCtrl+E',
+            click: () => { this.encode() }
           }
         ]
       },
@@ -96,14 +108,18 @@ export default class App extends Vue {
     }
     tabsModule.add(context)
   }
+
+  public encode () {
+    const data = {
+      clips: clipsModule.clips,
+      components: componentsModule.components
+    }
+    console.log(data)
+  }
 }
 </script>
 
 <style>
-  /*#app {*/
-  /*  max-height: 100vh;*/
-  /*  max-width: 100vw;*/
-  /*}*/
   #applicationTab {
     border-right: 2px black solid;
   }

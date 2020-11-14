@@ -36,7 +36,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { blocksModule } from '@/store/Modules/Blocks'
-import { PBlock, PBlockKind, PPosition } from '@/@types/piledit'
+import { PBlock, PBlockKind, PPosition, TDebugBlock, TDefineComponentBlock, TMovieLoadingBlock } from '@/@types/piledit'
 import DebugBlock from '@/components/Molecules/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/DefineComponentBlock.vue'
 import MovieLoadingBlock from '@/components/Molecules/MovieLoadingBlock.vue'
@@ -59,18 +59,27 @@ export default class BlocksDisplay extends Vue {
   public newBlockUuid = ''
 
   public getPBlock (position: PPosition, kind: PBlockKind) {
-    return new PBlock(
-      kind,
-      kind,
-      '',
-      '',
-      '',
-      false,
+    const init: Partial<PBlock> = {
+      name: kind,
+      uuid: kind,
+      topUuid: '',
+      parentUuid: '',
+      childUuid: '',
+      shadow: false,
       position,
-      '',
-      true,
+      tabUuid: '',
+      isSample: true,
       kind
-    )
+    }
+    if (kind === PBlockKind.DebugBlock) {
+      return new TDebugBlock(init)
+    } else if (kind === PBlockKind.DefineComponentBlock) {
+      return new TDefineComponentBlock(init)
+    } else if (kind === PBlockKind.MovieLoadingBlock) {
+      return new TMovieLoadingBlock(init)
+    } else {
+      throw new Error('登録されていないブロックです')
+    }
   }
 
   get blocks () {

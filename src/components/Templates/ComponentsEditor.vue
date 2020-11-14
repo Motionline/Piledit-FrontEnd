@@ -1,7 +1,7 @@
 <template>
   <div>
     <SandBox :blocks="filteredBlocks()" :tab-uuid="tabUuid" @openingMenu="openingMenu" />
-    <BlockDetailedPanel :block-uuid="blockUuid" />
+    <BlockDetailedPanel :block="getBlock(blockUuid)" />
   </div>
 </template>
 
@@ -32,6 +32,10 @@ export default class ComponentsEditor extends Vue {
 
   get components () {
     return componentsModule.components
+  }
+
+  public getBlock (uuid: string) {
+    return this.blocks[uuid]
   }
 
   public filteredBlocks () {

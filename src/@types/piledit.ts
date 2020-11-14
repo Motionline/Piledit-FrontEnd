@@ -26,7 +26,7 @@ export enum PBlockKind {
   MovieLoadingBlock = 'MovieLoadingBlock'
 }
 
-export function blockParameter (kind: PBlockKind) {
+export function blockParameter (kind?: PBlockKind) {
   if (kind === PBlockKind.DebugBlock) {
     const path = 'm 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 350 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
     const strokeColor = '#c53d43'
@@ -47,7 +47,7 @@ export function blockParameter (kind: PBlockKind) {
   }
 }
 
-export class PBlock implements PBlockIF {
+class PBlockBase implements PBlockIF {
   public name: string
   public kind: PBlockKind
   public uuid: string
@@ -63,36 +63,32 @@ export class PBlock implements PBlockIF {
   public fillColor: string
   public isSample: boolean
 
-  constructor (
-    name: string,
-    uuid: string,
-    topUuid: string,
-    parentUuid: string,
-    childUuid: string,
-    shadow: boolean,
-    position: PPosition,
-    tabUuid: string,
-    isSample: boolean,
-    kind: PBlockKind
-  ) {
-    this.name = name
-    this.kind = kind
-    this.uuid = uuid
-    this.topUuid = topUuid
-    this.parentUuid = parentUuid
-    this.childUuid = childUuid
-    this.shadow = shadow
-    this.position = position
-    this.tabUuid = tabUuid
-    this.isSample = isSample
+  constructor (context: Partial<PBlockBase>) {
+    this.name = context.name!
+    this.kind = context.kind!
+    this.uuid = context.uuid!
+    this.topUuid = context.topUuid!
+    this.parentUuid = context.parentUuid!
+    this.childUuid = context.childUuid!
+    this.shadow = context.shadow!
+    this.position = context.position!
+    this.tabUuid = context.tabUuid!
+    this.isSample = context.isSample!
     this.shadowPath = ''
-    console.log({ name, kind, uuid, topUuid, parentUuid, childUuid, position, isSample })
-    const { path, strokeColor, fillColor } = blockParameter(kind)
+    const { path, strokeColor, fillColor } = blockParameter(context.kind)
     this.path = path
     this.strokeColor = strokeColor
     this.fillColor = fillColor
   }
 }
+
+export class TDebugBlock extends PBlockBase {}
+export class TDefineComponentBlock extends PBlockBase {}
+export class TMovieLoadingBlock extends PBlockBase {
+  public materialPath?: string
+}
+
+export type PBlock = TDebugBlock | TDefineComponentBlock | TMovieLoadingBlock
 
 export type PBlocks = {
   [key: string]: PBlock;
