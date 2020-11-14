@@ -34,6 +34,7 @@
           :clip="clip"
           @updatePosition="updatePosition"
           @updateWidth="updateWidth"
+          @removeClip="removeClip"
         />
         <line
           v-for="i in 10"
@@ -145,6 +146,10 @@ export default class Timeline extends Vue {
 
   public updateWidth (context: { width: number; uuid: string }) {
     clipsModule.updateWidth(context)
+  }
+
+  public removeClip (uuid: string) {
+    clipsModule.removeClip(uuid)
   }
 }
 </script>
