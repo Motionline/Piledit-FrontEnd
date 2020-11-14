@@ -78,6 +78,11 @@ class Blocks extends VuexModule implements BlocksStateIF {
   }
 
   @Mutation
+  public changeShadowPath (payload: { uuid: string; shadowPath: string }) {
+    this.blocks[payload.uuid].shadowPath = payload.shadowPath
+  }
+
+  @Mutation
   public addRelationBlockAndComponent (payload: { uuid: string; componentUuid: string }) {
     Vue.set(this.objectOfBlockAndComponent, payload.uuid, payload.componentUuid)
   }
@@ -127,22 +132,21 @@ class Blocks extends VuexModule implements BlocksStateIF {
   }
 
   @Action({ rawError: true })
-  public update (blockArg: PBlock) {
-    this.updateBlock(blockArg)
-    this.updateChildBlock(blockArg)
-    const uuid = blockArg.uuid
-    const block = this.blocks[uuid]
-    const position = block.position
-    for (const key of Object.keys(this.blocks)) {
-      if (uuid === key) continue
-      const blockInSearch = this.blocks[key]
-      const positionInSearch = blockInSearch.position
-      const isNearBy = VuexMixin.isNearbyBlocks(positionInSearch, position)
-      const notHaveChildRelation = blockInSearch.childUuid === ''
+  public update (_triggerBlock: PBlock) {
+    this.updateBlock(_triggerBlock)
+    this.updateChildBlock(_triggerBlock)
+    const triggerBlock = this.blocks[_triggerBlock.uuid]
+    for (const blockUuid of Object.keys(this.blocks)) {
+      if (triggerBlock.uuid === blockUuid) continue
+      if (triggerBlock.kind === PBlockKind.DefineComponentBlock) continue
+      const block = this.blocks[blockUuid]
+      const isNearBy = VuexMixin.isNearbyBlocks(block.position, triggerBlock.position)
+      const notHaveChildRelation = block.childUuid === ''
       if (isNearBy && notHaveChildRelation) {
-        this.showShadow(key)
+        this.changeShadowPath({ uuid: block.uuid, shadowPath: triggerBlock.path })
+        this.showShadow(blockUuid)
       } else {
-        this.hideShadow(key)
+        this.hideShadow(blockUuid)
       }
     }
   }
@@ -154,6 +158,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
 
     for (const blockKey of Object.keys(this.blocks)) {
       if (triggeredBlock.uuid === blockKey) continue
+      if (triggeredBlock.kind === PBlockKind.DefineComponentBlock) continue
 
       const block = this.blocks[blockKey]
       const blockPosition = block.position
