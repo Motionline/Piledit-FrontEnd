@@ -14,15 +14,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
-import { PBlockKind, PBlock, TMovieLoadingBlock } from '@/@types/piledit'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { PBlock, PBlockKind, TMovieLoadingBlock } from '@/@types/piledit'
 import { blocksModule } from '@/store/Modules/Blocks'
 import { remote } from 'electron'
 
-@Component
+  @Component
 export default class BlockDetailedPanel extends Vue {
   @Prop()
   public block!: PBlock
+
+  @Watch('block')
+  public watchBlock () {
+    if (this.block.kind === PBlockKind.MovieLoadingBlock) {
+      const movieLoadingBlock: TMovieLoadingBlock = this.block
+      if (movieLoadingBlock.materialPath != null) {
+        this.selectFilePath = [movieLoadingBlock.materialPath]
+      }
+    }
+  }
 
   // MovieLoadingBlock
   public selectFilePath: string[] | undefined = []
