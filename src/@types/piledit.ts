@@ -25,6 +25,22 @@ export enum PBlockKind {
   DefineComponentBlock
 }
 
+export function blockParameter (kind: PBlockKind) {
+  if (kind === PBlockKind.DebugBlock) {
+    const path = 'm 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 350 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
+    const strokeColor = '#c53d43'
+    const fillColor = '#e83929'
+    return { path, strokeColor, fillColor }
+  } else if (kind === PBlockKind.DefineComponentBlock) {
+    const path = 'm 0,0 c 25,-22 71,-22 96,0 H 300 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
+    const strokeColor = '#e9bc00'
+    const fillColor = '#fcc800'
+    return { path, strokeColor, fillColor }
+  } else {
+    throw new Error('登録されていないBlockです')
+  }
+}
+
 export class PBlock implements PBlockIF {
   public name: string
   public kind: PBlockKind
@@ -64,23 +80,11 @@ export class PBlock implements PBlockIF {
     this.tabUuid = tabUuid
     this.isSample = isSample
     this.shadowPath = ''
-
-    switch (kind) {
-      case PBlockKind.DebugBlock:
-        this.path = 'm 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 350 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
-        this.strokeColor = '#c53d43'
-        this.fillColor = '#e83929'
-        break
-
-      case PBlockKind.DefineComponentBlock:
-        this.path = 'm 0,0 c 25,-22 71,-22 96,0 H 300 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
-        this.strokeColor = '#e9bc00'
-        this.fillColor = '#fcc800'
-        break
-
-      default:
-        throw new Error('登録されていないBlockです')
-    }
+    console.log({ name, kind, uuid, topUuid, parentUuid, childUuid, position, isSample })
+    const { path, strokeColor, fillColor } = blockParameter(kind)
+    this.path = path
+    this.strokeColor = strokeColor
+    this.fillColor = fillColor
   }
 }
 

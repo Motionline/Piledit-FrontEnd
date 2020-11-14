@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { PBlock, PPosition } from '@/@types/piledit'
+import { PBlock, PBlockKind, PPosition } from '@/@types/piledit'
 import AbstractBlock from '@/components/Atoms/AbstractBlock.vue'
 import SVGText from '@/components/Atoms/SVGText.vue'
 
@@ -63,7 +63,7 @@ export default class DefineComponentBlock extends Vue {
 
   @Emit('newBlockGenerate')
   public emitNewBlockGenerate (position: PPosition) {
-    return { position, name: 'DefineComponentBlock' }
+    return { position, name: 'DefineComponentBlock', kind: PBlockKind.DefineComponentBlock }
   }
 
   @Emit('newBlockMove')

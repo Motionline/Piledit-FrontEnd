@@ -6,7 +6,7 @@
       @newBlockMouseUp="newBlockMouseUp"
       :new-block-uuid="newBlockUuid"
       :sample-block="true"
-      :block="sampleBlock"
+      :block="samp"
       class="dragBlock-btn"
       transform="translate(1,20)"
     />
@@ -16,7 +16,7 @@
       @newBlockMouseUp="newBlockMouseUp"
       :new-block-uuid="newBlockUuid"
       :sample-block="true"
-      :block="sampleBlock2"
+      :block="samp2"
       class="dragBlock-btn"
       transform="translate(1,50)"
     />
@@ -30,92 +30,86 @@ import { PBlock, PBlockKind, PPosition } from '@/@types/piledit'
 import DebugBlock from '@/components/Molecules/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/DefineComponentBlock.vue'
 
-@Component({
-  components: {
-    DebugBlock,
-    DefineComponentBlock
-  }
-})
+  @Component({
+    components: {
+      DebugBlock,
+      DefineComponentBlock
+    }
+  })
 export default class BlocksDisplay extends Vue {
   @Prop({ required: true })
   public tabUuid!: string
 
   public newBlockUuid = ''
 
-  public sampleBlock: PBlock = {
-    uuid: 'sampleBlock',
-    name: 'sampleBlock',
-    topUuid: '',
-    childUuid: '',
-    parentUuid: '',
-    tabUuid: '',
-    shadow: false,
-    position: {
+  public samp = new PBlock(
+    'sample',
+    'dummyUuid',
+    '',
+    '',
+    '',
+    false,
+    {
       x: 0,
       y: 100
     },
-    shadowPath: '',
-    strokeColor: '',
-    fillColor: '',
-    isSample: true,
-    path: ''
-  }
+    '',
+    true,
+    PBlockKind.DebugBlock
+  )
 
-  public sampleBlock2: PBlock = {
-    uuid: 'sampleBlock',
-    name: 'sampleBlock',
-    topUuid: '',
-    childUuid: '',
-    parentUuid: '',
-    tabUuid: '',
-    shadow: false,
-    position: {
-      x: 0,
-      y: 300
-    },
-    shadowPath: '',
-    strokeColor: '',
-    fillColor: '',
-    isSample: true,
-    path: ''
-  }
-
-  get blocks () {
-    return blocksModule.blocks
-  }
-
-  public async newBlockGenerate (context: { position: PPosition; name: string; kind: PBlockKind }) {
-    this.newBlockUuid = await blocksModule.add({
-      position: context.position,
-      name: context.name,
-      tabUuid: this.tabUuid,
-      kind: context.kind
-    })
-  }
-
-  public newBlockMove (context: { position: PPosition; uuid: string }) {
-    const block = this.blocks[context.uuid]
-    block.position = context.position
-    blocksModule.updateBlock(block)
-  }
-
-  public newBlockMouseUp (uuid: string) {
-    const block = this.blocks[uuid]
-    if (block.position.x >= 430) {
-      blocksModule.remove(uuid)
-    }
-  }
-
-  public getContext (name: string) {
-    return {
-      name,
-      position: {
+    public samp2 = new PBlock(
+      'sample',
+      'dummyUuid',
+      '',
+      '',
+      '',
+      false,
+      {
         x: 0,
-        y: 0
+        y: 300
       },
-      tabUuid: this.tabUuid
+      '',
+      true,
+      PBlockKind.DefineComponentBlock
+    )
+
+    get blocks () {
+      return blocksModule.blocks
     }
-  }
+
+    public async newBlockGenerate (context: { position: PPosition; name: string; kind: PBlockKind }) {
+      this.newBlockUuid = await blocksModule.add({
+        position: context.position,
+        name: context.name,
+        tabUuid: this.tabUuid,
+        kind: context.kind
+      })
+    }
+
+    public newBlockMove (context: { position: PPosition; uuid: string }) {
+      const block = this.blocks[context.uuid]
+      block.position = context.position
+      blocksModule.updateBlock(block)
+    }
+
+    public newBlockMouseUp (uuid: string) {
+      const block = this.blocks[uuid]
+      if (block.position.x >= 430) {
+        blocksModule.remove(uuid)
+      }
+    }
+
+    public getContext (name: string) {
+      return {
+        name,
+        position: {
+          x: 0,
+          y: 0
+        },
+        tabUuid: this.tabUuid
+      }
+    }
 }
 </script>
 
