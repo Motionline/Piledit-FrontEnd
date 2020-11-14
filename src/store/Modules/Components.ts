@@ -29,7 +29,6 @@ class Components extends VuexModule implements ComponentsStateIF {
 
   @Mutation
   public updateComponent (component: PComponent) {
-    console.log(component)
     this.components[component.uuid] = component
   }
 

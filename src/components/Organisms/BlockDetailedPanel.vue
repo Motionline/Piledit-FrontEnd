@@ -3,7 +3,8 @@
     <div v-if="block != null && block.kind === PBlockKind.DefineComponentBlock">
       <v-text-field
         label="コンポーネント名"
-        v-model="componentName"
+        :value="componentName"
+        @change="changeComponentName($event)"
       ></v-text-field>
     </div>
     <div v-else-if="block != null && block.kind === PBlockKind.MovieLoadingBlock">
@@ -15,7 +16,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
-import { PBlock, PBlockKind, TMovieLoadingBlock } from '@/@types/piledit'
+import { PBlock, PBlockKind, TDefineComponentBlock, TMovieLoadingBlock } from '@/@types/piledit'
 import { blocksModule } from '@/store/Modules/Blocks'
 import { remote } from 'electron'
 
@@ -31,20 +32,33 @@ export default class BlockDetailedPanel extends Vue {
       if (movieLoadingBlock.materialPath != null) {
         this.selectFilePath = [movieLoadingBlock.materialPath]
       }
+    } else if (this.block.kind === PBlockKind.DefineComponentBlock) {
+      const defineComponentBlock: TDefineComponentBlock = this.block
+      if (defineComponentBlock.componentName != null) {
+        this.componentName = defineComponentBlock.componentName
+      }
     }
   }
 
   // MovieLoadingBlock
   public selectFilePath: string[] | undefined = []
 
+  // DefineComponentBlock
+  public componentName = ''
+
   get PBlockKind () {
     return PBlockKind
   }
 
-  public componentName = ''
-
   get blocks () {
     return blocksModule.blocks
+  }
+
+  public changeComponentName (_componentName: string) {
+    this.componentName = _componentName
+    const defineComponentBlock: TDefineComponentBlock = this.block
+    defineComponentBlock.componentName = _componentName
+    blocksModule.update(defineComponentBlock)
   }
 
   public openFinder () {

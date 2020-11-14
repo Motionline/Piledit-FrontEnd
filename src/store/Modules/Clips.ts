@@ -39,13 +39,13 @@ class Clips extends VuexModule implements ClipsStateIF {
   }
 
   @Action({ rawError: true })
-  public add (componentUuid: string) {
+  public add (context: { componentUuid: string; componentName: string }) {
     const uuid = VuexMixin.generateUuid()
     const clip = new PClip(
       uuid,
       // TODO: コンポーネント名を設定する
       uuid,
-      componentUuid,
+      context.componentUuid,
       {
         x: 0,
         y: 1

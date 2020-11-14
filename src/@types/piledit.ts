@@ -83,9 +83,13 @@ class PBlockBase implements PBlockIF {
 }
 
 export class TDebugBlock extends PBlockBase {}
-export class TDefineComponentBlock extends PBlockBase {}
+
+export class TDefineComponentBlock extends PBlockBase {
+  public componentName?: string = undefined
+}
+
 export class TMovieLoadingBlock extends PBlockBase {
-  public materialPath?: string
+  public materialPath?: string = undefined
 }
 
 export type PBlock = TDebugBlock | TDefineComponentBlock | TMovieLoadingBlock

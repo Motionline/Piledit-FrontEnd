@@ -36,7 +36,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
 
   @Mutation
   public updateBlock (block: PBlock) {
-    this.blocks[block.uuid] = block
+    Vue.set(this.blocks, block.uuid, block)
   }
 
   // 親ブロックから子ブロックに連鎖して座標を更新

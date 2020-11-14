@@ -42,14 +42,6 @@ export default class SandBox extends Vue {
   @Prop({ required: true })
   public tabUuid!: string
 
-  public getBlock (uuid: string) {
-    return this.blocks[uuid]
-  }
-
-  public shadowPath (width: number) {
-    return `m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H ${width.toString()} a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z`
-  }
-
   public stopDragging (uuid: string) {
     blocksModule.stopDragging(uuid)
   }

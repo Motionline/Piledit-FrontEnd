@@ -12,14 +12,14 @@
     @openingMenu="emitOpeningMenu"
   >
     <SVGText x="10" y="75" color="white">
-      コンポーネント定義
+      {{ displayComponentName }}
     </SVGText>
   </AbstractBlock>
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { PBlock, PBlockKind, PPosition } from '@/@types/piledit'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
+import { PBlockKind, PPosition, TDefineComponentBlock } from '@/@types/piledit'
 import AbstractBlock from '@/components/Atoms/AbstractBlock.vue'
 import SVGText from '@/components/Atoms/SVGText.vue'
 
@@ -31,15 +31,29 @@ import SVGText from '@/components/Atoms/SVGText.vue'
 })
 export default class DefineComponentBlock extends Vue {
   @Prop({ required: true })
-  public block!: PBlock
+  public block!: TDefineComponentBlock
 
   @Prop()
   public newBlockUuid!: string
 
-  public strokeColor = '#e9bc00'
-  public fillColor = '#fcc800'
-  public width = 300
-  public path = `m 0,0 c 25,-22 71,-22 96,0 H ${this.width} a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z`
+  public displayComponentName = 'コンポーネント定義'
+
+  mounted () {
+    this.setDisplayComponentName()
+  }
+
+  @Watch('block', { deep: true })
+  public blockWatcher () {
+    this.setDisplayComponentName()
+  }
+
+  public setDisplayComponentName () {
+    if (this.block.componentName == null) {
+      this.displayComponentName = 'コンポーネント定義'
+    } else {
+      this.displayComponentName = this.block.componentName
+    }
+  }
 
   @Emit('stopDragging')
   public stopDragging (uuid: string) {
