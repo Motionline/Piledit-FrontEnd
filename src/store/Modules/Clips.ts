@@ -38,7 +38,7 @@ export default class Clips extends VuexModule implements ClipsStateIF {
   }
 
   @Action({ rawError: true })
-  public add (context: { componentUuid: string; componentName: string }) {
+  public add (context: { componentUuid: string }) {
     const uuid = VuexMixin.generateUuid()
     const clip = new PClip(
       uuid,

@@ -15,6 +15,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { remote } from 'electron'
 import { tabsModule, clipsModule, componentsModule } from '@/store/store'
+import axios from 'axios'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 const Menu = remote.Menu
 
@@ -112,6 +113,7 @@ export default class App extends Vue {
       clips: clipsModule.clips,
       components: componentsModule.components
     }
+    axios.post('http://localhost:8000/encode', data)
     console.log(data)
   }
 }
