@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { clipsModule } from '@/store/Modules/Clips'
+import { clipsModule } from '@/store/store'
 import { PClips, PPosition, PComponent } from '@/@types/piledit'
 import { remote } from 'electron'
 import SVGText from '@/components/Atoms/SVGText.vue'

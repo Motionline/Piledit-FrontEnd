@@ -18,8 +18,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { componentsModule } from '@/store/Modules/Components'
-import { clipsModule } from '@/store/Modules/Clips'
+import { componentsModule, clipsModule } from '@/store/store'
 import Timeline from '@/components/Templates/Timeline.vue'
 import fs from 'fs'
 import { app } from 'electron'

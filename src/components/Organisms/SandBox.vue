@@ -21,7 +21,7 @@
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { PBlocks, PPosition } from '@/@types/piledit'
-import { blocksModule } from '@/store/Modules/Blocks'
+import { blocksModule } from '@/store/store'
 import BlocksDisplay from '@/components/Organisms/BlocksDisplay.vue'
 import DebugBlock from '@/components/Molecules/Blocks/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/Blocks/DefineComponentBlock.vue'

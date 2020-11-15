@@ -2,8 +2,7 @@ import {
   Module,
   VuexModule,
   Mutation,
-  Action,
-  getModule
+  Action
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
@@ -14,8 +13,8 @@ export interface ClipsStateIF {
   clips: PClips;
 }
 
-@Module({ dynamic: true, store: store, name: 'Clips', namespaced: true })
-class Clips extends VuexModule implements ClipsStateIF {
+@Module({ store: store, name: 'ClipsModule', namespaced: true })
+export default class Clips extends VuexModule implements ClipsStateIF {
   clips: PClips = {}
 
   @Mutation
@@ -69,5 +68,3 @@ class Clips extends VuexModule implements ClipsStateIF {
     this.updateClipWidth(clip)
   }
 }
-
-export const clipsModule = getModule(Clips)

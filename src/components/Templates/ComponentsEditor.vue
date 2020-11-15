@@ -7,8 +7,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { blocksModule } from '@/store/Modules/Blocks'
-import { componentsModule } from '@/store/Modules/Components'
+import { blocksModule, componentsModule } from '@/store/store'
 import { PBlocks } from '@/@types/piledit'
 import SandBox from '@/components/Organisms/SandBox.vue'
 import BlockDetailedPanel from '@/components/Organisms/BlockDetailedPanel.vue'

@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { tabsModule } from '@/store/Modules/Tabs'
+import { tabsModule } from '@/store/store'
 import { PTab } from '@/@types/piledit'
 
 @Component

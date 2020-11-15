@@ -14,9 +14,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { remote } from 'electron'
-import { tabsModule } from '@/store/Modules/Tabs'
-import { clipsModule } from '@/store/Modules/Clips'
-import { componentsModule } from '@/store/Modules/Components'
+import { tabsModule, clipsModule, componentsModule } from '@/store/store'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 const Menu = remote.Menu
 

@@ -1,6 +1,5 @@
 import {
   Action,
-  getModule,
   Module,
   Mutation,
   VuexModule
@@ -8,7 +7,6 @@ import {
 import {
   Vue
 } from 'vue-property-decorator'
-import store from '@/store/store'
 import {
   PBlock,
   PBlockKind,
@@ -23,17 +21,17 @@ import {
 import {
   VuexMixin
 } from '@/mixin/vuex'
-import {
+import store, {
   componentsModule
-} from '@/store/Modules/Components'
+} from '@/store/store'
 
 export interface BlocksStateIF {
   blocks: PBlocks;
   objectOfBlockAndComponent: { [key: string]: string };
 }
 
-@Module({ dynamic: true, store: store, name: 'Blocks', namespaced: true })
-class Blocks extends VuexModule implements BlocksStateIF {
+@Module({ store: store, name: 'BlocksModule', namespaced: true })
+export default class Blocks extends VuexModule implements BlocksStateIF {
   blocks: PBlocks = {}
   objectOfBlockAndComponent: { [key: string]: string } = {}
   DEFINE_COMPONENT_BLOCK = 'DefineComponentBlock'
@@ -170,6 +168,7 @@ class Blocks extends VuexModule implements BlocksStateIF {
       componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
     }
     // TODO: ブロック接続状態でブロックを削除した時、ドラッグアップ時に4つエラーが出る
+    // なぜか治っていた 次出たらここが原因なので気を付ける
     this.removeBlock(uuid)
   }
 
@@ -255,5 +254,3 @@ class Blocks extends VuexModule implements BlocksStateIF {
     }
   }
 }
-
-export const blocksModule = getModule(Blocks)

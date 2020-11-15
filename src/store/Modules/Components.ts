@@ -2,8 +2,7 @@ import {
   Module,
   VuexModule,
   Mutation,
-  Action,
-  getModule
+  Action
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
@@ -13,8 +12,8 @@ export interface ComponentsStateIF {
   components: PComponents;
 }
 
-@Module({ dynamic: true, store: store, name: 'Components', namespaced: true })
-class Components extends VuexModule implements ComponentsStateIF {
+@Module({ store: store, name: 'ComponentsModule', namespaced: true })
+export default class Components extends VuexModule implements ComponentsStateIF {
   components: PComponents = {}
 
   @Mutation
@@ -47,5 +46,3 @@ class Components extends VuexModule implements ComponentsStateIF {
     this.updateComponent(component)
   }
 }
-
-export const componentsModule = getModule(Components)

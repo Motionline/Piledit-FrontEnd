@@ -2,8 +2,7 @@ import {
   Module,
   VuexModule,
   Mutation,
-  Action,
-  getModule
+  Action
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import { VuexMixin } from '@/mixin/vuex'
@@ -15,8 +14,8 @@ export interface TabStateIF {
   currentViewingTabUuid: string;
 }
 
-@Module({ dynamic: true, store: store, name: 'Tabs', namespaced: true })
-class Tabs extends VuexModule implements TabStateIF {
+@Module({ store: store, name: 'TabsModule', namespaced: true })
+export default class Tabs extends VuexModule implements TabStateIF {
   tabs: PTabs = {}
   currentViewingTabUuid = ''
 
@@ -55,5 +54,3 @@ class Tabs extends VuexModule implements TabStateIF {
     this.setCurrentViewingTabUuid(context.uuid)
   }
 }
-
-export const tabsModule = getModule(Tabs)

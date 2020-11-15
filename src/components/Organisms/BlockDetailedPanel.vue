@@ -28,7 +28,7 @@ import {
   PBlock,
   PBlockKind
 } from '@/@types/piledit'
-import { blocksModule } from '@/store/Modules/Blocks'
+import { blocksModule } from '@/store/store'
 import DefineComponentBlockPanel from '@/components/Molecules/Panels/DefineComponentBlockPanel.vue'
 import MovieLoadingBlockPanel from '@/components/Molecules/Panels/MovieLoadingBlockPanel.vue'
 import GrayScaleFilterBlockPanel from '@/components/Molecules/Panels/GrayScaleFilterBlockPanel.vue'
