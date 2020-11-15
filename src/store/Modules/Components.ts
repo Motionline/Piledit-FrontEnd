@@ -29,7 +29,7 @@ class Components extends VuexModule implements ComponentsStateIF {
 
   @Mutation
   public updateComponent (component: PComponent) {
-    this.components[component.uuid] = component
+    Vue.set(this.components, component.uuid, component)
   }
 
   @Action({ rawError: true })

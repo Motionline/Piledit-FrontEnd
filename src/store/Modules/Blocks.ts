@@ -134,7 +134,9 @@ class Blocks extends VuexModule implements BlocksStateIF {
     if (context.name === this.DEFINE_COMPONENT_BLOCK) {
       const componentUuid = VuexMixin.generateUuid()
       this.addRelationBlockAndComponent({ uuid, componentUuid })
-      componentsModule.add({ uuid: componentUuid, blocks: { uuid: block } })
+      const blocks: { [key: string]: PBlock } = {}
+      blocks[block.uuid] = block
+      componentsModule.add({ uuid: componentUuid, blocks })
     }
     return uuid
   }
