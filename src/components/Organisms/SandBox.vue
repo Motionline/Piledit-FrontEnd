@@ -26,13 +26,15 @@ import BlocksDisplay from '@/components/Organisms/BlocksDisplay.vue'
 import DebugBlock from '@/components/Molecules/Blocks/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/Blocks/DefineComponentBlock.vue'
 import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'
+import GrayScaleFilterBlock from '@/components/Molecules/Blocks/GrayScaleFilterBlock.vue'
 
 @Component({
   components: {
     DebugBlock,
     DefineComponentBlock,
     BlocksDisplay,
-    MovieLoadingBlock
+    MovieLoadingBlock,
+    GrayScaleFilterBlock
   }
 })
 export default class SandBox extends Vue {

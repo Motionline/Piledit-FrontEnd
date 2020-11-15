@@ -30,22 +30,42 @@
       class="dragBlock-btn"
       transform="translate(1,20)"
     />
+    <GrayScaleFilterBlock
+      @newBlockGenerate="newBlockGenerate"
+      @newBlockMove="newBlockMove"
+      @newBlockMouseUp="newBlockMouseUp"
+      :new-block-uuid="newBlockUuid"
+      :sample-block="true"
+      :block="getPBlock({ x: 0, y: 200 }, PBlockKind.GrayScaleFilterBlock)"
+      class="dragBlock-btn"
+      transform="translate(1,20)"
+    />
   </svg>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { blocksModule } from '@/store/Modules/Blocks'
-import { PBlock, PBlockKind, PPosition, TDebugBlock, TDefineComponentBlock, TMovieLoadingBlock } from '@/@types/piledit'
+import {
+  PBlock,
+  PBlockKind,
+  PPosition,
+  TDebugBlock,
+  TDefineComponentBlock,
+  TGrayScaleFilterBlock,
+  TMovieLoadingBlock
+} from '@/@types/piledit'
 import DebugBlock from '@/components/Molecules/Blocks/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/Blocks/DefineComponentBlock.vue'
 import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'
+import GrayScaleFilterBlock from '@/components/Molecules/Blocks/GrayScaleFilterBlock.vue'
 
   @Component({
     components: {
       MovieLoadingBlock,
       DebugBlock,
-      DefineComponentBlock
+      DefineComponentBlock,
+      GrayScaleFilterBlock
     }
   })
 export default class BlocksDisplay extends Vue {
@@ -77,6 +97,8 @@ export default class BlocksDisplay extends Vue {
       return new TDefineComponentBlock(init)
     } else if (kind === PBlockKind.MovieLoadingBlock) {
       return new TMovieLoadingBlock(init)
+    } else if (kind === PBlockKind.GrayScaleFilterBlock) {
+      return new TGrayScaleFilterBlock(init)
     } else {
       throw new Error('登録されていないブロックです')
     }

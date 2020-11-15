@@ -23,7 +23,8 @@ export interface PBlockIF {
 export enum PBlockKind {
   DebugBlock = 'DebugBlock',
   DefineComponentBlock = 'DefineComponentBlock',
-  MovieLoadingBlock = 'MovieLoadingBlock'
+  MovieLoadingBlock = 'MovieLoadingBlock',
+  GrayScaleFilterBlock = 'GrayScaleFilterBlock'
 }
 
 export function blockParameter (kind?: PBlockKind) {
@@ -39,8 +40,13 @@ export function blockParameter (kind?: PBlockKind) {
     return { path, strokeColor, fillColor }
   } else if (kind === PBlockKind.MovieLoadingBlock) {
     const path = 'm 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 300 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
-    const strokeColor = '#ffa02c'
-    const fillColor = '#ff7f1e'
+    const strokeColor = '#ff7f1e'
+    const fillColor = '#ffa02c'
+    return { path, strokeColor, fillColor }
+  } else if (kind === PBlockKind.GrayScaleFilterBlock) {
+    const path = 'm 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 300 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
+    const strokeColor = '#2f2f2f'
+    const fillColor = '#3e3e3e'
     return { path, strokeColor, fillColor }
   } else {
     throw new Error('登録されていないBlockです')
@@ -92,7 +98,24 @@ export class TMovieLoadingBlock extends PBlockBase {
   public materialPath?: string = undefined
 }
 
-export type PBlock = TDebugBlock | TDefineComponentBlock | TMovieLoadingBlock
+export enum GrayScaleFilterMode {
+  Invalid,
+  BasedOnR,
+  BasedOnG,
+  BasedOnB
+}
+
+export class TGrayScaleFilterBlock extends PBlockBase {
+  public value?: number = undefined
+  public inversion?: boolean = undefined
+  public mode?: GrayScaleFilterMode = undefined
+}
+
+export type PBlock =
+  TDebugBlock |
+  TDefineComponentBlock |
+  TMovieLoadingBlock |
+  TGrayScaleFilterBlock
 
 export type PBlocks = {
   [key: string]: PBlock;

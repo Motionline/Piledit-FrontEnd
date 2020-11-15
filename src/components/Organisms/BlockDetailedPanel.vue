@@ -11,12 +11,22 @@
       <v-btn @click="openFinder">Finderを開く</v-btn>
       <div v-if="selectFilePath !== undefined && selectFilePath.length > 0">{{ selectFilePath[0] }}</div>
     </div>
+    <div v-else-if="block != null && block.kind === PBlockKind.GrayScaleFilterBlock">
+      <p>グレースケール</p>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
-import { PBlock, PBlockKind, TDefineComponentBlock, TMovieLoadingBlock } from '@/@types/piledit'
+import {
+  GrayScaleFilterMode,
+  PBlock,
+  PBlockKind,
+  TDefineComponentBlock,
+  TGrayScaleFilterBlock,
+  TMovieLoadingBlock
+} from '@/@types/piledit'
 import { blocksModule } from '@/store/Modules/Blocks'
 import { remote } from 'electron'
 
@@ -27,15 +37,27 @@ export default class BlockDetailedPanel extends Vue {
 
   @Watch('block')
   public watchBlock () {
-    if (this.block.kind === PBlockKind.MovieLoadingBlock) {
+    const kind = this.block.kind
+    if (kind === PBlockKind.MovieLoadingBlock) {
       const movieLoadingBlock: TMovieLoadingBlock = this.block
       if (movieLoadingBlock.materialPath != null) {
         this.selectFilePath = [movieLoadingBlock.materialPath]
       }
-    } else if (this.block.kind === PBlockKind.DefineComponentBlock) {
+    } else if (kind === PBlockKind.DefineComponentBlock) {
       const defineComponentBlock: TDefineComponentBlock = this.block
       if (defineComponentBlock.componentName != null) {
         this.componentName = defineComponentBlock.componentName
+      }
+    } else if (kind === PBlockKind.GrayScaleFilterBlock) {
+      const grayScaleFilterBlock: TGrayScaleFilterBlock = this.block
+      if (grayScaleFilterBlock.inversion != null) {
+        this.grayScaleFilterBlockParams.inversion = grayScaleFilterBlock.inversion
+      }
+      if (grayScaleFilterBlock.value != null) {
+        this.grayScaleFilterBlockParams.value = grayScaleFilterBlock.value
+      }
+      if (grayScaleFilterBlock.mode != null) {
+        this.grayScaleFilterBlockParams.mode = grayScaleFilterBlock.mode
       }
     }
   }
@@ -45,6 +67,13 @@ export default class BlockDetailedPanel extends Vue {
 
   // DefineComponentBlock
   public componentName = ''
+
+  // GrayScaleFilterBlock
+  public grayScaleFilterBlockParams = {
+    inversion: false,
+    value: 0,
+    mode: GrayScaleFilterMode.Invalid
+  }
 
   get PBlockKind () {
     return PBlockKind

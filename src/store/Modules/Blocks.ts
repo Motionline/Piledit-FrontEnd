@@ -8,6 +8,7 @@ import {
   PPosition,
   TDebugBlock,
   TDefineComponentBlock,
+  TGrayScaleFilterBlock,
   TMovieLoadingBlock
 } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
@@ -122,6 +123,8 @@ class Blocks extends VuexModule implements BlocksStateIF {
         return new TDefineComponentBlock(init)
       } else if (kind === PBlockKind.MovieLoadingBlock) {
         return new TMovieLoadingBlock(init)
+      } else if (kind === PBlockKind.GrayScaleFilterBlock) {
+        return new TGrayScaleFilterBlock(init)
       } else {
         throw new Error('登録されていないブロックです')
       }
