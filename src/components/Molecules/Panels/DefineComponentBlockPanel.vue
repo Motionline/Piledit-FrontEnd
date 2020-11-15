@@ -1,5 +1,6 @@
 <template>
   <div>
+    <p>コンポーネント定義ブロック</p>
     <v-text-field
       label="コンポーネント名"
       :value="componentName"

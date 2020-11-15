@@ -52,8 +52,8 @@ export function blockParameter (kind?: PBlockKind) {
     return { path, strokeColor, fillColor }
   } else if (kind === PBlockKind.DefineComponentBlock) {
     const path = onlyParentBlockPath(PBlockSize.medium)
-    const strokeColor = '#e9bc00'
-    const fillColor = '#fcc800'
+    const strokeColor = '#bd9900'
+    const fillColor = '#e3b100'
     return { path, strokeColor, fillColor }
   } else if (kind === PBlockKind.MovieLoadingBlock) {
     const path = basicBlockPath(PBlockSize.medium)

@@ -51,7 +51,7 @@ export default class DefineComponentBlock extends Vue {
     if (this.block.componentName == null) {
       this.displayComponentName = 'コンポーネント定義'
     } else {
-      this.displayComponentName = this.block.componentName
+      this.displayComponentName = 'コンポーネント名: ' + this.block.componentName
     }
   }
 
