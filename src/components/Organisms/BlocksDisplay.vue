@@ -40,6 +40,16 @@
       class="dragBlock-btn"
       transform="translate(1,20)"
     />
+    <BlurFilterBlock
+      @newBlockGenerate="newBlockGenerate"
+      @newBlockMove="newBlockMove"
+      @newBlockMouseUp="newBlockMouseUp"
+      :new-block-uuid="newBlockUuid"
+      :sample-block="true"
+      :block="getPBlock({ x: 0, y: 250 }, PBlockKind.BlurFilterBlock)"
+      class="dragBlock-btn"
+      transform="translate(1,20)"
+    />
   </svg>
 </template>
 
@@ -49,7 +59,7 @@ import { blocksModule } from '@/store/Modules/Blocks'
 import {
   PBlock,
   PBlockKind,
-  PPosition,
+  PPosition, TBlurFilterBlock,
   TDebugBlock,
   TDefineComponentBlock,
   TGrayScaleFilterBlock,
@@ -59,13 +69,15 @@ import DebugBlock from '@/components/Molecules/Blocks/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/Blocks/DefineComponentBlock.vue'
 import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'
 import GrayScaleFilterBlock from '@/components/Molecules/Blocks/GrayScaleFilterBlock.vue'
+import BlurFilterBlock from '@/components/Molecules/Blocks/BlurFilterBlock.vue'
 
   @Component({
     components: {
       MovieLoadingBlock,
       DebugBlock,
       DefineComponentBlock,
-      GrayScaleFilterBlock
+      GrayScaleFilterBlock,
+      BlurFilterBlock
     }
   })
 export default class BlocksDisplay extends Vue {
@@ -99,6 +111,8 @@ export default class BlocksDisplay extends Vue {
       return new TMovieLoadingBlock(init)
     } else if (kind === PBlockKind.GrayScaleFilterBlock) {
       return new TGrayScaleFilterBlock(init)
+    } else if (kind === PBlockKind.BlurFilterBlock) {
+      return new TBlurFilterBlock(init)
     } else {
       throw new Error('登録されていないブロックです')
     }

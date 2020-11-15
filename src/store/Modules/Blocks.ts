@@ -6,6 +6,7 @@ import {
   PBlockKind,
   PBlocks,
   PPosition,
+  TBlurFilterBlock,
   TDebugBlock,
   TDefineComponentBlock,
   TGrayScaleFilterBlock,
@@ -125,6 +126,8 @@ class Blocks extends VuexModule implements BlocksStateIF {
         return new TMovieLoadingBlock(init)
       } else if (kind === PBlockKind.GrayScaleFilterBlock) {
         return new TGrayScaleFilterBlock(init)
+      } else if (kind === PBlockKind.BlurFilterBlock) {
+        return new TBlurFilterBlock(init)
       } else {
         throw new Error('登録されていないブロックです')
       }

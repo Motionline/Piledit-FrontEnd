@@ -24,7 +24,8 @@ export enum PBlockKind {
   DebugBlock = 'DebugBlock',
   DefineComponentBlock = 'DefineComponentBlock',
   MovieLoadingBlock = 'MovieLoadingBlock',
-  GrayScaleFilterBlock = 'GrayScaleFilterBlock'
+  GrayScaleFilterBlock = 'GrayScaleFilterBlock',
+  BlurFilterBlock = 'BlurFilterBlock'
 }
 
 export function blockParameter (kind?: PBlockKind) {
@@ -47,6 +48,11 @@ export function blockParameter (kind?: PBlockKind) {
     const path = 'm 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 300 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
     const strokeColor = '#2f2f2f'
     const fillColor = '#3e3e3e'
+    return { path, strokeColor, fillColor }
+  } else if (kind === PBlockKind.BlurFilterBlock) {
+    const path = 'm 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 300 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
+    const strokeColor = '#601b7d'
+    const fillColor = '#79219c'
     return { path, strokeColor, fillColor }
   } else {
     throw new Error('登録されていないBlockです')
@@ -111,11 +117,15 @@ export class TGrayScaleFilterBlock extends PBlockBase {
   public mode?: GrayScaleFilterMode = undefined
 }
 
+export class TBlurFilterBlock extends PBlockBase {
+}
+
 export type PBlock =
   TDebugBlock |
   TDefineComponentBlock |
   TMovieLoadingBlock |
-  TGrayScaleFilterBlock
+  TGrayScaleFilterBlock |
+  TBlurFilterBlock
 
 export type PBlocks = {
   [key: string]: PBlock;

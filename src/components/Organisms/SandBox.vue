@@ -27,6 +27,7 @@ import DebugBlock from '@/components/Molecules/Blocks/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/Blocks/DefineComponentBlock.vue'
 import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'
 import GrayScaleFilterBlock from '@/components/Molecules/Blocks/GrayScaleFilterBlock.vue'
+import BlurFilterBlock from '@/components/Molecules/Blocks/BlurFilterBlock.vue'
 
 @Component({
   components: {
@@ -34,7 +35,8 @@ import GrayScaleFilterBlock from '@/components/Molecules/Blocks/GrayScaleFilterB
     DefineComponentBlock,
     BlocksDisplay,
     MovieLoadingBlock,
-    GrayScaleFilterBlock
+    GrayScaleFilterBlock,
+    BlurFilterBlock
   }
 })
 export default class SandBox extends Vue {

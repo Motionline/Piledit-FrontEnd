@@ -15,6 +15,10 @@
       @updateBlock="updateBlock"
       v-else-if="isKind(PBlockKind.GrayScaleFilterBlock)"
     />
+    <BlurFilterBlockPanel
+      :block="block"
+      v-else-if="isKind(PBlockKind.BlurFilterBlock)"
+    />
   </div>
 </template>
 
@@ -28,12 +32,16 @@ import { blocksModule } from '@/store/Modules/Blocks'
 import DefineComponentBlockPanel from '@/components/Molecules/Panels/DefineComponentBlockPanel.vue'
 import MovieLoadingBlockPanel from '@/components/Molecules/Panels/MovieLoadingBlockPanel.vue'
 import GrayScaleFilterBlockPanel from '@/components/Molecules/Panels/GrayScaleFilterBlockPanel.vue'
+import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'
+import BlurFilterBlockPanel from '@/components/Molecules/Panels/BlurFilterBlockPanel.vue'
 
 @Component({
   components: {
+    BlurFilterBlockPanel,
     DefineComponentBlockPanel,
     MovieLoadingBlockPanel,
-    GrayScaleFilterBlockPanel
+    GrayScaleFilterBlockPanel,
+    MovieLoadingBlock
   }
 })
 export default class BlockDetailedPanel extends Vue {
@@ -41,7 +49,6 @@ export default class BlockDetailedPanel extends Vue {
   public block!: PBlock
 
   public updateBlock (block: PBlock) {
-    console.log(block)
     blocksModule.update(block)
   }
 
