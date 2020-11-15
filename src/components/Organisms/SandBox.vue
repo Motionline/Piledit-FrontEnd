@@ -23,9 +23,9 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { PBlocks, PPosition } from '@/@types/piledit'
 import { blocksModule } from '@/store/Modules/Blocks'
 import BlocksDisplay from '@/components/Organisms/BlocksDisplay.vue'
-import DebugBlock from '@/components/Molecules/DebugBlock.vue'
-import DefineComponentBlock from '@/components/Molecules/DefineComponentBlock.vue'
-import MovieLoadingBlock from '@/components/Molecules/MovieLoadingBlock.vue'
+import DebugBlock from '@/components/Molecules/Blocks/DebugBlock.vue'
+import DefineComponentBlock from '@/components/Molecules/Blocks/DefineComponentBlock.vue'
+import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'
 
 @Component({
   components: {

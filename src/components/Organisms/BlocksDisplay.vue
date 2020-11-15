@@ -37,9 +37,9 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { blocksModule } from '@/store/Modules/Blocks'
 import { PBlock, PBlockKind, PPosition, TDebugBlock, TDefineComponentBlock, TMovieLoadingBlock } from '@/@types/piledit'
-import DebugBlock from '@/components/Molecules/DebugBlock.vue'
-import DefineComponentBlock from '@/components/Molecules/DefineComponentBlock.vue'
-import MovieLoadingBlock from '@/components/Molecules/MovieLoadingBlock.vue'
+import DebugBlock from '@/components/Molecules/Blocks/DebugBlock.vue'
+import DefineComponentBlock from '@/components/Molecules/Blocks/DefineComponentBlock.vue'
+import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'
 
   @Component({
     components: {
