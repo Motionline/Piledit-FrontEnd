@@ -1,5 +1,13 @@
-import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import { Vue } from 'vue-property-decorator'
+import {
+  Action,
+  getModule,
+  Module,
+  Mutation,
+  VuexModule
+} from 'vuex-module-decorators'
+import {
+  Vue
+} from 'vue-property-decorator'
 import store from '@/store/store'
 import {
   PBlock,
@@ -12,8 +20,12 @@ import {
   TGrayScaleFilterBlock,
   TMovieLoadingBlock
 } from '@/@types/piledit'
-import { VuexMixin } from '@/mixin/vuex'
-import { componentsModule } from '@/store/Modules/Components'
+import {
+  VuexMixin
+} from '@/mixin/vuex'
+import {
+  componentsModule
+} from '@/store/Modules/Components'
 
 export interface BlocksStateIF {
   blocks: PBlocks;
@@ -148,6 +160,9 @@ class Blocks extends VuexModule implements BlocksStateIF {
   public remove (uuid: string) {
     const block = this.blocks[uuid]
     const topBlock = this.blocks[block.topUuid]
+    if (block.kind === PBlockKind.DefineComponentBlock) {
+      componentsModule.remove(this.objectOfBlockAndComponent[uuid])
+    }
     if (topBlock != null && topBlock.kind === PBlockKind.DefineComponentBlock) {
       this.removeChild(block.parentUuid)
       const componentUuid = this.objectOfBlockAndComponent[topBlock.uuid]
