@@ -13,6 +13,30 @@
     </div>
     <div v-else-if="block != null && block.kind === PBlockKind.GrayScaleFilterBlock">
       <p>グレースケール</p>
+      <v-slider
+        :value="grayScaleFilterBlockParams.value"
+        @change="changeGrayScaleValue($event)"
+        label="値" max="256" min="0" thumb-label="always" style="width: 50%;"
+      />
+      <v-text-field
+        type="number"
+        :value="grayScaleFilterBlockParams.value"
+        @change="changeGrayScaleValue($event)"
+        :rules="grayScaleValueTextFieldRules"
+      />
+      <v-checkbox
+        label="白黒を反転させる"
+        :input-value="grayScaleFilterBlockParams.inversion"
+        @change="changeGrayScaleInversion($event)"
+      />
+      <v-select
+        style="width: 50%;"
+        :value="grayScaleFilterBlockParams.mode"
+        @change="changeGrayScaleMode($event)"
+        :items="grayScaleFilterBlockParams.items"
+        item-text="display"
+        item-value="value"
+      />
     </div>
   </div>
 </template>
@@ -42,11 +66,15 @@ export default class BlockDetailedPanel extends Vue {
       const movieLoadingBlock: TMovieLoadingBlock = this.block
       if (movieLoadingBlock.materialPath != null) {
         this.selectFilePath = [movieLoadingBlock.materialPath]
+      } else {
+        this.selectFilePath = undefined
       }
     } else if (kind === PBlockKind.DefineComponentBlock) {
       const defineComponentBlock: TDefineComponentBlock = this.block
       if (defineComponentBlock.componentName != null) {
         this.componentName = defineComponentBlock.componentName
+      } else {
+        this.componentName = ''
       }
     } else if (kind === PBlockKind.GrayScaleFilterBlock) {
       const grayScaleFilterBlock: TGrayScaleFilterBlock = this.block
@@ -72,8 +100,19 @@ export default class BlockDetailedPanel extends Vue {
   public grayScaleFilterBlockParams = {
     inversion: false,
     value: 0,
-    mode: GrayScaleFilterMode.Invalid
+    mode: GrayScaleFilterMode.Invalid,
+    items: [
+      { display: '無効', value: GrayScaleFilterMode.Invalid },
+      { display: '赤基準', value: GrayScaleFilterMode.BasedOnR },
+      { display: '緑基準', value: GrayScaleFilterMode.BasedOnG },
+      { display: '青基準', value: GrayScaleFilterMode.BasedOnB }
+    ]
   }
+
+  public grayScaleValueTextFieldRules = [
+    (v: number) => (!!v) || '必ず値を入力してください',
+    (v: number) => (v && v >= 0 && v <= 256) || '0以上256以下である必要があります'
+  ]
 
   get PBlockKind () {
     return PBlockKind
@@ -88,6 +127,27 @@ export default class BlockDetailedPanel extends Vue {
     const defineComponentBlock: TDefineComponentBlock = this.block
     defineComponentBlock.componentName = _componentName
     blocksModule.update(defineComponentBlock)
+  }
+
+  public changeGrayScaleValue (_value: number) {
+    this.grayScaleFilterBlockParams.value = _value
+    const grayScaleFilterBlock: TGrayScaleFilterBlock = this.block
+    grayScaleFilterBlock.value = _value
+    blocksModule.update(grayScaleFilterBlock)
+  }
+
+  public changeGrayScaleInversion (_inversion: boolean) {
+    this.grayScaleFilterBlockParams.inversion = _inversion
+    const grayScaleFilterBlock: TGrayScaleFilterBlock = this.block
+    grayScaleFilterBlock.inversion = _inversion
+    blocksModule.update(grayScaleFilterBlock)
+  }
+
+  public changeGrayScaleMode (_mode: GrayScaleFilterMode) {
+    this.grayScaleFilterBlockParams.mode = _mode
+    const grayScaleFilterBlock: TGrayScaleFilterBlock = this.block
+    grayScaleFilterBlock.mode = _mode
+    blocksModule.update(grayScaleFilterBlock)
   }
 
   public openFinder () {
