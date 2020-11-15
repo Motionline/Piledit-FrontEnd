@@ -28,29 +28,45 @@ export enum PBlockKind {
   BlurFilterBlock = 'BlurFilterBlock'
 }
 
+enum PBlockSize {
+  xShort = 200,
+  short = 250,
+  medium = 300,
+  long = 350,
+  xLong = 400
+}
+
+function basicBlockPath (width: number) {
+  return `m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H ${width} a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z`
+}
+
+function onlyParentBlockPath (width: number) {
+  return `m 0,0 c 25,-22 71,-22 96,0 H ${width} a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z`
+}
+
 export function blockParameter (kind?: PBlockKind) {
   if (kind === PBlockKind.DebugBlock) {
-    const path = 'm 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 350 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
+    const path = basicBlockPath(PBlockSize.long)
     const strokeColor = '#c53d43'
     const fillColor = '#e83929'
     return { path, strokeColor, fillColor }
   } else if (kind === PBlockKind.DefineComponentBlock) {
-    const path = 'm 0,0 c 25,-22 71,-22 96,0 H 300 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
+    const path = onlyParentBlockPath(PBlockSize.medium)
     const strokeColor = '#e9bc00'
     const fillColor = '#fcc800'
     return { path, strokeColor, fillColor }
   } else if (kind === PBlockKind.MovieLoadingBlock) {
-    const path = 'm 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 300 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
+    const path = basicBlockPath(PBlockSize.medium)
     const strokeColor = '#ff7f1e'
     const fillColor = '#ffa02c'
     return { path, strokeColor, fillColor }
   } else if (kind === PBlockKind.GrayScaleFilterBlock) {
-    const path = 'm 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 300 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
+    const path = basicBlockPath(PBlockSize.medium)
     const strokeColor = '#2f2f2f'
     const fillColor = '#3e3e3e'
     return { path, strokeColor, fillColor }
   } else if (kind === PBlockKind.BlurFilterBlock) {
-    const path = 'm 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 300 a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z'
+    const path = basicBlockPath(PBlockSize.medium)
     const strokeColor = '#601b7d'
     const fillColor = '#79219c'
     return { path, strokeColor, fillColor }
