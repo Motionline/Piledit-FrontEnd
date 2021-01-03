@@ -1,62 +1,25 @@
 <template>
   <div id="Home">
-    <h3>全てのコンポーネント</h3>
-    <div v-for="(_, uuid) in components" :key="uuid">
-      <v-btn @click="addClip(uuid)">{{ uuid }}</v-btn>
-    </div>
-    <Timeline :clips="clips" :components="components" />
+    <h1>Pileditへようこそ</h1>
+    <v-btn>新規プロジェクト</v-btn>
+    <v-btn>プロジェクトを開く</v-btn>
+    <p>アカウント設定</p>
+    <v-btn>アカウント作成</v-btn>
   </div>
 </template>
 
-<style scoped>
-</style>
-
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { componentsModule, clipsModule } from '@/store/store'
-import Timeline from '@/components/Templates/Timeline.vue'
-import fs from 'fs'
-import { app } from 'electron'
-@Component({
-  components: {
-    Timeline
-  }
-})
+
+@Component
 export default class Home extends Vue {
-  get components () {
-    return componentsModule.components
-  }
-
-  get clips () {
-    return clipsModule.clips
-  }
-
-  public addClip (uuid: string) {
-    clipsModule.add(uuid)
-  }
-
-  public showClips () {
-    console.log(this.clips)
-  }
-
-  public outputMovieConfigurationFile () {
-    for (const key of Object.keys(this.clips)) {
-      const clip = this.clips[key]
-      const appPath = app.getAppPath()
-      const path = appPath + '/JSON'
-      if (!fs.existsSync(path)) {
-        fs.mkdirSync(path)
-      }
-      fs.writeFileSync(
-        `${path}/${key}.json`,
-        JSON.stringify({
-          Frame: {
-            Begin: clip.position.x,
-            End: clip.position.x + clip.width,
-            Length: clip.width
-          }
-        }, undefined, 2), 'utf-8')
-    }
-  }
 }
 </script>
+
+<style scoped lang="scss">
+#Home {
+  background-color: #203744;
+  color: white;
+  height: 100vh;
+}
+</style>
