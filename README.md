@@ -1,5 +1,7 @@
 # Piledit
-![piledit-logo](logo.png)
+<div align="center">
+<img src="logo.png" alt="piledit-icon" title="piledit-icon">
+</div>
 
 Piledit is a new video editing software that follows **software engineering** and adopts a **component-oriented approach** in which videos are assembled from small components.  
 Also, many video editing software is esoteric and very expensive to learn. To solve that, Piledit employs a block editor like scratch to make editing video intuitive, even for first-time learners.  
