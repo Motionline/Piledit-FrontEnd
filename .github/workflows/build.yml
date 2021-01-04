@@ -1,0 +1,78 @@
+name: Build Release Electron
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+      - name: Set Context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: Set Node.js Version
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Install Yarn
+        run: |
+          yarn install
+      - name: Install Vue CLI
+        run: |
+          yarn global add @vue/cli
+      - name: Build for Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          yarn run electron:build --windows nsis zip --x64
+      - name: Build for MacOS
+        if: matrix.os == 'macos-latest'
+        run: |
+          yarn run electron:build --macos dmg --x64
+      - name: Build for Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          yarn run electron:build --linux AppImage --x64
+      - name: Upload Artifacts for Windows Zip
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.event.repository.name }}-Zip Package
+          path: dist_electron/*.zip
+      - name: Upload Artifacts for Windows Installer
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.event.repository.name }}-Windows Installer
+          path: dist_electron/*.exe
+      - name: Upload Artifacts for MacOS
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.event.repository.name }}-Dmg Package
+          path: dist_electron/*.dmg
+      - name: Upload Artifacts for Linux
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.event.repository.name }}-AppImage Package
+          path: dist_electron/*.AppImage
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            dist_electron/*.zip
+            dist_electron/*.exe
+            dist_electron/*.dmg
+            dist_electron/*.AppImage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
