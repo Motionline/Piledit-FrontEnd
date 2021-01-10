@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
-import TimeLine from '@/views/TimeLine.vue'
-import ComponentsEdit from '@/views/ComponentsEdit.vue'
 
 Vue.use(VueRouter)
 
@@ -11,11 +9,12 @@ const routes: Array<RouteConfig> = [
   { path: '/users/:userId' }, // ユーザー表示
   { path: '/users/settings' }, // ユーザー編集
   { path: '/newProject', name: 'NewProject', component: () => import('../views/NewProject.vue') },
-  { path: '/timeline/:projectUuid', name: 'TimeLine', component: () => import('../views/TimeLine.vue') },
-  { path: '/components_edit/:projectUuid/:tabUuid', name: 'ComponentsEdit', component: () => import('../views/ComponentsEdit.vue') }
+  { path: '/projects/:project_uuid/components_edit/:tabUuid', name: 'ComponentsEdit', component: () => import('../views/ComponentsEdit.vue') },
+  { path: '/projects/:project_uuid', name: 'TimeLine', component: () => import('../views/TimeLine.vue') }
 ]
 
 const router = new VueRouter({
+  mode: 'hash',
   routes
 })
 

@@ -32,13 +32,14 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
   }
 
   @Action({ rawError: true })
-  public add (context: { name: string }) {
+  public async add (context: { name: string }) {
     const uuid = VuexMixin.generateUuid()
     const project: PProject = {
       name: context.name,
       uuid
     }
     this.addProject(project)
+    return uuid
   }
 
   @Action({ rawError: true })
