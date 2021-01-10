@@ -1,6 +1,5 @@
 <template>
   <div id="Home">
-    <ApplicationTab />
     <h3>全てのコンポーネント</h3>
     <div v-for="(_, uuid) in components" :key="uuid">
       <v-btn @click="addClip(uuid)">{{ uuid }}</v-btn>
@@ -16,13 +15,12 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { componentsModule, clipsModule, blocksModule } from '@/store/store'
 import TimeLineComponent from '@/components/Templates/Timeline.vue'
-import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 import fs from 'fs'
 import { app } from 'electron'
+
 @Component({
   components: {
-    TimeLineComponent,
-    ApplicationTab
+    TimeLineComponent
   }
 })
 export default class TimeLine extends Vue {

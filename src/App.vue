@@ -1,5 +1,6 @@
 <template>
   <v-app id="app" class="ma-0 pa-0">
+    <application-tab />
     <router-view />
   </v-app>
 </template>
@@ -8,10 +9,12 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { remote } from 'electron'
 import { tabsModule, clipsModule, componentsModule } from '@/store/store'
+import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 import axios from 'axios'
 const Menu = remote.Menu
 
 @Component({
+  components: { ApplicationTab }
 })
 export default class App extends Vue {
   mounted () {
