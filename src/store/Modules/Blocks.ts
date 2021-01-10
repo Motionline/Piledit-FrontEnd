@@ -1,12 +1,5 @@
-import {
-  Action,
-  Module,
-  Mutation,
-  VuexModule
-} from 'vuex-module-decorators'
-import {
-  Vue
-} from 'vue-property-decorator'
+import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
+import { Vue } from 'vue-property-decorator'
 import {
   PBlock,
   PBlockKind,
@@ -18,12 +11,8 @@ import {
   TGrayScaleFilterBlock,
   TMovieLoadingBlock
 } from '@/@types/piledit'
-import {
-  VuexMixin
-} from '@/mixin/vuex'
-import store, {
-  componentsModule
-} from '@/store/store'
+import { VuexMixin } from '@/mixin/vuex'
+import store, { componentsModule } from '@/store/store'
 
 export interface BlocksStateIF {
   blocks: PBlocks;
@@ -177,6 +166,17 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
     this.updateBlock(_triggerBlock)
     this.updateChildBlock(_triggerBlock)
     const triggerBlock = this.blocks[_triggerBlock.uuid]
+    const topBlock = this.blocks[triggerBlock.topUuid]
+    if (topBlock != null && topBlock.kind === PBlockKind.DefineComponentBlock) {
+      const componentUuid = this.objectOfBlockAndComponent[topBlock.uuid]
+      const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
+      componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
+    }
+    if (triggerBlock.kind === PBlockKind.DefineComponentBlock) {
+      const componentUuid = this.objectOfBlockAndComponent[triggerBlock.uuid]
+      const blocksFamily = VuexMixin.searchChildrenOfBlock(triggerBlock, this.blocks)
+      componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
+    }
     for (const blockUuid of Object.keys(this.blocks)) {
       if (triggerBlock.uuid === blockUuid) continue
       if (triggerBlock.kind === PBlockKind.DefineComponentBlock) continue
