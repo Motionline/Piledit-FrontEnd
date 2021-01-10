@@ -3,6 +3,25 @@ export type PPosition = {
   y: number;
 }
 
+export interface PProjectIF {
+  name: string;
+  uuid: string;
+}
+
+export class PProject implements PProjectIF {
+  public name: string;
+  public uuid: string;
+
+  constructor (context: Partial<PBlockBase>) {
+    this.name = context.name!
+    this.uuid = context.uuid!
+  }
+}
+
+export type PProjects = {
+  [key: string]: PProject;
+}
+
 export interface PBlockIF {
   name: string;
   kind: PBlockKind;
