@@ -45,11 +45,8 @@ export default class ApplicationTab extends Vue {
     return tabsModule.currentViewingTabUuid
   }
 
-  mounted () {
-    if (this.$route.path !== '/') {
-      this.$router.push('/')
-    }
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  mounted () {}
 
   public updateCurrentViewingTabUuid (uuid: string) {
     tabsModule.updateCurrentViewingTabUuid({ uuid })
@@ -57,8 +54,9 @@ export default class ApplicationTab extends Vue {
 
   public getUrl (tab: PTab) {
     const name = tab.name
+    const project = ''
     if (name === 'componentsEditor') {
-      return `/components_edit/${tab.uuid}`
+      return `/projects/${project.uuid}/components_edit/${tab.uuid}`
     }
   }
 
