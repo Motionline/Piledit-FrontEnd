@@ -1,5 +1,5 @@
 <template>
-  <v-tabs vertical hide-slider color="black" grow align-with-title left>
+  <v-tabs hide-slider color="black" grow align-with-title left>
     <v-tab to="/" :ripple="false" class="applicationTab--tab">
       タイムライン
     </v-tab>
@@ -26,7 +26,6 @@
 
 <style lang="scss">
 .applicationTab--tab {
-  height: 30px !important;
   font-size: 12px !important;
 }
 </style>
