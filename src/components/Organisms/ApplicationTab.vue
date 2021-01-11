@@ -1,7 +1,14 @@
 <template>
-  <v-tabs hide-slider color="black" grow align-with-title left>
-    <v-tab to="/" :ripple="false" class="applicationTab--tab">
-      タイムライン
+  <v-tabs hide-slider color="black" left>
+    <v-tab :ripple="false" :disabled="backwardDisabled()" @click="backward()">
+      <v-btn icon :ripple="false">
+        <v-icon>mdi-arrow-left-thick</v-icon>
+      </v-btn>
+    </v-tab>
+    <v-tab :ripple="false" :disabled="forwardDisabled()" @click="forward()">
+      <v-btn icon :ripple="false">
+        <v-icon>mdi-arrow-right-thick</v-icon>
+      </v-btn>
     </v-tab>
     <v-tab
       v-for="(tab, key) in tabs"
@@ -11,7 +18,7 @@
       @click="updateCurrentViewingTabUuid(tab.uuid)"
       class="applicationTab--tab"
     >
-      {{ getText(tab) }}
+      {{ getTitle(tab) }}
       <v-btn
         icon
         x-small
@@ -21,6 +28,11 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-tab>
+    <v-tab :ripple="false" @click="addTab()">
+      <v-btn icon :ripple="false">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </v-tab>
   </v-tabs>
 </template>
 
@@ -28,12 +40,20 @@
 .applicationTab--tab {
   font-size: 12px !important;
 }
+.selected-tab {
+  background-color: red;
+}
 </style>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { tabsModule } from '@/store/store'
 import { PTab } from '@/@types/piledit'
+
+// tabs、ここでどうにか処理するのではなくて
+// Storeの時点でリンクを持っておいて、よしなにするべきじゃないか
+// しかも、historyも各自で持っておくと尚更良い
+// 戻る + 進むを実装する
 
 @Component
 export default class ApplicationTab extends Vue {
@@ -45,26 +65,25 @@ export default class ApplicationTab extends Vue {
     return tabsModule.currentViewingTabUuid
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  mounted () {}
+  beforeMount () {
+    if (Object.keys(this.tabs).length === 0) {
+      tabsModule.init()
+      this.$router.push('/')
+    }
+  }
 
   public updateCurrentViewingTabUuid (uuid: string) {
     tabsModule.updateCurrentViewingTabUuid({ uuid })
   }
 
-  public getUrl (tab: PTab) {
-    const name = tab.name
-    const project = ''
-    if (name === 'componentsEditor') {
-      return `/projects/${project.uuid}/components_edit/${tab.uuid}`
-    }
+  public getTitle (tab: PTab) {
+    const historyIndex = tab.history.historyIndex
+    return tab.history.historyContainer[historyIndex][0]
   }
 
-  public getText (tab: PTab) {
-    const name = tab.name
-    if (name === 'componentsEditor') {
-      return 'コンポーネントエディタ'
-    }
+  public getUrl (tab: PTab) {
+    const historyIndex = tab.history.historyIndex
+    return tab.history.historyContainer[historyIndex][1]
   }
 
   public deleteTab (uuid: string) {
@@ -75,6 +94,34 @@ export default class ApplicationTab extends Vue {
       this.$router.push('/')
     }
     tabsModule.remove(context)
+  }
+
+  public backwardDisabled () {
+    const tab = this.tabs[this.currentViewingTabUuid]
+    return tab.history.historyIndex === 0
+  }
+
+  public forwardDisabled () {
+    const tab = this.tabs[this.currentViewingTabUuid]
+    return tab.history.historyContainer.length - 1 === tab.history.historyIndex
+  }
+
+  public forward () {
+    tabsModule.forward()
+    const tab = this.tabs[this.currentViewingTabUuid]
+    const url = tab.history.historyContainer[tab.history.historyIndex][1]
+    this.$router.push(url)
+  }
+
+  public backward () {
+    tabsModule.backward()
+    const tab = this.tabs[this.currentViewingTabUuid]
+    const url = tab.history.historyContainer[tab.history.historyIndex][1]
+    this.$router.push(url)
+  }
+
+  public addTab () {
+    tabsModule.init()
   }
 }
 </script>

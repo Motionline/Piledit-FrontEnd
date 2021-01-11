@@ -152,8 +152,7 @@ export class TGrayScaleFilterBlock extends PBlockBase {
   public mode?: GrayScaleFilterMode = undefined
 }
 
-export class TBlurFilterBlock extends PBlockBase {
-}
+export class TBlurFilterBlock extends PBlockBase {}
 
 export type PBlock =
   TDebugBlock |
@@ -213,18 +212,53 @@ export type PClips = {
   [key: string]: PClip;
 }
 
+export interface PTabHistoryIF {
+  historyContainer: [string, string][];
+  historyIndex: number;
+  addPage (title: string, url: string): void;
+  forward (): void;
+  backward (): void;
+}
+
 export interface PTabIF {
-  name: string;
   uuid: string;
+  history: PTabHistory;
+}
+
+export class PTabHistory implements PTabHistoryIF {
+  public historyContainer: [string, string][]
+  public historyIndex: number
+
+  constructor (title: string, url: string) {
+    console.log(title, url)
+    this.historyContainer = [[title, url]]
+    this.historyIndex = 0
+  }
+
+  forward () {
+    if (this.historyIndex === this.historyContainer.length - 1) return
+    this.historyIndex++
+  }
+
+  addPage (title: string, url: string) {
+    this.historyContainer.length = this.historyIndex + 1
+    this.historyContainer.push([title, url])
+    this.historyIndex++
+  }
+
+  backward () {
+    if (this.historyIndex === 0) return
+    this.historyIndex--
+  }
 }
 
 export class PTab implements PTabIF {
-  public name: string
   public uuid: string
+  public history: PTabHistory
 
-  constructor (name: string, uuid: string) {
-    this.name = name
+  constructor (uuid: string, title: string, url: string) {
     this.uuid = uuid
+    this.history = new PTabHistory(title, url)
   }
 }
 

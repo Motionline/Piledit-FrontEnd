@@ -29,18 +29,42 @@ export default class Tabs extends VuexModule implements TabStateIF {
     Vue.delete(this.tabs, uuid)
   }
 
+  @Action({ rawError: true })
+  public addPage ({ title, url }: { title: string; url: string }) {
+    const tab = this.tabs[this.currentViewingTabUuid]
+    tab.history.addPage(title, url)
+  }
+
+  @Action({ rawError: true })
+  public forward () {
+    const tab = this.tabs[this.currentViewingTabUuid]
+    tab.history.forward()
+  }
+
+  @Action({ rawError: true })
+  public backward () {
+    const tab = this.tabs[this.currentViewingTabUuid]
+    console.log(tab)
+    tab.history.backward()
+  }
+
   @Mutation
   public setCurrentViewingTabUuid (uuid: string) {
     this.currentViewingTabUuid = uuid
   }
 
   @Action({ rawError: true })
-  public add (context: { name: string }) {
+  public init () {
     const uuid = VuexMixin.generateUuid()
-    const tab = new PTab(
-      context.name,
-      uuid
-    )
+    const tab = new PTab(uuid, '新しいタブ', '/')
+    this.setCurrentViewingTabUuid(uuid)
+    this.addTab(tab)
+  }
+
+  @Action({ rawError: true })
+  public add ({ title, url }: { title: string; url: string }) {
+    const uuid = VuexMixin.generateUuid()
+    const tab = new PTab(uuid, title, url)
     this.addTab(tab)
   }
 

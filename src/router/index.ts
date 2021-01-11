@@ -8,7 +8,7 @@ const routes: Array<RouteConfig> = [
   { path: '/preferences' }, // アプリの設定
   { path: '/users/:userId' }, // ユーザー表示
   { path: '/users/settings' }, // ユーザー編集
-  { path: '/newProject', name: 'NewProject', component: () => import('../views/NewProject.vue') },
+  { path: '/projects/new', name: 'NewProject', component: () => import('../views/NewProject.vue') },
   { path: '/projects/:project_uuid/components_edit/:tabUuid', name: 'ComponentsEdit', component: () => import('../views/ComponentsEdit.vue') },
   { path: '/projects/:project_uuid', name: 'TimeLine', component: () => import('../views/TimeLine.vue') }
 ]
