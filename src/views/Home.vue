@@ -22,8 +22,10 @@ import { tabsModule } from '@/store/store'
 })
 export default class Home extends Vue {
   toNewProject () {
-    this.$router.push('/projects/new')
-    tabsModule.addPage({ title: 'プロジェクトを作成する', url: '/projects/new' })
+    const uuid = tabsModule.currentViewingTabUuid
+    const url = `/${uuid}/projects/new`
+    this.$router.push(url)
+    tabsModule.addPage({ title: 'プロジェクトを作成する', url })
   }
 }
 </script>

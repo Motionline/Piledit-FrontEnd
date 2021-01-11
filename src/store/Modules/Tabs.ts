@@ -44,7 +44,6 @@ export default class Tabs extends VuexModule implements TabStateIF {
   @Action({ rawError: true })
   public backward () {
     const tab = this.tabs[this.currentViewingTabUuid]
-    console.log(tab)
     tab.history.backward()
   }
 
@@ -54,11 +53,12 @@ export default class Tabs extends VuexModule implements TabStateIF {
   }
 
   @Action({ rawError: true })
-  public init () {
+  public async init () {
     const uuid = VuexMixin.generateUuid()
-    const tab = new PTab(uuid, '新しいタブ', '/')
+    const tab = new PTab(uuid, '新しいタブ', `/${uuid}`)
     this.setCurrentViewingTabUuid(uuid)
     this.addTab(tab)
+    return uuid
   }
 
   @Action({ rawError: true })

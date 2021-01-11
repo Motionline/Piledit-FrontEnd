@@ -230,7 +230,6 @@ export class PTabHistory implements PTabHistoryIF {
   public historyIndex: number
 
   constructor (title: string, url: string) {
-    console.log(title, url)
     this.historyContainer = [[title, url]]
     this.historyIndex = 0
   }

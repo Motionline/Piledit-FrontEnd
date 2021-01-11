@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { projectsModule } from '@/store/store'
+import { projectsModule, tabsModule } from '@/store/store'
 
 @Component({
   // head: {
@@ -19,10 +19,13 @@ import { projectsModule } from '@/store/store'
 })
 export default class NewProject extends Vue {
   public name = ''
+
   public async newProject () {
-    const uuid = await projectsModule.add({ name: this.name })
-    const route = `/projects/${uuid}`
-    await this.$router.push(route)
+    const projectUuid = await projectsModule.add({ name: this.name })
+    const tabUuid = tabsModule.currentViewingTabUuid
+    const url = `/${projectUuid}/projects/${tabUuid}`
+    await this.$router.push(url)
+    tabsModule.addPage({ title: this.name, url })
   }
 
   public canSubmit () {
