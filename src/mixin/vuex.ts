@@ -36,11 +36,4 @@ export class VuexMixin extends Vue {
     }
     return blocksFamily
   }
-
-  static changeViewingProjectUuid (tab: PTab): boolean {
-    const container = tab.history.historyContainer
-    const index = tab.history.historyIndex
-    const pageKind = container[index][0]
-    return pageKind === PTabHistoryKind.Projects
-  }
 }

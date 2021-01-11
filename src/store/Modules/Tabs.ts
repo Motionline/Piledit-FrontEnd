@@ -30,15 +30,6 @@ export default class Tabs extends VuexModule implements TabStateIF {
   }
 
   @Action({ rawError: true })
-  public addPage ({ kind, title, url }: { kind: PTabHistoryKind; title: string; url: string }) {
-    const tab = this.tabs[this.currentViewingTabUuid]
-    tab.history.addPage(kind, title, url)
-    if (VuexMixin.changeViewingProjectUuid(tab)) {
-      // projectsModule.updateCurrentViewingTabUuid({ uuid: })
-    }
-  }
-
-  @Action({ rawError: true })
   public forward () {
     const tab = this.tabs[this.currentViewingTabUuid]
     tab.history.forward()
@@ -68,7 +59,14 @@ export default class Tabs extends VuexModule implements TabStateIF {
   public add ({ kind, title, url }: { kind: PTabHistoryKind; title: string; url: string }) {
     const uuid = VuexMixin.generateUuid()
     const tab = new PTab(uuid, kind, title, url)
+    this.setCurrentViewingTabUuid(uuid)
     this.addTab(tab)
+  }
+
+  @Action({ rawError: true })
+  public addPage ({ kind, title, url }: { kind: PTabHistoryKind; title: string; url: string }) {
+    const tab = this.tabs[this.currentViewingTabUuid]
+    tab.history.addPage(kind, title, url)
   }
 
   @Action({ rawError: true })

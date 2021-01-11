@@ -55,6 +55,9 @@
 .selected-tab {
   background-color: red;
 }
+.v-tab:hover {
+  background-color: white !important;
+}
 </style>
 
 <script lang="ts">

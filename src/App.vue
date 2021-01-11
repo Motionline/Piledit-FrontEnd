@@ -8,9 +8,11 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { remote } from 'electron'
-import { tabsModule, clipsModule, componentsModule } from '@/store/store'
+import { clipsModule, componentsModule, projectsModule, tabsModule } from '@/store/store'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 import axios from 'axios'
+import { PTabHistoryKind } from '@/@types/piledit'
+
 const Menu = remote.Menu
 
 @Component({
@@ -95,8 +97,10 @@ export default class App extends Vue {
 
   public addComponentsEditorTab () {
     const tabUuid = tabsModule.currentViewingTabUuid
-    const url = `${tabUuid}/projects/`
-    // tabsModule.add(context)
+    const projectUuid = projectsModule.currentViewingProjectUuid
+    const projectName = projectsModule.projects[projectUuid].name
+    const url = `/${tabUuid}/projects/${projectUuid}/components_edit`
+    tabsModule.add({ kind: PTabHistoryKind.Projects, title: `${projectName}のコンポーネントエディタ`, url })
   }
 
   public encode () {

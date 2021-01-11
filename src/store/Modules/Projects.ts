@@ -5,7 +5,7 @@ import store from '@/store/store'
 
 import {
   PProject,
-  PProjects
+  PProjects, PTabHistoryKind
 } from '@/@types/piledit'
 
 export interface ProjectsStateIF {
@@ -60,7 +60,11 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
   }
 
   @Action({ rawError: true })
-  public updateCurrentViewingTabUuid (context: { uuid: string }) {
-    this.setCurrentViewingProjectUuid(context.uuid)
+  public updateCurrentViewingTabUuid ({ uuid, kind }: { uuid?: string; kind: PTabHistoryKind }) {
+    if (kind === PTabHistoryKind.Projects && uuid) {
+      this.setCurrentViewingProjectUuid(uuid)
+    } else {
+      this.setCurrentViewingProjectUuid('')
+    }
   }
 }
