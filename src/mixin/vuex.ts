@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { PBlock, PBlocks, PBlockKind, PPosition } from '@/@types/piledit'
+import { PBlock, PBlockKind, PBlocks, PPosition, PTab, PTabHistoryKind } from '@/@types/piledit'
 
 export class VuexMixin extends Vue {
   static generateUuid (): string {
@@ -35,5 +35,12 @@ export class VuexMixin extends Vue {
       searchedBlock = blocks[searchedBlock.childUuid]
     }
     return blocksFamily
+  }
+
+  static changeViewingProjectUuid (tab: PTab): boolean {
+    const container = tab.history.historyContainer
+    const index = tab.history.historyIndex
+    const pageKind = container[index][0]
+    return pageKind === PTabHistoryKind.Projects
   }
 }

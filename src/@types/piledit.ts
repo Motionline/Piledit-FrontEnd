@@ -213,9 +213,9 @@ export type PClips = {
 }
 
 export interface PTabHistoryIF {
-  historyContainer: [string, string][];
+  historyContainer: [PTabHistoryKind, string, string][];
   historyIndex: number;
-  addPage (title: string, url: string): void;
+  addPage (kind: PTabHistoryKind, title: string, url: string): void;
   forward (): void;
   backward (): void;
 }
@@ -225,12 +225,17 @@ export interface PTabIF {
   history: PTabHistory;
 }
 
+export enum PTabHistoryKind {
+  General,
+  Projects
+}
+
 export class PTabHistory implements PTabHistoryIF {
-  public historyContainer: [string, string][]
+  public historyContainer: [PTabHistoryKind, string, string][]
   public historyIndex: number
 
-  constructor (title: string, url: string) {
-    this.historyContainer = [[title, url]]
+  constructor (kind: PTabHistoryKind, title: string, url: string) {
+    this.historyContainer = [[kind, title, url]]
     this.historyIndex = 0
   }
 
@@ -239,9 +244,9 @@ export class PTabHistory implements PTabHistoryIF {
     this.historyIndex++
   }
 
-  addPage (title: string, url: string) {
+  addPage (kind: PTabHistoryKind, title: string, url: string) {
     this.historyContainer.length = this.historyIndex + 1
-    this.historyContainer.push([title, url])
+    this.historyContainer.push([kind, title, url])
     this.historyIndex++
   }
 
@@ -255,9 +260,9 @@ export class PTab implements PTabIF {
   public uuid: string
   public history: PTabHistory
 
-  constructor (uuid: string, title: string, url: string) {
+  constructor (uuid: string, kind: PTabHistoryKind, title: string, url: string) {
     this.uuid = uuid
-    this.history = new PTabHistory(title, url)
+    this.history = new PTabHistory(kind, title, url)
   }
 }
 

@@ -9,6 +9,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { projectsModule, tabsModule } from '@/store/store'
+import { PTabHistoryKind } from '@/@types/piledit'
 
 @Component({
   // head: {
@@ -25,7 +26,7 @@ export default class NewProject extends Vue {
     const tabUuid = tabsModule.currentViewingTabUuid
     const url = `/${projectUuid}/projects/${tabUuid}`
     await this.$router.push(url)
-    tabsModule.addPage({ title: this.name, url })
+    tabsModule.addPage({ kind: PTabHistoryKind.Projects, title: this.name, url })
   }
 
   public canSubmit () {

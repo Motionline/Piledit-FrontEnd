@@ -10,11 +10,13 @@ import {
 
 export interface ProjectsStateIF {
   projects: PProjects;
+  currentViewingProjectUuid: string;
 }
 
 @Module({ store: store, name: 'ProjectsModule', namespaced: true })
 export default class Projects extends VuexModule implements ProjectsStateIF {
   projects: PProjects = {}
+  currentViewingProjectUuid = ''
 
   @Mutation
   public addProject (project: PProject) {
@@ -29,6 +31,11 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
   @Mutation
   public updateProject (project: PProject) {
     Vue.set(this.projects, project.uuid, project)
+  }
+
+  @Mutation
+  public setCurrentViewingProjectUuid (uuid: string) {
+    this.currentViewingProjectUuid = uuid
   }
 
   @Action({ rawError: true })
@@ -50,5 +57,10 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
   @Action({ rawError: true })
   public update (project: PProject) {
     this.updateProject(project)
+  }
+
+  @Action({ rawError: true })
+  public updateCurrentViewingTabUuid (context: { uuid: string }) {
+    this.setCurrentViewingProjectUuid(context.uuid)
   }
 }

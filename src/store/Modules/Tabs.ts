@@ -6,8 +6,8 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import { VuexMixin } from '@/mixin/vuex'
-import { PTab, PTabs } from '@/@types/piledit'
-import store from '@/store/store'
+import { PTab, PTabs, PTabHistoryKind } from '@/@types/piledit'
+import store, { projectsModule } from '@/store/store'
 
 export interface TabStateIF {
   tabs: PTabs;
@@ -30,9 +30,12 @@ export default class Tabs extends VuexModule implements TabStateIF {
   }
 
   @Action({ rawError: true })
-  public addPage ({ title, url }: { title: string; url: string }) {
+  public addPage ({ kind, title, url }: { kind: PTabHistoryKind; title: string; url: string }) {
     const tab = this.tabs[this.currentViewingTabUuid]
-    tab.history.addPage(title, url)
+    tab.history.addPage(kind, title, url)
+    if (VuexMixin.changeViewingProjectUuid(tab)) {
+      // projectsModule.updateCurrentViewingTabUuid({ uuid: })
+    }
   }
 
   @Action({ rawError: true })
@@ -55,16 +58,16 @@ export default class Tabs extends VuexModule implements TabStateIF {
   @Action({ rawError: true })
   public async init () {
     const uuid = VuexMixin.generateUuid()
-    const tab = new PTab(uuid, '新しいタブ', `/${uuid}`)
+    const tab = new PTab(uuid, PTabHistoryKind.General, '新しいタブ', `/${uuid}`)
     this.setCurrentViewingTabUuid(uuid)
     this.addTab(tab)
     return uuid
   }
 
   @Action({ rawError: true })
-  public add ({ title, url }: { title: string; url: string }) {
+  public add ({ kind, title, url }: { kind: PTabHistoryKind; title: string; url: string }) {
     const uuid = VuexMixin.generateUuid()
-    const tab = new PTab(uuid, title, url)
+    const tab = new PTab(uuid, kind, title, url)
     this.addTab(tab)
   }
 

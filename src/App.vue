@@ -71,7 +71,7 @@ export default class App extends Vue {
               {
                 label: 'Components Editor',
                 accelerator: 'CmdOrCtrl+Option+C',
-                click: () => { this.addTab('componentsEditor') }
+                click: () => { this.addComponentsEditorTab() }
               },
               {
                 label: 'Scripting Editor',
@@ -93,11 +93,10 @@ export default class App extends Vue {
     Menu.setApplicationMenu(menu)
   }
 
-  public addTab (name: string) {
-    const context = {
-      name
-    }
-    tabsModule.add(context)
+  public addComponentsEditorTab () {
+    const tabUuid = tabsModule.currentViewingTabUuid
+    const url = `${tabUuid}/projects/`
+    // tabsModule.add(context)
   }
 
   public encode () {

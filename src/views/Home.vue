@@ -11,6 +11,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { tabsModule } from '@/store/store'
+import { PTabHistoryKind } from '@/@types/piledit'
 
 @Component({
 // ずっとエラー起こるから解決したら使う
@@ -25,7 +26,7 @@ export default class Home extends Vue {
     const uuid = tabsModule.currentViewingTabUuid
     const url = `/${uuid}/projects/new`
     this.$router.push(url)
-    tabsModule.addPage({ title: 'プロジェクトを作成する', url })
+    tabsModule.addPage({ kind: PTabHistoryKind.General, title: 'プロジェクトを作成する', url })
   }
 }
 </script>

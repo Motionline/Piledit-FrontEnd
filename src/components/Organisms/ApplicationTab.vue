@@ -85,12 +85,12 @@ export default class ApplicationTab extends Vue {
 
   public getTitle (tab: PTab) {
     const historyIndex = tab.history.historyIndex
-    return tab.history.historyContainer[historyIndex][0]
+    return tab.history.historyContainer[historyIndex][1]
   }
 
   public getUrl (tab: PTab) {
     const historyIndex = tab.history.historyIndex
-    return tab.history.historyContainer[historyIndex][1]
+    return tab.history.historyContainer[historyIndex][2]
   }
 
   public deleteTab (uuid: string) {
