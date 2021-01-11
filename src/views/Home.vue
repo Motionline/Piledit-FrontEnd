@@ -1,7 +1,7 @@
 <template>
   <div id="Home">
     <h1>Pileditへようこそ</h1>
-    <v-btn to="/newProject">新規プロジェクト</v-btn>
+    <v-btn @click="toNewProject">新規プロジェクト</v-btn>
     <v-btn>プロジェクトを開く</v-btn>
     <p>アカウント設定</p>
     <v-btn>アカウント作成</v-btn>
@@ -10,16 +10,21 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { BrowserWindow, remote } from 'electron'
+import { tabsModule } from '@/store/store'
 
 @Component({
-  head: {
-    script: [
-      { type: 'text/javascript', src: '@/assets/adobefont.js', async: true }
-    ]
-  }
+// ずっとエラー起こるから解決したら使う
+//   head: {
+//     script: [
+//       { type: 'text/javascript', src: '@/assets/adobefont.js', async: true }
+//     ]
+//   }
 })
 export default class Home extends Vue {
+  toNewProject () {
+    this.$router.push('/projects/new')
+    tabsModule.addPage({ title: 'プロジェクトを作成する', url: '/projects/new' })
+  }
 }
 </script>
 

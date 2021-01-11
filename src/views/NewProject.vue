@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height:100%;">
     <p>新しくプロジェクトを作成する</p>
     <v-text-field placeholder="プロジェクト名" v-model="name"></v-text-field>
     <v-btn @click="newProject" :disabled="canSubmit()">作成する</v-btn>
@@ -11,11 +11,11 @@ import { Component, Vue } from 'vue-property-decorator'
 import { projectsModule } from '@/store/store'
 
 @Component({
-  head: {
-    script: [
-      { type: 'text/javascript', src: '@/assets/adobefont.js', async: true }
-    ]
-  }
+  // head: {
+  //   script: [
+  //     { type: 'text/javascript', src: '@/assets/adobefont.js', async: true }
+  //   ]
+  // }
 })
 export default class NewProject extends Vue {
   public name = ''
