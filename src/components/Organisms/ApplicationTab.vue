@@ -36,6 +36,11 @@
           <v-icon>mdi-arrow-right-thick</v-icon>
         </v-btn>
       </v-tab>
+      <v-tab :ripple="false" @click.prevent="toHome()">
+        <v-btn icon :ripple="false" :plain="true">
+          <v-icon>mdi-home</v-icon>
+        </v-btn>
+      </v-tab>
       <v-tab>
         <v-text-field></v-text-field>
       </v-tab>
@@ -55,7 +60,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { tabsModule } from '@/store/store'
-import { PTab } from '@/@types/piledit'
+import { PTab, PTabHistoryKind } from '@/@types/piledit'
 
 // tabs、ここでどうにか処理するのではなくて
 // Storeの時点でリンクを持っておいて、よしなにするべきじゃないか
@@ -116,14 +121,23 @@ export default class ApplicationTab extends Vue {
   public forward () {
     tabsModule.forward()
     const tab = this.tabs[this.currentViewingTabUuid]
-    const url = tab.history.historyContainer[tab.history.historyIndex][1]
+    const url = tab.history.historyContainer[tab.history.historyIndex][2]
+    console.log(url)
     this.$router.push(url)
   }
 
   public backward () {
     tabsModule.backward()
     const tab = this.tabs[this.currentViewingTabUuid]
-    const url = tab.history.historyContainer[tab.history.historyIndex][1]
+    const url = tab.history.historyContainer[tab.history.historyIndex][2]
+    console.log(url)
+    this.$router.push(url)
+  }
+
+  public toHome () {
+    const tabUuid = this.currentViewingTabUuid
+    const url = `/${tabUuid}`
+    tabsModule.addPage({ kind: PTabHistoryKind.General, title: '新しいタブ', url })
     this.$router.push(url)
   }
 
