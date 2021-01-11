@@ -1,39 +1,46 @@
 <template>
-  <v-tabs hide-slider color="black" left>
-    <v-tab :ripple="false" :disabled="backwardDisabled()" @click="backward()">
-      <v-btn icon :ripple="false">
-        <v-icon>mdi-arrow-left-thick</v-icon>
-      </v-btn>
-    </v-tab>
-    <v-tab :ripple="false" :disabled="forwardDisabled()" @click="forward()">
-      <v-btn icon :ripple="false">
-        <v-icon>mdi-arrow-right-thick</v-icon>
-      </v-btn>
-    </v-tab>
-    <v-tab
-      v-for="(tab, key) in tabs"
-      :key="key"
-      :to="getUrl(tab)"
-      :ripple="false"
-      @click="updateCurrentViewingTabUuid(tab.uuid)"
-      class="applicationTab--tab"
-    >
-      {{ getTitle(tab) }}
-      <v-btn
-        icon
-        x-small
-        @click.prevent="deleteTab(tab.uuid)"
-        :ripple="false"
+  <div>
+    <v-tabs color="black" left>
+      <v-tab
+          v-for="(tab, key) in tabs"
+          :key="key"
+          :to="getUrl(tab)"
+          :ripple="false"
+          @click="updateCurrentViewingTabUuid(tab.uuid)"
+          class="applicationTab--tab"
       >
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-tab>
-    <v-tab :ripple="false" @click="addTab()">
-      <v-btn icon :ripple="false">
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
-    </v-tab>
-  </v-tabs>
+        {{ getTitle(tab) }}
+        <v-btn
+            icon
+            x-small
+            @click.prevent="deleteTab(tab.uuid)"
+            :ripple="false"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-tab>
+      <v-tab :ripple="false" @click="addTab()">
+        <v-btn icon :ripple="false">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-tab>
+    </v-tabs>
+    <v-tabs hide-slider color="black" left>
+      <v-tab :ripple="false" :disabled="backwardDisabled()" @click="backward()">
+        <v-btn icon :ripple="false">
+          <v-icon>mdi-arrow-left-thick</v-icon>
+        </v-btn>
+      </v-tab>
+      <v-tab :ripple="false" :disabled="forwardDisabled()" @click="forward()">
+        <v-btn icon :ripple="false">
+          <v-icon>mdi-arrow-right-thick</v-icon>
+        </v-btn>
+      </v-tab>
+      <v-tab>
+        <v-text-field></v-text-field>
+      </v-tab>
+    </v-tabs>
+  </div>
 </template>
 
 <style lang="scss">
@@ -65,10 +72,10 @@ export default class ApplicationTab extends Vue {
     return tabsModule.currentViewingTabUuid
   }
 
-  beforeMount () {
+  async beforeMount () {
     if (Object.keys(this.tabs).length === 0) {
-      tabsModule.init()
-      this.$router.push('/')
+      const uuid = await tabsModule.init()
+      await this.$router.push(`/${uuid}`)
     }
   }
 
@@ -120,8 +127,9 @@ export default class ApplicationTab extends Vue {
     this.$router.push(url)
   }
 
-  public addTab () {
-    tabsModule.init()
+  public async addTab () {
+    const uuid = await tabsModule.init()
+    await this.$router.push(`/${uuid}`)
   }
 }
 </script>
