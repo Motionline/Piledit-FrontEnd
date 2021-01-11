@@ -22,3 +22,9 @@ export default class ComponentsEdit extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+#Home {
+  height: 100%;
+}
+</style>
