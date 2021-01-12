@@ -14,7 +14,7 @@ import ComponentsEditor from '@/components/Templates/ComponentsEditor.vue'
   }
 })
 export default class ComponentsEdit extends Vue {
-  public tabUuid = this.$route.params.uuid
+  public tabUuid = this.$route.params.tabUuid
 
   @Watch('$route')
   onUrlsChanged (newRoute: any, _: any) {

@@ -12,6 +12,7 @@ import { clipsModule, componentsModule, projectsModule, tabsModule } from '@/sto
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 import axios from 'axios'
 import { PTabHistoryKind } from '@/@types/piledit'
+import { VuexMixin } from '@/mixin/vuex'
 
 const Menu = remote.Menu
 
@@ -71,8 +72,10 @@ export default class App extends Vue {
             label: 'Editor Tabs',
             submenu: [
               {
+                id: 'openComponentsEditor',
                 label: 'Components Editor',
                 accelerator: 'CmdOrCtrl+Option+C',
+                enabled: !this.canOpenComponentsEditorTab(),
                 click: () => { this.addComponentsEditorTab() }
               },
               {
@@ -95,12 +98,21 @@ export default class App extends Vue {
     Menu.setApplicationMenu(menu)
   }
 
-  public addComponentsEditorTab () {
-    const tabUuid = tabsModule.currentViewingTabUuid
-    const projectUuid = projectsModule.currentViewingProjectUuid
-    const projectName = projectsModule.projects[projectUuid].name
-    const url = `/${tabUuid}/projects/${projectUuid}/components_edit`
-    tabsModule.add({ kind: PTabHistoryKind.Projects, title: `${projectName}のコンポーネントエディタ`, url })
+  async updated () {
+    const menu = Menu.getApplicationMenu()
+    const item = menu.getMenuItemById('openComponentsEditor')
+    item.enabled = await this.canOpenComponentsEditorTab()
+  }
+
+  public async canOpenComponentsEditorTab () {
+    return await tabsModule.canOpenComponentsEditorTab()
+  }
+
+  public async addComponentsEditorTab () {
+    if (await this.canOpenComponentsEditorTab()) {
+      const url = await tabsModule.addComponentsEditorTab()
+      await this.$router.push(url)
+    }
   }
 
   public encode () {

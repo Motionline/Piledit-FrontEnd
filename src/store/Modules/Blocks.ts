@@ -138,6 +138,9 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
       this.addRelationBlockAndComponent({ uuid, componentUuid })
       const blocks: { [key: string]: PBlock } = {}
       blocks[block.uuid] = block
+      // コンポーネントはエディタが作成された時点で作っておくというのもあり
+      // components: { output: {}, blocks: {}  }
+      // とか
       componentsModule.add({ uuid: componentUuid, blocks })
     }
     return uuid

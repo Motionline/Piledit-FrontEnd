@@ -25,7 +25,7 @@ export default class NewProject extends Vue {
     const projectUuid = await projectsModule.add({ name: this.name })
     const tabUuid = tabsModule.currentViewingTabUuid
     const url = `/${projectUuid}/projects/${tabUuid}`
-    await this.$router.push(url)
+    this.$router.push(url)
     tabsModule.addPage({ kind: PTabHistoryKind.Projects, title: this.name, url })
     projectsModule.updateCurrentViewingTabUuid({ uuid: projectUuid, kind: PTabHistoryKind.Projects })
   }

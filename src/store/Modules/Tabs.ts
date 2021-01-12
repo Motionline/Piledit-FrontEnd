@@ -1,13 +1,8 @@
-import {
-  Module,
-  VuexModule,
-  Mutation,
-  Action
-} from 'vuex-module-decorators'
+import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import { VuexMixin } from '@/mixin/vuex'
-import { PTab, PTabs, PTabHistoryKind } from '@/@types/piledit'
-import store, { projectsModule } from '@/store/store'
+import { PTab, PTabHistoryKind, PTabs } from '@/@types/piledit'
+import store, { componentsModule, projectsModule } from '@/store/store'
 
 export interface TabStateIF {
   tabs: PTabs;
@@ -77,5 +72,31 @@ export default class Tabs extends VuexModule implements TabStateIF {
   @Action({ rawError: true })
   public updateCurrentViewingTabUuid (context: { uuid: string }) {
     this.setCurrentViewingTabUuid(context.uuid)
+  }
+
+  @Action({ rawError: true })
+  public async canOpenComponentsEditorTab (): Promise<boolean> {
+    const senderTabUuid = this.currentViewingTabUuid
+    const senderTabHistoryContainer = this.tabs[senderTabUuid].history.historyContainer
+    const senderTabHistoryIndex = this.tabs[senderTabUuid].history.historyIndex
+    console.log(senderTabHistoryContainer)
+    console.log(senderTabHistoryIndex)
+    console.log(senderTabHistoryContainer[senderTabHistoryIndex][0])
+    return senderTabHistoryContainer[senderTabHistoryIndex][0] === PTabHistoryKind.Projects
+  }
+
+  @Action({ rawError: true })
+  public async addComponentsEditorTab (): Promise<string> {
+    const tabUuid = VuexMixin.generateUuid()
+    const projectUuid = projectsModule.currentViewingProjectUuid
+    const projectName = projectsModule.projects[projectUuid].name
+    const componentsUuid = VuexMixin.generateUuid()
+    const url = `/${tabUuid}/projects/${projectUuid}/components/${componentsUuid}`
+    const title = `${projectName}のコンポーネントエディタ`
+    const tab = new PTab(tabUuid, PTabHistoryKind.Projects, title, url)
+    componentsModule.add({ uuid: componentsUuid, blocks: {} })
+    this.setCurrentViewingTabUuid(tabUuid)
+    this.addTab(tab)
+    return url
   }
 }
