@@ -6,7 +6,8 @@ import {
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import store from '@/store/store'
-import { PComponent, PComponents } from '@/@types/piledit'
+import { PBlocks, PComponent, PComponents } from '@/@types/piledit'
+import { VuexMixin } from '@/mixin/vuex'
 
 export interface ComponentsStateIF {
   components: PComponents;
@@ -32,8 +33,11 @@ export default class Components extends VuexModule implements ComponentsStateIF 
   }
 
   @Action({ rawError: true })
-  public add (component: PComponent) {
+  public async add () {
+    const uuid = VuexMixin.generateUuid()
+    const component = new PComponent(uuid)
     this.addComponent(component)
+    return uuid
   }
 
   @Action({ rawError: true })
@@ -42,7 +46,16 @@ export default class Components extends VuexModule implements ComponentsStateIF 
   }
 
   @Action({ rawError: true })
-  public update (component: PComponent) {
+  public updateBlocks ({ uuid, blocks }: { uuid: string; blocks: PBlocks }) {
+    const component = this.components[uuid]
+    component.blocks = blocks
+    this.updateComponent(component)
+  }
+
+  @Action({ rawError: true })
+  public updateExportBlocks ({ uuid, exportBlocks }: { uuid: string; exportBlocks: PBlocks }) {
+    const component = this.components[uuid]
+    component.exportBlocks = exportBlocks
     this.updateComponent(component)
   }
 }

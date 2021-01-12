@@ -19,6 +19,13 @@ export interface BlocksStateIF {
   objectOfBlockAndComponent: { [key: string]: string };
 }
 
+/*
+* 1. ブロックを追加する
+* 2. エディタのcomponentsUuidを渡す
+* 3. ブロックの変更を反映
+* 4. componentsには(export)Blocksのuuidだけ渡すだけでいいかも
+*/
+
 @Module({ store: store, name: 'BlocksModule', namespaced: true })
 export default class Blocks extends VuexModule implements BlocksStateIF {
   blocks: PBlocks = {}
@@ -141,7 +148,7 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
       // コンポーネントはエディタが作成された時点で作っておくというのもあり
       // components: { output: {}, blocks: {}  }
       // とか
-      componentsModule.add({ uuid: componentUuid, blocks })
+      // componentsModule.add({ uuid: componentUuid, blocks })
     }
     return uuid
   }
@@ -157,7 +164,7 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
       this.removeChild(block.parentUuid)
       const componentUuid = this.objectOfBlockAndComponent[topBlock.uuid]
       const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
-      componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
+      componentsModule.updateExportBlocks({ uuid: componentUuid, exportBlocks: blocksFamily })
     }
     // TODO: ブロック接続状態でブロックを削除した時、ドラッグアップ時に4つエラーが出る
     // なぜか治っていた 次出たらここが原因なので気を付ける
