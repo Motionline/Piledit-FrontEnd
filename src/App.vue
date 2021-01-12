@@ -8,11 +8,9 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { remote } from 'electron'
-import { clipsModule, componentsModule, projectsModule, tabsModule } from '@/store/store'
+import { clipsModule, componentsModule, tabsModule } from '@/store/store'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 import axios from 'axios'
-import { PTabHistoryKind } from '@/@types/piledit'
-import { VuexMixin } from '@/mixin/vuex'
 
 const Menu = remote.Menu
 
@@ -111,7 +109,7 @@ export default class App extends Vue {
   public async addComponentsEditorTab () {
     if (await this.canOpenComponentsEditorTab()) {
       const url = await tabsModule.addComponentsEditorTab()
-      await this.$router.push(url)
+      this.$router.push(url)
     }
   }
 
