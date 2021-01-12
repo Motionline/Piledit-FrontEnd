@@ -168,21 +168,18 @@ export type PBlocks = {
 export interface PComponentIF {
   uuid: string;
   name: string;
-  blocks: PBlocks;
-  exportBlocks: PBlocks; // exportBlocksがComponentのBlocksとして扱われる
+  blocksUuid: string;
 }
 
 export class PComponent implements PComponentIF {
   public uuid: string
   public name: string
-  public blocks: PBlocks
-  public exportBlocks: PBlocks
+  public blocksUuid: string
 
   constructor (uuid: string) {
     this.uuid = uuid
     this.name = ''
-    this.blocks = {}
-    this.exportBlocks = {}
+    this.blocksUuid = ''
   }
 }
 
