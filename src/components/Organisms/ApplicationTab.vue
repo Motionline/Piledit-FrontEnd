@@ -41,8 +41,8 @@
           <v-icon>mdi-home</v-icon>
         </v-btn>
       </v-tab>
-      <v-tab>
-        <v-text-field></v-text-field>
+      <v-tab :ripple="false">
+        <v-text-field :value="getCurrentPath()" style="width: 2400px;"></v-text-field>
       </v-tab>
     </v-tabs>
   </div>
@@ -65,11 +65,6 @@ import { Component, Vue } from 'vue-property-decorator'
 import { tabsModule } from '@/store/store'
 import { PTab, PTabHistoryKind } from '@/@types/piledit'
 
-// tabs、ここでどうにか処理するのではなくて
-// Storeの時点でリンクを持っておいて、よしなにするべきじゃないか
-// しかも、historyも各自で持っておくと尚更良い
-// 戻る + 進むを実装する
-
 @Component
 export default class ApplicationTab extends Vue {
   get tabs () {
@@ -85,6 +80,10 @@ export default class ApplicationTab extends Vue {
       const uuid = await tabsModule.init()
       await this.$router.push(`/${uuid}`)
     }
+  }
+
+  public getCurrentPath () {
+    return this.$route.path
   }
 
   public updateCurrentViewingTabUuid (uuid: string) {
