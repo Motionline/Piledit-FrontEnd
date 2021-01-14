@@ -2,7 +2,7 @@
   <div id="Home">
     <h3>全てのコンポーネント</h3>
     <div v-for="(_, uuid) in components" :key="uuid">
-      <v-btn @click="addClip(uuid)">{{ uuid }}</v-btn>
+      <v-btn @click="openComponentEditor(uuid)">{{ uuid }}を開く</v-btn>
     </div>
     <TimeLineComponent :clips="clips" :components="components" />
   </div>
@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { componentsModule, clipsModule, blocksModule } from '@/store/store'
+import { componentsModule, clipsModule, blocksModule, tabsModule } from '@/store/store'
 import TimeLineComponent from '@/components/Templates/Timeline.vue'
 import fs from 'fs'
 import { app } from 'electron'
@@ -40,8 +40,9 @@ export default class TimeLine extends Vue {
     clipsModule.add(uuid)
   }
 
-  public showClips () {
-    console.log(this.clips)
+  public async openComponentEditor (uuid: string) {
+    const url = await tabsModule.addComponentsEditorTab(uuid)
+    this.$router.push(url)
   }
 
   public outputMovieConfigurationFile () {
