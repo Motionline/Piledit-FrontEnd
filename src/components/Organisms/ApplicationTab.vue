@@ -2,10 +2,11 @@
   <div>
     <v-tabs color="black" left>
       <v-tab
-          v-for="(tab, key) in tabs"
+          v-for="(tab, key, index) in tabs"
           :key="key"
           :to="getUrl(tab)"
           :ripple="false"
+          :id="`applicationTab--${index}`"
           @click="updateCurrentViewingTabUuid(tab.uuid)"
           class="applicationTab--tab"
       >
@@ -71,6 +72,14 @@ export default class ApplicationTab extends Vue {
     return tabsModule.tabs
   }
 
+  get tabsArray () {
+    const tabsArr = []
+    for (const tab in this.tabs) {
+      tabsArr.push(tab)
+    }
+    return tabsArr
+  }
+
   get currentViewingTabUuid () {
     return tabsModule.currentViewingTabUuid
   }
@@ -101,13 +110,16 @@ export default class ApplicationTab extends Vue {
   }
 
   public deleteTab (uuid: string) {
-    const context = {
-      uuid
-    }
     if (uuid === this.currentViewingTabUuid) {
-      this.$router.push('/')
+      const len = Object.keys(this.tabs).length - 2
+      const tuuid = this.tabsArray[len]
+      const thistory = this.tabs[tuuid].history
+      const url = thistory.historyContainer[thistory.historyIndex][2]
+      this.$router.push(url)
+      tabsModule.removeOwn({ tabUuid: uuid, nextTabUuid: tuuid })
+    } else {
+      tabsModule.remove({ uuid })
     }
-    tabsModule.remove(context)
   }
 
   public backwardDisabled () {

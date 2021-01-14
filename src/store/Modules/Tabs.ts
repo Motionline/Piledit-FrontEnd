@@ -70,6 +70,12 @@ export default class Tabs extends VuexModule implements TabStateIF {
   }
 
   @Action({ rawError: true })
+  public removeOwn ({ tabUuid, nextTabUuid }: { tabUuid: string; nextTabUuid: string }) {
+    this.setCurrentViewingTabUuid(nextTabUuid)
+    this.removeTab(tabUuid)
+  }
+
+  @Action({ rawError: true })
   public updateCurrentViewingTabUuid (context: { uuid: string }) {
     this.setCurrentViewingTabUuid(context.uuid)
   }
