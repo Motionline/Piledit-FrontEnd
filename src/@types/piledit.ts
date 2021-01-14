@@ -12,9 +12,9 @@ export class PProject implements PProjectIF {
   public name: string;
   public uuid: string;
 
-  constructor (context: Partial<PBlockBase>) {
-    this.name = context.name!
-    this.uuid = context.uuid!
+  constructor ({ name, uuid }: { name: string; uuid: string }) {
+    this.name = name
+    this.uuid = uuid
   }
 }
 
@@ -31,7 +31,7 @@ export interface PBlockIF {
   childUuid: string;
   shadow: boolean;
   position: PPosition;
-  tabUuid: string;
+  componentUuid: string;
   path: string;
   shadowPath: string;
   strokeColor: string;
@@ -103,7 +103,7 @@ class PBlockBase implements PBlockIF {
   public childUuid: string
   public shadow: boolean
   public position: PPosition
-  public tabUuid: string
+  public componentUuid: string
   public path: string
   public shadowPath: string
   public strokeColor: string
@@ -119,7 +119,7 @@ class PBlockBase implements PBlockIF {
     this.childUuid = context.childUuid!
     this.shadow = context.shadow!
     this.position = context.position!
-    this.tabUuid = context.tabUuid!
+    this.componentUuid = context.componentUuid!
     this.isSample = context.isSample!
     this.shadowPath = ''
     const { path, strokeColor, fillColor } = blockParameter(context.kind)
@@ -169,20 +169,17 @@ export interface PComponentIF {
   uuid: string;
   name: string;
   blocks: PBlocks;
-  exportBlocks: PBlocks; // exportBlocksがComponentのBlocksとして扱われる
 }
 
 export class PComponent implements PComponentIF {
   public uuid: string
   public name: string
   public blocks: PBlocks
-  public exportBlocks: PBlocks
 
   constructor (uuid: string) {
     this.uuid = uuid
     this.name = ''
     this.blocks = {}
-    this.exportBlocks = {}
   }
 }
 

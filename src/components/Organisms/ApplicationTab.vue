@@ -2,10 +2,11 @@
   <div>
     <v-tabs color="black" left>
       <v-tab
-          v-for="(tab, key) in tabs"
+          v-for="(tab, key, index) in tabs"
           :key="key"
           :to="getUrl(tab)"
           :ripple="false"
+          :id="`applicationTab--${index}`"
           @click="updateCurrentViewingTabUuid(tab.uuid)"
           class="applicationTab--tab"
       >
@@ -71,6 +72,14 @@ export default class ApplicationTab extends Vue {
     return tabsModule.tabs
   }
 
+  get tabsArray () {
+    const tabsArr = []
+    for (const tab in this.tabs) {
+      tabsArr.push(tab)
+    }
+    return tabsArr
+  }
+
   get currentViewingTabUuid () {
     return tabsModule.currentViewingTabUuid
   }
@@ -100,14 +109,29 @@ export default class ApplicationTab extends Vue {
     return tab.history.historyContainer[historyIndex][2]
   }
 
-  public deleteTab (uuid: string) {
-    const context = {
-      uuid
+  public async deleteTab (uuid: string) {
+    // const len = Object.keys(this.tabs).length - 2
+    let len = 0
+    for (const index in this.tabsArray) {
+      if (this.tabsArray[index] === uuid) {
+        break
+      }
+      len++
     }
-    if (uuid === this.currentViewingTabUuid) {
-      this.$router.push('/')
+    if (len === 0 && uuid === this.currentViewingTabUuid) {
+      // 消したタブが0番目のタブの場合
+      const url = await tabsModule.init()
+      this.$router.push(url)
+      tabsModule.remove({ uuid })
+    } else if (uuid === this.currentViewingTabUuid) {
+      const nextTabUuid = this.tabsArray[len - 1]
+      const nextTabHistory = this.tabs[nextTabUuid].history
+      const url = nextTabHistory.historyContainer[nextTabHistory.historyIndex][2]
+      this.$router.push(url)
+      tabsModule.removeOwn({ tabUuid: uuid, nextTabUuid })
+    } else {
+      tabsModule.remove({ uuid })
     }
-    tabsModule.remove(context)
   }
 
   public backwardDisabled () {

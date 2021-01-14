@@ -70,6 +70,12 @@ export default class Tabs extends VuexModule implements TabStateIF {
   }
 
   @Action({ rawError: true })
+  public removeOwn ({ tabUuid, nextTabUuid }: { tabUuid: string; nextTabUuid: string }) {
+    this.setCurrentViewingTabUuid(nextTabUuid)
+    this.removeTab(tabUuid)
+  }
+
+  @Action({ rawError: true })
   public updateCurrentViewingTabUuid (context: { uuid: string }) {
     this.setCurrentViewingTabUuid(context.uuid)
   }
@@ -83,11 +89,13 @@ export default class Tabs extends VuexModule implements TabStateIF {
   }
 
   @Action({ rawError: true })
-  public async addComponentsEditorTab (): Promise<string> {
+  public async addComponentsEditorTab (componentsUuid?: string): Promise<string> {
     const tabUuid = VuexMixin.generateUuid()
     const projectUuid = projectsModule.currentViewingProjectUuid
     const projectName = projectsModule.projects[projectUuid].name
-    const componentsUuid = await componentsModule.add()
+    if (componentsUuid == null) {
+      componentsUuid = await componentsModule.add()
+    }
     const url = `/${tabUuid}/projects/${projectUuid}/components/${componentsUuid}`
     const title = `${projectName}のコンポーネントエディタ`
     const tab = new PTab(tabUuid, PTabHistoryKind.Projects, title, url)

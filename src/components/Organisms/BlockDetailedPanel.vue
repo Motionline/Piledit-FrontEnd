@@ -48,8 +48,11 @@ export default class BlockDetailedPanel extends Vue {
   @Prop()
   public block!: PBlock
 
+  @Prop()
+  public componentUuid!: string
+
   public updateBlock (block: PBlock) {
-    blocksModule.update(block)
+    blocksModule.update({ _triggerBlock: block, componentUuid: this.componentUuid })
   }
 
   public isKind (kind: PBlockKind) {

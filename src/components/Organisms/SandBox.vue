@@ -14,7 +14,7 @@
 
     <line x1="58vw" x2="58vw" y1="0" y2="100vh" stroke="black" />
 
-    <BlocksDisplay :tab-uuid="tabUuid" />
+    <BlocksDisplay :component-uuid="componentUuid" />
   </svg>
 </template>
 
@@ -44,21 +44,21 @@ export default class SandBox extends Vue {
   public blocks!: PBlocks
 
   @Prop({ required: true })
-  public tabUuid!: string
+  public componentUuid!: string
 
   public stopDragging (uuid: string) {
-    blocksModule.stopDragging(uuid)
+    blocksModule.stopDragging({ triggeredBlockUuid: uuid, componentUuid: this.componentUuid })
   }
 
   public updatePosition (context: { position: PPosition; uuid: string }) {
     const block = this.blocks[context.uuid]
     block.uuid = context.uuid
     block.position = context.position
-    blocksModule.update(block)
+    blocksModule.update({ _triggerBlock: block, componentUuid: this.componentUuid })
   }
 
-  public removeBlock (uuid: string) {
-    blocksModule.remove(uuid)
+  public removeBlock (blockUuid: string) {
+    blocksModule.remove({ blockUuid, componentUuid: this.componentUuid })
   }
 
   @Emit('openingMenu')
