@@ -12,9 +12,9 @@ export class PProject implements PProjectIF {
   public name: string;
   public uuid: string;
 
-  constructor (context: Partial<PBlockBase>) {
-    this.name = context.name!
-    this.uuid = context.uuid!
+  constructor ({ name, uuid }: { name: string; uuid: string }) {
+    this.name = name
+    this.uuid = uuid
   }
 }
 
@@ -168,18 +168,21 @@ export type PBlocks = {
 export interface PComponentIF {
   uuid: string;
   name: string;
-  blocksUuid: string;
+  blocks: PBlocks;
+  exportBlocks: PBlocks; // exportBlocksがComponentのBlocksとして扱われる
 }
 
 export class PComponent implements PComponentIF {
   public uuid: string
   public name: string
-  public blocksUuid: string
+  public blocks: PBlocks
+  public exportBlocks: PBlocks
 
   constructor (uuid: string) {
     this.uuid = uuid
     this.name = ''
-    this.blocksUuid = ''
+    this.blocks = {}
+    this.exportBlocks = {}
   }
 }
 
