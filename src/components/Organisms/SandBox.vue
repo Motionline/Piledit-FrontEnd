@@ -47,18 +47,18 @@ export default class SandBox extends Vue {
   public componentUuid!: string
 
   public stopDragging (uuid: string) {
-    blocksModule.stopDragging(uuid)
+    blocksModule.stopDragging({ triggeredBlockUuid: uuid, componentUuid: this.componentUuid })
   }
 
   public updatePosition (context: { position: PPosition; uuid: string }) {
     const block = this.blocks[context.uuid]
     block.uuid = context.uuid
     block.position = context.position
-    blocksModule.update(block)
+    blocksModule.update({ _triggerBlock: block, componentUuid: this.componentUuid })
   }
 
-  public removeBlock (uuid: string) {
-    blocksModule.remove(uuid)
+  public removeBlock (blockUuid: string) {
+    blocksModule.remove({ blockUuid, componentUuid: this.componentUuid })
   }
 
   @Emit('openingMenu')

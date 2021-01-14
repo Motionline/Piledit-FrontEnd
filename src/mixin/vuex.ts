@@ -26,6 +26,7 @@ export class VuexMixin extends Vue {
     return 37
   }
 
+  // 子Blocksを全て返す
   static searchChildrenOfBlock (topBlock: PBlock, blocks: PBlocks): PBlocks {
     const blocksFamily: PBlocks = {}
     let searchedBlock: PBlock = topBlock

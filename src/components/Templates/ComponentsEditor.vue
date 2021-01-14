@@ -1,7 +1,7 @@
 <template>
   <div>
     <SandBox :blocks="filteredBlocks()" :component-uuid="componentUuid" @openingMenu="openingMenu" />
-    <BlockDetailedPanel :block="getBlock(blockUuid)" />
+    <BlockDetailedPanel :block="getBlock(blockUuid)" :component-uuid="componentUuid" />
   </div>
 </template>
 

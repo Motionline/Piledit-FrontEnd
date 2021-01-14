@@ -51,11 +51,4 @@ export default class Components extends VuexModule implements ComponentsStateIF 
     component.blocks = blocks
     this.updateComponent(component)
   }
-
-  @Action({ rawError: true })
-  public updateExportBlocks ({ componentUuid, exportBlocks }: { componentUuid: string; exportBlocks: PBlocks }) {
-    const component = this.components[componentUuid]
-    component.exportBlocks = exportBlocks
-    this.updateComponent(component)
-  }
 }

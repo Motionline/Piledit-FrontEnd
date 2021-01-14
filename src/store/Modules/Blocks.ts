@@ -16,7 +16,6 @@ import store, { componentsModule } from '@/store/store'
 
 export interface BlocksStateIF {
   blocks: PBlocks;
-  objectOfBlockAndComponent: { [key: string]: string };
 }
 
 /*
@@ -24,13 +23,14 @@ export interface BlocksStateIF {
 * 2. エディタのcomponentsUuidを渡す
 * 3. ブロックの変更を反映
 * 4. componentsには(export)Blocksのuuidだけ渡すだけでいいかも
-*/
+*
+* Blockを作成した時点でComponentUuidも渡して登録する
+* Blockがコンポーネント定義ブロックならcomponent.blocksを更新する
+ */
 
 @Module({ store: store, name: 'BlocksModule', namespaced: true })
 export default class Blocks extends VuexModule implements BlocksStateIF {
   blocks: PBlocks = {}
-  objectOfBlockAndComponent: { [key: string]: string } = {}
-  DEFINE_COMPONENT_BLOCK = 'DefineComponentBlock'
 
   @Mutation
   public addBlock (block: PBlock) {
@@ -98,18 +98,8 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
     this.blocks[payload.uuid].shadowPath = payload.shadowPath
   }
 
-  @Mutation
-  public addRelationBlockAndComponent (payload: { uuid: string; componentUuid: string }) {
-    Vue.set(this.objectOfBlockAndComponent, payload.uuid, payload.componentUuid)
-  }
-
-  @Mutation
-  public removeRelationBlockAndComponent (uuid: string) {
-    Vue.delete(this.objectOfBlockAndComponent, uuid)
-  }
-
   @Action({ rawError: true })
-  public async add (context: { position: PPosition; name: string; tabUuid: string; kind: PBlockKind }) {
+  public async add (context: { position: PPosition; name: string; componentUuid: string; kind: PBlockKind }) {
     const uuid = VuexMixin.generateUuid()
     const init: Partial<PBlock> = {
       name: context.name,
@@ -119,7 +109,7 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
       childUuid: '',
       shadow: false,
       position: context.position,
-      tabUuid: context.tabUuid,
+      componentUuid: context.componentUuid,
       isSample: false,
       kind: context.kind
     }
@@ -139,53 +129,46 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
       }
     })(context.kind)
     this.addBlock(block)
-    // 追加したブロックがコンポーネント定義ブロックならコンポーネントを作成
-    if (context.name === this.DEFINE_COMPONENT_BLOCK) {
-      const componentUuid = VuexMixin.generateUuid()
-      this.addRelationBlockAndComponent({ uuid, componentUuid })
-      const blocks: { [key: string]: PBlock } = {}
-      blocks[block.uuid] = block
-      // コンポーネントはエディタが作成された時点で作っておくというのもあり
-      // components: { output: {}, blocks: {}  }
-      // とか
-      // componentsModule.add({ uuid: componentUuid, blocks })
+    // 追加したブロックがコンポーネント定義ブロックならコンポーネントにブロックを登録
+    if (context.kind === PBlockKind.DefineComponentBlock) {
+      const blocks = componentsModule.components[context.componentUuid].blocks
+      blocks[uuid] = block
+      componentsModule.updateBlocks({ componentUuid: context.componentUuid, blocks })
     }
     return uuid
   }
 
   @Action({ rawError: true })
-  public remove (uuid: string) {
-    const block = this.blocks[uuid]
+  public remove ({ blockUuid, componentUuid }: { blockUuid: string; componentUuid: string }) {
+    const block = this.blocks[blockUuid]
     const topBlock = this.blocks[block.topUuid]
     if (block.kind === PBlockKind.DefineComponentBlock) {
-      componentsModule.remove(this.objectOfBlockAndComponent[uuid])
+      componentsModule.remove(componentUuid)
     }
     if (topBlock != null && topBlock.kind === PBlockKind.DefineComponentBlock) {
       this.removeChild(block.parentUuid)
-      const componentUuid = this.objectOfBlockAndComponent[topBlock.uuid]
       const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
-      componentsModule.updateExportBlocks({ uuid: componentUuid, exportBlocks: blocksFamily })
+      componentsModule.updateBlocks({ componentUuid, blocks: blocksFamily })
     }
     // TODO: ブロック接続状態でブロックを削除した時、ドラッグアップ時に4つエラーが出る
     // なぜか治っていた 次出たらここが原因なので気を付ける
-    this.removeBlock(uuid)
+    this.removeBlock(blockUuid)
   }
 
   @Action({ rawError: true })
-  public update (_triggerBlock: PBlock) {
+  public update ({ _triggerBlock, componentUuid }: { _triggerBlock: PBlock; componentUuid: string }) {
     this.updateBlock(_triggerBlock)
     this.updateChildBlock(_triggerBlock)
     const triggerBlock = this.blocks[_triggerBlock.uuid]
     const topBlock = this.blocks[triggerBlock.topUuid]
+    // コンポーネント定義ブロックだったら
     if (topBlock != null && topBlock.kind === PBlockKind.DefineComponentBlock) {
-      const componentUuid = this.objectOfBlockAndComponent[topBlock.uuid]
       const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
-      componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
+      componentsModule.updateBlocks({ componentUuid, blocks: blocksFamily })
     }
     if (triggerBlock.kind === PBlockKind.DefineComponentBlock) {
-      const componentUuid = this.objectOfBlockAndComponent[triggerBlock.uuid]
       const blocksFamily = VuexMixin.searchChildrenOfBlock(triggerBlock, this.blocks)
-      componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
+      componentsModule.updateBlocks({ componentUuid, blocks: blocksFamily })
     }
     for (const blockUuid of Object.keys(this.blocks)) {
       if (triggerBlock.uuid === blockUuid) continue
@@ -203,7 +186,7 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
   }
 
   @Action({ rawError: true })
-  public stopDragging (triggeredBlockUuid: string) {
+  public stopDragging ({ triggeredBlockUuid, componentUuid }: { triggeredBlockUuid: string; componentUuid: string }) {
     // イベント発火元
     const triggeredBlock = this.blocks[triggeredBlockUuid]
 
@@ -231,16 +214,14 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
 
           // 接続したブロックがコンポーネント定義ブロックならコンポーネントを更新
           if (block.kind === PBlockKind.DefineComponentBlock) {
-            const componentUuid = this.objectOfBlockAndComponent[block.uuid]
             const blocksFamily = VuexMixin.searchChildrenOfBlock(block, this.blocks)
-            componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
+            componentsModule.updateBlocks({ componentUuid, blocks: blocksFamily })
           }
 
           // 接続したブロックがコンポーネント定義ブロックの子ならコンポーネントを更新
           if (topBlockIsDefineCompBlock) {
-            const componentUuid = this.objectOfBlockAndComponent[topBlock.uuid]
             const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
-            componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
+            componentsModule.updateBlocks({ componentUuid, blocks: blocksFamily })
           }
         }
 
@@ -250,15 +231,13 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
         this.removeChild(blockKey)
 
         if (topBlockIsDefineCompBlock) {
-          const componentUuid = this.objectOfBlockAndComponent[topBlock.uuid]
           const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
-          componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
+          componentsModule.updateBlocks({ componentUuid, blocks: blocksFamily })
         }
 
         if (block.kind === PBlockKind.DefineComponentBlock) {
-          const componentUuid = this.objectOfBlockAndComponent[blockKey]
           const blocksFamily = VuexMixin.searchChildrenOfBlock(block, this.blocks)
-          componentsModule.update({ uuid: componentUuid, blocks: blocksFamily })
+          componentsModule.updateBlocks({ componentUuid, blocks: blocksFamily })
         }
       }
     }

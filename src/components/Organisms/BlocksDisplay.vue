@@ -137,10 +137,10 @@ export default class BlocksDisplay extends Vue {
     blocksModule.updateBlock(block)
   }
 
-  public newBlockMouseUp (uuid: string) {
-    const block = this.blocks[uuid]
+  public newBlockMouseUp (blockUuid: string) {
+    const block = this.blocks[blockUuid]
     if (block != null && block.position.x >= 430) {
-      blocksModule.remove(uuid)
+      blocksModule.remove({ blockUuid, componentUuid: this.componentUuid })
     }
   }
 }
