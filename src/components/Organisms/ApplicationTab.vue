@@ -109,14 +109,26 @@ export default class ApplicationTab extends Vue {
     return tab.history.historyContainer[historyIndex][2]
   }
 
-  public deleteTab (uuid: string) {
-    if (uuid === this.currentViewingTabUuid) {
-      const len = Object.keys(this.tabs).length - 2
-      const tuuid = this.tabsArray[len]
-      const thistory = this.tabs[tuuid].history
-      const url = thistory.historyContainer[thistory.historyIndex][2]
+  public async deleteTab (uuid: string) {
+    // const len = Object.keys(this.tabs).length - 2
+    let len = 0
+    for (const index in this.tabsArray) {
+      if (this.tabsArray[index] === uuid) {
+        break
+      }
+      len++
+    }
+    if (len === 0 && uuid === this.currentViewingTabUuid) {
+      // 消したタブが0番目のタブの場合
+      const url = await tabsModule.init()
       this.$router.push(url)
-      tabsModule.removeOwn({ tabUuid: uuid, nextTabUuid: tuuid })
+      tabsModule.remove({ uuid })
+    } else if (uuid === this.currentViewingTabUuid) {
+      const nextTabUuid = this.tabsArray[len - 1]
+      const nextTabHistory = this.tabs[nextTabUuid].history
+      const url = nextTabHistory.historyContainer[nextTabHistory.historyIndex][2]
+      this.$router.push(url)
+      tabsModule.removeOwn({ tabUuid: uuid, nextTabUuid })
     } else {
       tabsModule.remove({ uuid })
     }
