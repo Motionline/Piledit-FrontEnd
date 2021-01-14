@@ -14,7 +14,7 @@
 
     <line x1="58vw" x2="58vw" y1="0" y2="100vh" stroke="black" />
 
-    <BlocksDisplay :tab-uuid="tabUuid" />
+    <BlocksDisplay :component-uuid="componentUuid" />
   </svg>
 </template>
 
@@ -44,7 +44,7 @@ export default class SandBox extends Vue {
   public blocks!: PBlocks
 
   @Prop({ required: true })
-  public tabUuid!: string
+  public componentUuid!: string
 
   public stopDragging (uuid: string) {
     blocksModule.stopDragging(uuid)

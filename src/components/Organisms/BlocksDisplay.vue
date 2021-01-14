@@ -71,18 +71,18 @@ import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.v
 import GrayScaleFilterBlock from '@/components/Molecules/Blocks/GrayScaleFilterBlock.vue'
 import BlurFilterBlock from '@/components/Molecules/Blocks/BlurFilterBlock.vue'
 
-  @Component({
-    components: {
-      MovieLoadingBlock,
-      DebugBlock,
-      DefineComponentBlock,
-      GrayScaleFilterBlock,
-      BlurFilterBlock
-    }
-  })
+@Component({
+  components: {
+    MovieLoadingBlock,
+    DebugBlock,
+    DefineComponentBlock,
+    GrayScaleFilterBlock,
+    BlurFilterBlock
+  }
+})
 export default class BlocksDisplay extends Vue {
   @Prop({ required: true })
-  public tabUuid!: string
+  public componentUuid!: string
 
   get PBlockKind () {
     return PBlockKind
@@ -99,7 +99,7 @@ export default class BlocksDisplay extends Vue {
       childUuid: '',
       shadow: false,
       position,
-      tabUuid: '',
+      componentUuid: '',
       isSample: true,
       kind
     }
@@ -126,7 +126,7 @@ export default class BlocksDisplay extends Vue {
     this.newBlockUuid = await blocksModule.add({
       position: context.position,
       name: context.name,
-      tabUuid: this.tabUuid,
+      componentUuid: this.componentUuid,
       kind: context.kind
     })
   }
@@ -141,17 +141,6 @@ export default class BlocksDisplay extends Vue {
     const block = this.blocks[uuid]
     if (block != null && block.position.x >= 430) {
       blocksModule.remove(uuid)
-    }
-  }
-
-  public getContext (name: string) {
-    return {
-      name,
-      position: {
-        x: 0,
-        y: 0
-      },
-      tabUuid: this.tabUuid
     }
   }
 }

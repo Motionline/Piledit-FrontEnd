@@ -1,6 +1,6 @@
 <template>
   <div id="Home">
-    <ComponentsEditor :tab-uuid="tabUuid" />
+    <ComponentsEditor :component-uuid="componentUuid" />
   </div>
 </template>
 
@@ -14,11 +14,11 @@ import ComponentsEditor from '@/components/Templates/ComponentsEditor.vue'
   }
 })
 export default class ComponentsEdit extends Vue {
-  public tabUuid = this.$route.params.tabUuid
+  public componentUuid = this.$route.params.componentUuid
 
   @Watch('$route')
   onUrlsChanged (newRoute: any, _: any) {
-    this.tabUuid = newRoute.params.uuid
+    this.componentUuid = newRoute.params.componentUuid
   }
 }
 </script>
