@@ -125,5 +125,11 @@ export default class App extends Vue {
 }
 </script>
 
-<style>
+<style lang="scss">
+html {
+  visibility: hidden;
+}
+html.wf-active {
+  visibility: visible;
+}
 </style>
