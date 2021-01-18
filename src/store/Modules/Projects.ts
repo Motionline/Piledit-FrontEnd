@@ -3,10 +3,7 @@ import { Vue } from 'vue-property-decorator'
 import { VuexMixin } from '@/mixin/vuex'
 import store from '@/store/store'
 
-import {
-  PProject,
-  PProjects, PTabHistoryKind
-} from '@/@types/piledit'
+import { PProject, PProjects, PTabHistoryKind } from '@/@types/piledit'
 
 export interface ProjectsStateIF {
   projects: PProjects;
@@ -61,7 +58,8 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
 
   @Action({ rawError: true })
   public updateCurrentViewingTabUuid ({ uuid, kind }: { uuid?: string; kind: PTabHistoryKind }) {
-    if (kind === PTabHistoryKind.Projects && uuid) {
+    const isProjectPage = kind === PTabHistoryKind.Projects || kind === PTabHistoryKind.ProjectHome
+    if (isProjectPage && uuid) {
       this.setCurrentViewingProjectUuid(uuid)
     } else {
       this.setCurrentViewingProjectUuid('')

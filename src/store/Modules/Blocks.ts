@@ -8,7 +8,7 @@ import {
   TDefineComponentBlock
 } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
-import { PBlocksMixin } from '@/mixin/PBlocksMixin'
+import { PBlocksMixin } from '@/mixin/pBlocks'
 import store, {
   componentsModule
 } from '@/store/store'
