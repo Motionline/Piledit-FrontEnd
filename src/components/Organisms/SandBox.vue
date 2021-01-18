@@ -56,7 +56,6 @@ export default class SandBox extends Vue {
     const block = this.blocks[context.uuid]
     block.uuid = context.uuid
     block.position = context.position
-    console.log(context.position)
     blocksModule.update({ _triggerBlock: block, componentUuid: this.componentUuid })
   }
 

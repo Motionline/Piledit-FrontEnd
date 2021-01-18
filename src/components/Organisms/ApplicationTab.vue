@@ -154,7 +154,6 @@ export default class ApplicationTab extends Vue {
     tabsModule.forward()
     const tab = this.tabs[this.currentViewingTabUuid]
     const url = tab.history.historyContainer[tab.history.historyIndex][2]
-    console.log(url)
     this.$router.push(url)
   }
 
@@ -162,7 +161,6 @@ export default class ApplicationTab extends Vue {
     tabsModule.backward()
     const tab = this.tabs[this.currentViewingTabUuid]
     const url = tab.history.historyContainer[tab.history.historyIndex][2]
-    console.log(url)
     this.$router.push(url)
   }
 
