@@ -2,7 +2,7 @@
   <div id="Home">
     <h3>全てのコンポーネント</h3>
     <div v-for="(_, uuid) in components" :key="uuid">
-      <v-btn @click="openComponentEditor(uuid)">{{ uuid }}を開く</v-btn>
+      <v-btn @click="openComponentEditor(uuid)">{{ getComponentName(uuid) }}を開く</v-btn>
     </div>
     <TimeLineComponent :clips="clips" :components="components" />
   </div>
@@ -43,6 +43,10 @@ export default class TimeLine extends Vue {
   public async openComponentEditor (uuid: string) {
     const url = await tabsModule.addComponentsEditorTab(uuid)
     this.$router.push(url)
+  }
+
+  public getComponentName (componentUuid: string) {
+    return this.components[componentUuid].name
   }
 
   public outputMovieConfigurationFile () {

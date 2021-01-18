@@ -12,7 +12,10 @@ import {
   TMovieLoadingBlock
 } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
-import store, { componentsModule } from '@/store/store'
+import store, {
+  componentsModule,
+  tabsModule
+} from '@/store/store'
 
 export interface BlocksStateIF {
   blocks: PBlocks;
@@ -175,19 +178,27 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
   }
 
   @Action({ rawError: true })
-  public update ({ _triggerBlock, componentUuid }: { _triggerBlock: PBlock; componentUuid: string }) {
+  public update ({ _triggerBlock, componentUuid, tabUuid }: { _triggerBlock: PBlock; componentUuid: string; tabUuid: string }) {
     this.updateBlock(_triggerBlock)
     this.updateChildBlock(_triggerBlock)
     const triggerBlock = this.blocks[_triggerBlock.uuid]
     const topBlock = this.blocks[triggerBlock.topUuid]
-    // コンポーネント定義ブロックだったら
     if (topBlock != null && topBlock.kind === PBlockKind.DefineComponentBlock) {
       const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
       componentsModule.updateBlocks({ componentUuid, blocks: blocksFamily })
     }
+    // コンポーネント定義ブロックだったら
     if (triggerBlock.kind === PBlockKind.DefineComponentBlock) {
       const blocksFamily = VuexMixin.searchChildrenOfBlock(triggerBlock, this.blocks)
       componentsModule.updateBlocks({ componentUuid, blocks: blocksFamily })
+      const defineComponentBlock: TDefineComponentBlock = triggerBlock
+      // コンポーネント名を更新
+      if (defineComponentBlock.componentName) {
+        const component = componentsModule.components[componentUuid]
+        component.name = defineComponentBlock.componentName
+        componentsModule.updateComponent(component)
+        tabsModule.updateTabName({ tabUuid, name: defineComponentBlock.componentName })
+      }
     }
     for (const blockUuid of Object.keys(this.blocks)) {
       if (triggerBlock.uuid === blockUuid) continue

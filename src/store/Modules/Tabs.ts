@@ -24,6 +24,11 @@ export default class Tabs extends VuexModule implements TabStateIF {
     Vue.delete(this.tabs, uuid)
   }
 
+  @Mutation
+  public updateTab (tab: PTab) {
+    Vue.set(this.tabs, tab.uuid, tab)
+  }
+
   @Action({ rawError: true })
   public forward () {
     const tab = this.tabs[this.currentViewingTabUuid]
@@ -102,6 +107,17 @@ export default class Tabs extends VuexModule implements TabStateIF {
     this.setCurrentViewingTabUuid(tabUuid)
     this.addTab(tab)
     return url
+  }
+
+  @Action({ rawError: true })
+  public updateTabName ({ tabUuid, name }: { tabUuid: string; name: string }) {
+    // 参照元を直接変更するとリアクティブにならないのでassignする
+    const tab = Object.assign({}, this.tabs[tabUuid])
+    const projectUuid = projectsModule.currentViewingProjectUuid
+    const projectName = projectsModule.projects[projectUuid].name
+    const tabHistoryIndex = tab.history.historyIndex
+    tab.history.historyContainer[tabHistoryIndex][1] = `${name} (${projectName})`
+    this.updateTab(tab)
   }
 
   @Action({ rawError: true })

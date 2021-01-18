@@ -45,14 +45,21 @@ import BlurFilterBlockPanel from '@/components/Molecules/Panels/BlurFilterBlockP
   }
 })
 export default class BlockDetailedPanel extends Vue {
-  @Prop()
+  @Prop({ required: true })
   public block!: PBlock
 
-  @Prop()
+  @Prop({ required: true })
   public componentUuid!: string
 
+  @Prop({ required: true })
+  public tabUuid!: string
+
   public updateBlock (block: PBlock) {
-    blocksModule.update({ _triggerBlock: block, componentUuid: this.componentUuid })
+    blocksModule.update({
+      _triggerBlock: block,
+      componentUuid: this.componentUuid,
+      tabUuid: this.tabUuid
+    })
   }
 
   public isKind (kind: PBlockKind) {

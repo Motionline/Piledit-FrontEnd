@@ -1,6 +1,6 @@
 <template>
   <svg id="SandBox">
-    <BlocksDisplay :component-uuid="componentUuid" />
+    <BlocksDisplay :component-uuid="componentUuid" :tab-uuid="tabUuid" />
     <line x1="22vw" x2="22vw" y1="0" y2="100vh" stroke="black" />
     <component
         v-for="(block, uuid, index) in blocks"
@@ -43,6 +43,9 @@ export default class SandBox extends Vue {
   @Prop({ required: true })
   public componentUuid!: string
 
+  @Prop({ required: true })
+  public tabUuid!: string
+
   public stopDragging (uuid: string) {
     const block = this.blocks[uuid]
     if (block.position.x <= 50) {
@@ -56,7 +59,11 @@ export default class SandBox extends Vue {
     const block = this.blocks[context.uuid]
     block.uuid = context.uuid
     block.position = context.position
-    blocksModule.update({ _triggerBlock: block, componentUuid: this.componentUuid })
+    blocksModule.update({
+      _triggerBlock: block,
+      componentUuid: this.componentUuid,
+      tabUuid: this.tabUuid
+    })
   }
 
   public removeBlock (blockUuid: string) {

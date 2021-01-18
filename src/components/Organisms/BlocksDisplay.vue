@@ -74,6 +74,9 @@ export default class BlocksDisplay extends Vue {
   @Prop({ required: true })
   public componentUuid!: string
 
+  @Prop({ required: true })
+  public tabUuid!: string
+
   get PBlockKind () {
     return PBlockKind
   }
@@ -125,7 +128,11 @@ export default class BlocksDisplay extends Vue {
   public newBlockMove (context: { position: PPosition; uuid: string }) {
     const block = this.blocks[context.uuid]
     block.position = context.position
-    blocksModule.update({ _triggerBlock: block, componentUuid: this.componentUuid })
+    blocksModule.update({
+      _triggerBlock: block,
+      componentUuid: this.componentUuid,
+      tabUuid: this.tabUuid
+    })
   }
 }
 </script>

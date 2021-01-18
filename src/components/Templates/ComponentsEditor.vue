@@ -1,7 +1,16 @@
 <template>
   <div class="componentsEditor__container">
-    <SandBox :blocks="filteredBlocks()" :component-uuid="componentUuid" @openingMenu="openingMenu" />
-    <BlockDetailedPanel :block="getBlock(blockUuid)" :component-uuid="componentUuid" />
+    <SandBox
+        :blocks="filteredBlocks()"
+        :component-uuid="componentUuid"
+        :tab-uuid="tabUuid"
+        @openingMenu="openingMenu"
+    />
+    <BlockDetailedPanel
+        :block="getBlock(blockUuid)"
+        :component-uuid="componentUuid"
+        :tab-uuid="tabUuid"
+    />
   </div>
 </template>
 
@@ -22,6 +31,9 @@ export default class ComponentsEditor extends Vue {
   @Prop({ required: true })
   public componentUuid!: string
   // ComponentのUUID。BlocksからそのComponent Editorに存在するBlockのみフィルターする
+
+  @Prop({ required: true })
+  public tabUuid!: string
 
   public blockUuid = ''
 
