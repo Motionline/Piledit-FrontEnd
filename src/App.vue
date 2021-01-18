@@ -8,9 +8,10 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { remote } from 'electron'
-import { clipsModule, componentsModule, tabsModule } from '@/store/store'
+import { clipsModule, componentsModule, tabsModule, projectsModule, blocksModule } from '@/store/store'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 import axios from 'axios'
+import { PBlocks, PComponents } from '@/@types/piledit'
 
 const Menu = remote.Menu
 
@@ -39,6 +40,11 @@ export default class App extends Vue {
             label: 'Paste',
             accelerator: 'CmdOrCtrl+V',
             role: 'paste'
+          },
+          {
+            label: 'Save',
+            accelerator: 'CmdOrCtrl+S',
+            click: () => { this.save() }
           }
         ]
       },
@@ -123,6 +129,37 @@ export default class App extends Vue {
     axios.post('http://localhost:5000/encode', data)
     console.log(JSON.stringify(data, undefined, 2))
     console.log(data)
+  }
+
+  public save () {
+    console.log('saved!')
+    const projectUuid = projectsModule.currentViewingProjectUuid
+    const project = projectsModule.projects[projectUuid]
+    const filteredComponents = this.filteredComponents(componentsModule.components, projectUuid)
+    console.log(project)
+    console.log(filteredComponents)
+    const filteredBlocks = this.filteredBlocks(blocksModule.blocks, projectUuid)
+    console.log(filteredBlocks)
+  }
+
+  public filteredComponents (components: PComponents, projectUuid: string): PComponents {
+    const filtered: PComponents = {}
+    for (const [key, value] of Object.entries(components)) {
+      if (value.projectUuid === projectUuid) {
+        filtered[key] = value
+      }
+    }
+    return filtered
+  }
+
+  public filteredBlocks (blocks: PBlocks, projectUuid: string): PBlocks {
+    const filtered: PBlocks = {}
+    for (const [key, value] of Object.entries(blocks)) {
+      if (value.projectUuid === projectUuid) {
+        filtered[key] = value
+      }
+    }
+    return filtered
   }
 }
 </script>
