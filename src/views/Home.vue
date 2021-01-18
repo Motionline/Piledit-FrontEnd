@@ -44,7 +44,12 @@ export default class Home extends Vue {
     const uuid = tabsModule.currentViewingTabUuid
     const url = `/${uuid}/projects/new`
     this.$router.push(url)
-    tabsModule.addPage({ kind: PTabHistoryKind.General, title: 'プロジェクトを作成する', url })
+    tabsModule.addPage({
+      kind: PTabHistoryKind.General,
+      projectUuid: '',
+      title: 'プロジェクトを作成する',
+      url
+    })
   }
 }
 </script>

@@ -240,9 +240,9 @@ export type PClips = {
 }
 
 export interface PTabHistoryIF {
-  historyContainer: [PTabHistoryKind, string, string][];
+  historyContainer: PTabHistoryContainer;
   historyIndex: number;
-  addPage (kind: PTabHistoryKind, title: string, url: string): void;
+  addPage (kind: PTabHistoryKind, projectUuid: string, title: string, url: string): void;
   forward (): void;
   backward (): void;
 }
@@ -258,12 +258,48 @@ export enum PTabHistoryKind {
   ProjectHome
 }
 
+export interface PTabHistoryItemIF {
+  kind: PTabHistoryKind;
+  projectUuid: string;
+  title: string;
+  url: string;
+}
+
+export class PTabHistoryItem implements PTabHistoryItemIF {
+  public kind: PTabHistoryKind
+  public projectUuid: string
+  public title: string
+  public url: string
+
+  constructor (
+    { kind, projectUuid, title, url }:
+    {
+      kind: PTabHistoryKind;
+      projectUuid: string;
+      title: string;
+      url: string;
+    }) {
+    this.kind = kind
+    this.projectUuid = projectUuid
+    this.title = title
+    this.url = url
+  }
+}
+
+export type PTabHistoryContainer = PTabHistoryItem[]
+
 export class PTabHistory implements PTabHistoryIF {
-  public historyContainer: [PTabHistoryKind, string, string][]
+  public historyContainer: PTabHistoryContainer
   public historyIndex: number
 
-  constructor (kind: PTabHistoryKind, title: string, url: string) {
-    this.historyContainer = [[kind, title, url]]
+  constructor ({ kind, projectUuid, title, url }: {
+    kind: PTabHistoryKind;
+    projectUuid: string;
+    title: string;
+    url: string;
+  }) {
+    const tabHistoryItem = new PTabHistoryItem({ kind, projectUuid, title, url })
+    this.historyContainer = [tabHistoryItem]
     this.historyIndex = 0
   }
 
@@ -272,9 +308,10 @@ export class PTabHistory implements PTabHistoryIF {
     this.historyIndex++
   }
 
-  addPage (kind: PTabHistoryKind, title: string, url: string) {
+  addPage (kind: PTabHistoryKind, projectUuid: string, title: string, url: string) {
     this.historyContainer.length = this.historyIndex + 1
-    this.historyContainer.push([kind, title, url])
+    const tabHistoryItem = new PTabHistoryItem({ kind, projectUuid, title, url })
+    this.historyContainer.push(tabHistoryItem)
     this.historyIndex++
   }
 
@@ -288,9 +325,15 @@ export class PTab implements PTabIF {
   public uuid: string
   public history: PTabHistory
 
-  constructor (uuid: string, kind: PTabHistoryKind, title: string, url: string) {
+  constructor ({ uuid, kind, projectUuid, title, url }: {
+    uuid: string;
+    kind: PTabHistoryKind;
+    projectUuid: string;
+    title: string;
+    url: string;
+  }) {
     this.uuid = uuid
-    this.history = new PTabHistory(kind, title, url)
+    this.history = new PTabHistory({ kind, projectUuid, title, url })
   }
 }
 

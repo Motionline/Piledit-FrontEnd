@@ -112,12 +112,12 @@ export default class ApplicationTab extends Vue {
 
   public getTitle (tab: PTab) {
     const historyIndex = tab.history.historyIndex
-    return tab.history.historyContainer[historyIndex][1]
+    return tab.history.historyContainer[historyIndex].title
   }
 
   public getUrl (tab: PTab) {
     const historyIndex = tab.history.historyIndex
-    return tab.history.historyContainer[historyIndex][2]
+    return tab.history.historyContainer[historyIndex].url
   }
 
   @Emit('save')
@@ -130,7 +130,7 @@ export default class ApplicationTab extends Vue {
     const project: PProject = this.projects[this.currentViewingProjectUuid]
     const tab = this.tabs[this.currentViewingTabUuid]
     const tabHistoryIndex = tab.history.historyIndex
-    if (tab.history.historyContainer[tabHistoryIndex][0] === PTabHistoryKind.ProjectHome) {
+    if (tab.history.historyContainer[tabHistoryIndex].kind === PTabHistoryKind.ProjectHome) {
       const options: Electron.MessageBoxSyncOptions = {
         type: 'question',
         title: project.name,
@@ -163,13 +163,13 @@ export default class ApplicationTab extends Vue {
       // 消したタブが0番目のタブの場合
       const nextTabUuid = this.tabsArray[currentViewingTabIndex + 1]
       const nextTabHistory = this.tabs[nextTabUuid].history
-      const url = nextTabHistory.historyContainer[nextTabHistory.historyIndex][2]
+      const url = nextTabHistory.historyContainer[nextTabHistory.historyIndex].url
       this.$router.push(url)
       tabsModule.removeOwn({ tabUuid: uuid, nextTabUuid })
     } else if (uuid === this.currentViewingTabUuid) {
       const nextTabUuid = this.tabsArray[currentViewingTabIndex - 1]
       const nextTabHistory = this.tabs[nextTabUuid].history
-      const url = nextTabHistory.historyContainer[nextTabHistory.historyIndex][2]
+      const url = nextTabHistory.historyContainer[nextTabHistory.historyIndex].url
       this.$router.push(url)
       tabsModule.removeOwn({ tabUuid: uuid, nextTabUuid })
     } else {
@@ -190,21 +190,21 @@ export default class ApplicationTab extends Vue {
   public forward () {
     tabsModule.forward()
     const tab = this.tabs[this.currentViewingTabUuid]
-    const url = tab.history.historyContainer[tab.history.historyIndex][2]
+    const url = tab.history.historyContainer[tab.history.historyIndex].url
     this.$router.push(url)
   }
 
   public backward () {
     tabsModule.backward()
     const tab = this.tabs[this.currentViewingTabUuid]
-    const url = tab.history.historyContainer[tab.history.historyIndex][2]
+    const url = tab.history.historyContainer[tab.history.historyIndex].url
     this.$router.push(url)
   }
 
   public toHome () {
     const tabUuid = this.currentViewingTabUuid
     const url = `/${tabUuid}`
-    tabsModule.addPage({ kind: PTabHistoryKind.General, title: '新しいタブ', url })
+    tabsModule.addPage({ kind: PTabHistoryKind.General, projectUuid: '', title: '新しいタブ', url })
     this.$router.push(url)
   }
 
