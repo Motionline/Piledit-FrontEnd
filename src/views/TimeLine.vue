@@ -4,7 +4,7 @@
     <div v-for="(_, uuid) in filteredComponents()" :key="uuid">
       <v-btn @click="openComponentEditor(uuid)">{{ getComponentName(uuid) }}を開く</v-btn>
     </div>
-    <TimeLineComponent :clips="clips" :components="components" />
+    <TimeLineComponent :clips="clips" :components="filteredComponents()" />
   </div>
 </template>
 
