@@ -104,25 +104,41 @@ class PBlockBase implements PBlockIF {
   public shadow: boolean
   public position: PPosition
   public componentUuid: string
+  public projectUuid: string
   public path: string
   public shadowPath: string
   public strokeColor: string
   public fillColor: string
   public isSample: boolean
 
-  constructor (context: Partial<PBlockBase>) {
-    this.name = context.name!
-    this.kind = context.kind!
-    this.uuid = context.uuid!
-    this.topUuid = context.topUuid!
-    this.parentUuid = context.parentUuid!
-    this.childUuid = context.childUuid!
-    this.shadow = context.shadow!
-    this.position = context.position!
-    this.componentUuid = context.componentUuid!
-    this.isSample = context.isSample!
+  constructor (
+    { name, kind, uuid, topUuid, parentUuid, childUuid, shadow, position, componentUuid, projectUuid, isSample }: {
+      name: string;
+      kind: PBlockKind;
+      uuid: string;
+      topUuid: string;
+      parentUuid: string;
+      childUuid: string;
+      shadow: boolean;
+      position: PPosition;
+      componentUuid: string;
+      projectUuid: string;
+      isSample: boolean;
+    }
+  ) {
+    this.name = name
+    this.kind = kind
+    this.uuid = uuid
+    this.topUuid = topUuid
+    this.parentUuid = parentUuid
+    this.childUuid = childUuid
+    this.shadow = shadow
+    this.position = position
+    this.componentUuid = componentUuid
+    this.projectUuid = projectUuid
+    this.isSample = isSample
     this.shadowPath = ''
-    const { path, strokeColor, fillColor } = blockParameter(context.kind)
+    const { path, strokeColor, fillColor } = blockParameter(kind)
     this.path = path
     this.strokeColor = strokeColor
     this.fillColor = fillColor
