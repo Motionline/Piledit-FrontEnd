@@ -174,11 +174,13 @@ export interface PComponentIF {
 export class PComponent implements PComponentIF {
   public uuid: string
   public name: string
+  public defaultName: string
   public blocks: PBlocks
 
-  constructor (uuid: string) {
+  constructor (uuid: string, defaultName: string) {
     this.uuid = uuid
     this.name = ''
+    this.defaultName = defaultName
     this.blocks = {}
   }
 }

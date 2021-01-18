@@ -11,11 +11,13 @@ import { VuexMixin } from '@/mixin/vuex'
 
 export interface ComponentsStateIF {
   components: PComponents;
+  componentsCount: number;
 }
 
 @Module({ store: store, name: 'ComponentsModule', namespaced: true })
 export default class Components extends VuexModule implements ComponentsStateIF {
   components: PComponents = {}
+  componentsCount = 1
 
   @Mutation
   public addComponent (component: PComponent) {
@@ -32,10 +34,16 @@ export default class Components extends VuexModule implements ComponentsStateIF 
     Vue.set(this.components, component.uuid, component)
   }
 
+  @Mutation
+  public incrementComponentCount () {
+    this.componentsCount += 1
+  }
+
   @Action({ rawError: true })
   public async add () {
     const uuid = VuexMixin.generateUuid()
-    const component = new PComponent(uuid)
+    const component = new PComponent(uuid, `コンポーネント${this.componentsCount}`)
+    this.incrementComponentCount()
     this.addComponent(component)
     return uuid
   }
@@ -47,7 +55,7 @@ export default class Components extends VuexModule implements ComponentsStateIF 
 
   @Action({ rawError: true })
   public updateBlocks ({ componentUuid, blocks }: { componentUuid: string; blocks: PBlocks }) {
-    const component = this.components[componentUuid]
+    const component = Object.assign({}, this.components[componentUuid])
     component.blocks = blocks
     this.updateComponent(component)
   }
@@ -58,6 +66,7 @@ export default class Components extends VuexModule implements ComponentsStateIF 
     component.name = name
     this.updateComponent(component)
     const tabUuid = tabsModule.currentViewingTabUuid
-    tabsModule.updateTabName({ tabUuid, name })
+    const title = name === '' ? component.defaultName : component.name
+    tabsModule.updateTabName({ tabUuid, name: title })
   }
 }

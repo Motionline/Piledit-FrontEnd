@@ -102,7 +102,8 @@ export default class Tabs extends VuexModule implements TabStateIF {
       componentsUuid = await componentsModule.add()
     }
     const url = `/${tabUuid}/projects/${projectUuid}/components/${componentsUuid}`
-    const title = `${projectName}のコンポーネントエディタ`
+    const component = componentsModule.components[componentsUuid]
+    const title = component.name === '' ? `${component.defaultName} (${projectName})` : `${component.name} (${projectName})`
     const tab = new PTab(tabUuid, PTabHistoryKind.Projects, title, url)
     this.setCurrentViewingTabUuid(tabUuid)
     this.addTab(tab)

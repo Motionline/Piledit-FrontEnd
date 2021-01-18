@@ -46,7 +46,8 @@ export default class TimeLine extends Vue {
   }
 
   public getComponentName (componentUuid: string) {
-    return this.components[componentUuid].name
+    const component = this.components[componentUuid]
+    return component.name === '' ? component.defaultName : component.name
   }
 
   public outputMovieConfigurationFile () {
