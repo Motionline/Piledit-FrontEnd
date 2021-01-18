@@ -12,6 +12,7 @@ import {
   TMovieLoadingBlock
 } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
+import { PBlocksMixin } from '@/mixin/PBlocksMixin'
 import store, {
   componentsModule,
   tabsModule
@@ -102,35 +103,18 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
   }
 
   @Action({ rawError: true })
-  public async add (context: { position: PPosition; name: string; componentUuid: string; kind: PBlockKind }) {
+  public async add (context: { position: PPosition; name: string; componentUuid: string; projectUuid: string; kind: PBlockKind }) {
     const uuid = VuexMixin.generateUuid()
-    const init: Partial<PBlock> = {
+    const init = {
       name: context.name,
       uuid,
-      topUuid: '',
-      parentUuid: '',
-      childUuid: '',
-      shadow: false,
       position: context.position,
       componentUuid: context.componentUuid,
+      projectUuid: context.projectUuid,
       isSample: false,
       kind: context.kind
     }
-    const block: PBlock = ((kind) => {
-      if (kind === PBlockKind.DebugBlock) {
-        return new TDebugBlock(init)
-      } else if (kind === PBlockKind.DefineComponentBlock) {
-        return new TDefineComponentBlock(init)
-      } else if (kind === PBlockKind.MovieLoadingBlock) {
-        return new TMovieLoadingBlock(init)
-      } else if (kind === PBlockKind.GrayScaleFilterBlock) {
-        return new TGrayScaleFilterBlock(init)
-      } else if (kind === PBlockKind.BlurFilterBlock) {
-        return new TBlurFilterBlock(init)
-      } else {
-        throw new Error('登録されていないブロックです')
-      }
-    })(context.kind)
+    const block = PBlocksMixin.newPBlock(init)
     this.addBlock(block)
     // 追加したブロックがコンポーネント定義ブロックならコンポーネントにブロックを登録
     if (context.kind === PBlockKind.DefineComponentBlock) {

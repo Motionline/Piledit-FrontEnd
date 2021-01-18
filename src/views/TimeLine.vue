@@ -56,10 +56,6 @@ export default class TimeLine extends Vue {
     return blocksModule.blocks
   }
 
-  public addClip (uuid: string) {
-    clipsModule.add(uuid)
-  }
-
   public async openComponentEditor (uuid: string) {
     const url = await tabsModule.addComponentsEditorTab(uuid)
     this.$router.push(url)

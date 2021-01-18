@@ -5,7 +5,7 @@ import {
   Action
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
-import store from '@/store/store'
+import store, { componentsModule } from '@/store/store'
 import { PClip, PClips, PPosition } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 
@@ -38,13 +38,15 @@ export default class Clips extends VuexModule implements ClipsStateIF {
   }
 
   @Action({ rawError: true })
-  public add (context: { componentUuid: string }) {
+  public add (context: { componentUuid: string; projectUuid: string }) {
     const uuid = VuexMixin.generateUuid()
+    const component = componentsModule.components[context.componentUuid]
+    const componentName = component.name === '' ? component.defaultName : component.name
     const clip = new PClip(
       uuid,
-      // TODO: コンポーネント名を設定する
-      uuid,
+      componentName,
       context.componentUuid,
+      context.projectUuid,
       {
         x: 0,
         y: 1

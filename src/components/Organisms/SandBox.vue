@@ -1,6 +1,6 @@
 <template>
   <svg id="SandBox">
-    <BlocksDisplay :component-uuid="componentUuid" :tab-uuid="tabUuid" />
+    <BlocksDisplay :component-uuid="componentUuid" :tab-uuid="tabUuid" :project-uuid="projectUuid" />
     <line x1="22vw" x2="22vw" y1="0" y2="100vh" stroke="black" />
     <component
         v-for="(block, uuid, index) in blocks"

@@ -47,14 +47,10 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { blocksModule } from '@/store/store'
 import {
-  PBlock,
   PBlockKind,
-  PPosition, TBlurFilterBlock,
-  TDebugBlock,
-  TDefineComponentBlock,
-  TGrayScaleFilterBlock,
-  TMovieLoadingBlock
+  PPosition
 } from '@/@types/piledit'
+import { PBlocksMixin } from '@/mixin/PBlocksMixin'
 import DebugBlock from '@/components/Molecules/Blocks/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/Blocks/DefineComponentBlock.vue'
 import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'
@@ -77,6 +73,9 @@ export default class BlocksDisplay extends Vue {
   @Prop({ required: true })
   public tabUuid!: string
 
+  @Prop({ required: true })
+  public projectUuid!: string
+
   get PBlockKind () {
     return PBlockKind
   }
@@ -84,31 +83,16 @@ export default class BlocksDisplay extends Vue {
   public newBlock = {}
 
   public getPBlock (position: PPosition, kind: PBlockKind) {
-    const init: Partial<PBlock> = {
+    const init = {
       name: kind,
       uuid: kind,
-      topUuid: '',
-      parentUuid: '',
-      childUuid: '',
-      shadow: false,
+      kind,
       position,
       componentUuid: '',
-      isSample: true,
-      kind
+      projectUuid: '',
+      isSample: true
     }
-    if (kind === PBlockKind.DebugBlock) {
-      return new TDebugBlock(init)
-    } else if (kind === PBlockKind.DefineComponentBlock) {
-      return new TDefineComponentBlock(init)
-    } else if (kind === PBlockKind.MovieLoadingBlock) {
-      return new TMovieLoadingBlock(init)
-    } else if (kind === PBlockKind.GrayScaleFilterBlock) {
-      return new TGrayScaleFilterBlock(init)
-    } else if (kind === PBlockKind.BlurFilterBlock) {
-      return new TBlurFilterBlock(init)
-    } else {
-      throw new Error('登録されていないブロックです')
-    }
+    return PBlocksMixin.newPBlock(init)
   }
 
   get blocks () {
@@ -120,7 +104,8 @@ export default class BlocksDisplay extends Vue {
       position: context.position,
       name: context.name,
       componentUuid: this.componentUuid,
-      kind: context.kind
+      kind: context.kind,
+      projectUuid: this.projectUuid
     })
     this.newBlock = this.blocks[uuid]
   }
