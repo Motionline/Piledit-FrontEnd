@@ -1,3 +1,5 @@
+export type filteredByProjectUuidObject = PComponents | PBlocks | PClips
+
 export type PPosition = {
   x: number;
   y: number;
@@ -219,13 +221,15 @@ export class PClip implements ClipIF {
   public uuid: string
   public name: string
   public componentUuid: string
+  public projectUuid: string
   public position: PPosition
   public width: number
 
-  constructor (uuid: string, name: string, componentUuid: string, position: PPosition, width: number) {
+  constructor (uuid: string, name: string, componentUuid: string, projectUuid: string, position: PPosition, width: number) {
     this.uuid = uuid
     this.name = name
     this.componentUuid = componentUuid
+    this.projectUuid = projectUuid
     this.position = position
     this.width = width
   }

@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { clipsModule } from '@/store/store'
+import { clipsModule, projectsModule } from '@/store/store'
 import { PClips, PPosition, PComponent } from '@/@types/piledit'
 import { remote } from 'electron'
 import SVGText from '@/components/Atoms/SVGText.vue'
@@ -112,8 +112,9 @@ export default class Timeline extends Vue {
     return menu
   }
 
-  public setClip (uuid: string) {
-    clipsModule.add(uuid)
+  public setClip (componentUuid: string) {
+    const projectUuid = projectsModule.currentViewingProjectUuid
+    clipsModule.add({ componentUuid, projectUuid })
   }
 
   public mouseDown (event: MouseEvent) {
