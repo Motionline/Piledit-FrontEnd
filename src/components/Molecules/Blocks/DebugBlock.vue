@@ -1,7 +1,7 @@
 <template>
   <AbstractBlock
     :block="block"
-    :new-block-uuid="newBlockUuid"
+    :new-block="newBlock"
     @stopDragging="stopDragging"
     @updatePosition="updatePosition"
     @remove="removeBlock"
@@ -10,7 +10,7 @@
     @newBlockMove="emitNewBlockMove"
     @newBlockMouseUp="emitNewBlockMouseUp"
   >
-    <SVGText x="10" y="80" color="white">
+    <SVGText x="10" y="30" color="white">
       {{ block.uuid }}
     </SVGText>
   </AbstractBlock>
@@ -35,7 +35,7 @@ export default class DebugBlock extends Vue {
   public block!: PBlock
 
   @Prop()
-  public newBlockUuid!: string
+  public newBlock!: PBlock
 
   @Emit('stopDragging')
   public stopDragging (uuid: string) {

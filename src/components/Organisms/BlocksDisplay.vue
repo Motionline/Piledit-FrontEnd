@@ -1,11 +1,10 @@
 <template>
-  <svg id="blocksDisplay" x="60vw">
+  <svg id="blocksDisplay" x="2.5vw">
     <DebugBlock
       @newBlockGenerate="newBlockGenerate"
       @newBlockMove="newBlockMove"
       @newBlockMouseUp="newBlockMouseUp"
-      :new-block-uuid="newBlockUuid"
-      :sample-block="true"
+      :new-block="newBlock"
       :block="getPBlock({ x: 0, y: 100 }, PBlockKind.DebugBlock)"
       class="dragBlock-btn"
       transform="translate(1,20)"
@@ -14,8 +13,7 @@
       @newBlockGenerate="newBlockGenerate"
       @newBlockMove="newBlockMove"
       @newBlockMouseUp="newBlockMouseUp"
-      :new-block-uuid="newBlockUuid"
-      :sample-block="true"
+      :new-block="newBlock"
       :block="getPBlock({ x: 0, y: 50 }, PBlockKind.DefineComponentBlock)"
       class="dragBlock-btn"
       transform="translate(1,50)"
@@ -24,8 +22,7 @@
       @newBlockGenerate="newBlockGenerate"
       @newBlockMove="newBlockMove"
       @newBlockMouseUp="newBlockMouseUp"
-      :new-block-uuid="newBlockUuid"
-      :sample-block="true"
+      :new-block="newBlock"
       :block="getPBlock({ x: 0, y: 150 }, PBlockKind.MovieLoadingBlock)"
       class="dragBlock-btn"
       transform="translate(1,20)"
@@ -34,8 +31,7 @@
       @newBlockGenerate="newBlockGenerate"
       @newBlockMove="newBlockMove"
       @newBlockMouseUp="newBlockMouseUp"
-      :new-block-uuid="newBlockUuid"
-      :sample-block="true"
+      :new-block="newBlock"
       :block="getPBlock({ x: 0, y: 200 }, PBlockKind.GrayScaleFilterBlock)"
       class="dragBlock-btn"
       transform="translate(1,20)"
@@ -44,8 +40,7 @@
       @newBlockGenerate="newBlockGenerate"
       @newBlockMove="newBlockMove"
       @newBlockMouseUp="newBlockMouseUp"
-      :new-block-uuid="newBlockUuid"
-      :sample-block="true"
+      :new-block="newBlock"
       :block="getPBlock({ x: 0, y: 250 }, PBlockKind.BlurFilterBlock)"
       class="dragBlock-btn"
       transform="translate(1,20)"
@@ -88,7 +83,7 @@ export default class BlocksDisplay extends Vue {
     return PBlockKind
   }
 
-  public newBlockUuid = ''
+  public newBlock = {}
 
   public getPBlock (position: PPosition, kind: PBlockKind) {
     const init: Partial<PBlock> = {
@@ -123,12 +118,13 @@ export default class BlocksDisplay extends Vue {
   }
 
   public async newBlockGenerate (context: { position: PPosition; name: string; kind: PBlockKind }) {
-    this.newBlockUuid = await blocksModule.add({
+    const uuid = await blocksModule.add({
       position: context.position,
       name: context.name,
       componentUuid: this.componentUuid,
       kind: context.kind
     })
+    this.newBlock = this.blocks[uuid]
   }
 
   public newBlockMove (context: { position: PPosition; uuid: string }) {
@@ -139,7 +135,7 @@ export default class BlocksDisplay extends Vue {
 
   public newBlockMouseUp (blockUuid: string) {
     const block = this.blocks[blockUuid]
-    if (block != null && block.position.x >= 430) {
+    if (block != null && block.position.x <= 100) {
       blocksModule.remove({ blockUuid, componentUuid: this.componentUuid })
     }
   }

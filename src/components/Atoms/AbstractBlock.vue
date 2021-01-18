@@ -1,29 +1,29 @@
 <template>
   <svg
-    @mousedown.left="mouseDown($event)"
-    @dblclick.left="calledByOpenDetailedMenuItem"
-    @click.right.prevent="popupContextMenu($event)"
-    preserveAspectRatio="xMidYMid meet"
-    :x="block.position.x"
-    :y="block.position.y"
-    :id="block.uuid"
+      @mousedown.left="mouseDown($event)"
+      @dblclick.left="calledByOpenDetailedMenuItem"
+      @click.right.prevent="popupContextMenu($event)"
+      preserveAspectRatio="xMidYMid meet"
+      :x="block.position.x"
+      :y="block.position.y"
+      :id="block.uuid"
   >
-    <path
-      @click="onClick"
-      :d="block.path"
-      :stroke="block.strokeColor"
-      :fill="block.fillColor"
-      stroke-width="2"
-      transform="translate(1,50) scale(0.75, 0.75)"
-    />
-    <slot></slot>
-    <path
-      v-if="block.shadow"
-      stroke-width="2"
-      fill="#d3d3d8"
-      :d="block.shadowPath"
-      transform="translate(1,87) scale(0.75, 0.75)"
-    />
+    <g transform="translate(2, 20)">
+      <path
+          @click="onClick"
+          :d="block.path"
+          :stroke="block.strokeColor"
+          :fill="block.fillColor"
+          stroke-width="1"
+      />
+      <slot></slot>
+      <path
+          v-if="block.shadow"
+          fill="#d3d3d8"
+          :d="block.shadowPath"
+          transform="translate(1,38)"
+      />
+    </g>
   </svg>
 </template>
 
@@ -53,7 +53,7 @@ export default class AbstractBlock extends Vue {
   public block!: PBlock
 
   @Prop()
-  public newBlockUuid!: string
+  public newBlock!: PBlock
 
   public isDragging = false
   public beforeMouseX = 0
@@ -64,12 +64,12 @@ export default class AbstractBlock extends Vue {
     return event
   }
 
-  private mounted () {
+  mounted () {
     document.addEventListener('mouseup', this.mouseUp)
     document.addEventListener('mousemove', this.mouseMove)
   }
 
-  private beforeDestroy () {
+  beforeDestroy () {
     document.removeEventListener('mouseup', this.mouseUp)
     document.removeEventListener('mousemove', this.mouseMove)
   }
@@ -82,7 +82,7 @@ export default class AbstractBlock extends Vue {
     event.preventDefault()
 
     if (this.block.isSample) {
-      this.emitNewBlockMouseUp(this.newBlockUuid)
+      this.emitNewBlockMouseUp(this.newBlock.uuid)
       return
     }
     return this.block.uuid
@@ -96,10 +96,8 @@ export default class AbstractBlock extends Vue {
   public mouseDown (event: MouseEvent) {
     this.isDragging = true
     if (this.block.isSample) {
-      this.emitNewBlockGenerate({
-        x: event.clientX - 340,
-        y: event.clientY - 70
-      })
+      this.emitNewBlockGenerate(this.getNewPosition(event.offsetX, event.offsetY, this.block))
+      // this.block.isSample = false
     }
     event.preventDefault()
   }
@@ -114,11 +112,8 @@ export default class AbstractBlock extends Vue {
     event.preventDefault()
     if (this.block.isSample) {
       this.emitNewBlockMove({
-        uuid: this.newBlockUuid,
-        position: {
-          x: event.clientX - 250,
-          y: event.clientY - 70
-        }
+        uuid: this.newBlock.uuid,
+        position: this.getNewPosition(event.offsetX, event.offsetY, this.newBlock)
       })
     } else {
       const blockElement = document.getElementById(this.block.uuid)

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="componentsEditor__container">
     <SandBox :blocks="filteredBlocks()" :component-uuid="componentUuid" @openingMenu="openingMenu" />
     <BlockDetailedPanel :block="getBlock(blockUuid)" :component-uuid="componentUuid" />
   </div>
@@ -54,7 +54,7 @@ export default class ComponentsEditor extends Vue {
 </script>
 
 <style scoped>
-.componentsEditor--row {
-  height: 60vh;
+.componentsEditor__container {
+  height: calc(100vh - 96px);
 }
 </style>

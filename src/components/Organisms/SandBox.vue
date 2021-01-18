@@ -1,20 +1,17 @@
 <template>
-  <svg height="60vh" width="90vw" id="SandBox" class="ma-0 pa-0">
-    <component
-      v-for="(block, uuid, index) in blocks"
-      :is="block.name"
-      :key="index"
-      :block="block"
-      :sample-block="false"
-      @stopDragging="stopDragging"
-      @updatePosition="updatePosition"
-      @remove="removeBlock"
-      @openingMenu="emitOpeningMenu"
-    />
-
-    <line x1="58vw" x2="58vw" y1="0" y2="100vh" stroke="black" />
-
+  <svg id="SandBox">
     <BlocksDisplay :component-uuid="componentUuid" />
+    <line x1="22vw" x2="22vw" y1="0" y2="100vh" stroke="black" />
+    <component
+        v-for="(block, uuid, index) in blocks"
+        :is="block.name"
+        :key="`${uuid}-${index}`"
+        :block="block"
+        @stopDragging="stopDragging"
+        @updatePosition="updatePosition"
+        @remove="removeBlock"
+        @openingMenu="emitOpeningMenu"
+    />
   </svg>
 </template>
 
@@ -71,5 +68,7 @@ export default class SandBox extends Vue {
 <style scoped>
 #SandBox {
   border: 2px solid black;
+  height: 60%;
+  width: 100%;
 }
 </style>

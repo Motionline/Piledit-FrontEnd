@@ -3,7 +3,7 @@
     :x="x"
     :y="y"
     :fill="color"
-    font-size="14"
+    font-size="11"
     class="notFocusSVGText"
   >
     <slot />
@@ -31,5 +31,8 @@ export default class SVGText extends Vue {
     -webkit-user-select: none;
     user-select: none;
     pointer-events: none;
+    font-family: tbchibirgothicplusk-pro, sans-serif;
+    font-weight: bold;
+    font-style: normal;
   }
 </style>
