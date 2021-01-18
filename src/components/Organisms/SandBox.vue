@@ -46,6 +46,9 @@ export default class SandBox extends Vue {
   @Prop({ required: true })
   public tabUuid!: string
 
+  @Prop({ required: true })
+  public projectUuid!: string
+
   public stopDragging (uuid: string) {
     const block = this.blocks[uuid]
     if (block.position.x <= 50) {

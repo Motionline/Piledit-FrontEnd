@@ -8,8 +8,8 @@ const routes: Array<RouteConfig> = [
   { path: '/users/:userId' }, // ユーザー表示
   { path: '/users/settings' }, // ユーザー編集
   { path: '/:tabUuid/projects/new', name: 'NewProject', component: () => import('../views/NewProject.vue') },
-  { path: '/:tabUuid/projects/:project_uuid/components/:componentUuid', name: 'ComponentsEdit', component: () => import('../views/ComponentsEdit.vue') },
-  { path: '/:tabUuid/projects/:project_uuid', name: 'TimeLine', component: () => import('../views/TimeLine.vue') },
+  { path: '/:tabUuid/projects/:projectUuid/components/:componentUuid', name: 'ComponentsEdit', component: () => import('../views/ComponentsEdit.vue') },
+  { path: '/:tabUuid/projects/:projectUuid', name: 'TimeLine', component: () => import('../views/TimeLine.vue') },
   { path: '/:tabUuid', name: 'Home', component: () => import('../views/Home.vue') }
 ]
 

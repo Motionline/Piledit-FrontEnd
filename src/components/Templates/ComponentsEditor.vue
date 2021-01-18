@@ -4,12 +4,14 @@
         :blocks="filteredBlocks()"
         :component-uuid="componentUuid"
         :tab-uuid="tabUuid"
+        :project-uuid="projectUuid"
         @openingMenu="openingMenu"
     />
     <BlockDetailedPanel
         :block="getBlock(blockUuid)"
         :component-uuid="componentUuid"
         :tab-uuid="tabUuid"
+        :project-uuid="projectUuid"
     />
   </div>
 </template>
@@ -34,6 +36,9 @@ export default class ComponentsEditor extends Vue {
 
   @Prop({ required: true })
   public tabUuid!: string
+
+  @Prop({ required: true })
+  public projectUuid!: string
 
   public blockUuid = ''
 

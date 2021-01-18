@@ -5,19 +5,19 @@ import {
   Action
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
-import store, { tabsModule } from '@/store/store'
+import store, { projectsModule, tabsModule } from '@/store/store'
 import { PBlocks, PComponent, PComponents } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 
 export interface ComponentsStateIF {
   components: PComponents;
-  componentsCount: number;
+  componentsCount: { [key: string]: number };
 }
 
 @Module({ store: store, name: 'ComponentsModule', namespaced: true })
 export default class Components extends VuexModule implements ComponentsStateIF {
   components: PComponents = {}
-  componentsCount = 1
+  componentsCount: { [key: string]: number } = {}
 
   @Mutation
   public addComponent (component: PComponent) {
@@ -35,17 +35,21 @@ export default class Components extends VuexModule implements ComponentsStateIF 
   }
 
   @Mutation
-  public incrementComponentCount () {
-    this.componentsCount += 1
+  public nextComponentCount (projectUuid: string) {
+    const currentCount = this.componentsCount[projectUuid] == null ? 1 : this.componentsCount[projectUuid]
+    Vue.set(this.componentsCount, projectUuid, currentCount + 1)
   }
 
   @Action({ rawError: true })
   public async add () {
-    const uuid = VuexMixin.generateUuid()
-    const component = new PComponent(uuid, `コンポーネント${this.componentsCount}`)
-    this.incrementComponentCount()
+    const componentUuid = VuexMixin.generateUuid()
+    const projectUuid = projectsModule.currentViewingProjectUuid
+    const currentCount = this.componentsCount[projectUuid] == null ? 1 : this.componentsCount[projectUuid]
+    const defaultName = `コンポーネント${currentCount}`
+    const component = new PComponent(componentUuid, defaultName, projectUuid)
+    this.nextComponentCount(projectUuid)
     this.addComponent(component)
-    return uuid
+    return componentUuid
   }
 
   @Action({ rawError: true })

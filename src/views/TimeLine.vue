@@ -1,7 +1,7 @@
 <template>
   <div id="Home">
     <h3>全てのコンポーネント</h3>
-    <div v-for="(_, uuid) in components" :key="uuid">
+    <div v-for="(_, uuid) in filteredComponents()" :key="uuid">
       <v-btn @click="openComponentEditor(uuid)">{{ getComponentName(uuid) }}を開く</v-btn>
     </div>
     <TimeLineComponent :clips="clips" :components="components" />
@@ -12,11 +12,12 @@
 </style>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { componentsModule, clipsModule, blocksModule, tabsModule } from '@/store/store'
 import TimeLineComponent from '@/components/Templates/Timeline.vue'
 import fs from 'fs'
 import { app } from 'electron'
+import { PComponents } from '@/@types/piledit'
 
 @Component({
   components: {
@@ -24,6 +25,25 @@ import { app } from 'electron'
   }
 })
 export default class TimeLine extends Vue {
+  public tabUuid = this.$route.params.tabUuid
+  public projectUuid = this.$route.params.projectUuid
+
+  @Watch('$route')
+  onUrlsChanged (newRoute: any, _: any) {
+    this.tabUuid = newRoute.params.tabUuid
+    this.projectUuid = newRoute.params.projectUuid
+  }
+
+  public filteredComponents () {
+    const filtered: PComponents = {}
+    for (const [key, value] of Object.entries(this.components)) {
+      if (value.projectUuid === this.projectUuid) {
+        filtered[key] = value
+      }
+    }
+    return filtered
+  }
+
   get components () {
     return componentsModule.components
   }

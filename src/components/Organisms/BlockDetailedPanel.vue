@@ -54,6 +54,9 @@ export default class BlockDetailedPanel extends Vue {
   @Prop({ required: true })
   public tabUuid!: string
 
+  @Prop({ required: true })
+  public projectUuid!: string
+
   public updateBlock (block: PBlock) {
     blocksModule.update({
       _triggerBlock: block,
