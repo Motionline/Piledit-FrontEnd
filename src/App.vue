@@ -98,8 +98,10 @@ export default class App extends Vue {
 
   async updated () {
     const menu = Menu.getApplicationMenu()
-    const item = menu.getMenuItemById('openComponentsEditor')
-    item.enabled = await this.canOpenComponentsEditorTab()
+    if (menu) {
+      const item = menu.getMenuItemById('openComponentsEditor')
+      item.enabled = await this.canOpenComponentsEditorTab()
+    }
   }
 
   public async canOpenComponentsEditorTab () {
