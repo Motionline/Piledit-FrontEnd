@@ -166,10 +166,7 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
     const block = this.blocks[blockUuid]
     const topBlock = block.topUuid === '' ? block : this.blocks[block.topUuid]
     if (topBlock.kind === PBlockKind.DefineComponentBlock) {
-      componentsModule.updateBlocks({ componentUuid, blocks: {} })
-      const component = componentsModule.components[componentUuid]
-      component.name = ''
-      componentsModule.updateComponent(component)
+      componentsModule.updateComponentName({ componentUuid, name: '' })
     }
     const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
     for (const child in blocksFamily) {
@@ -194,10 +191,7 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
       const defineComponentBlock: TDefineComponentBlock = triggerBlock
       // コンポーネント名を更新
       if (defineComponentBlock.componentName) {
-        const component = componentsModule.components[componentUuid]
-        component.name = defineComponentBlock.componentName
-        componentsModule.updateComponent(component)
-        tabsModule.updateTabName({ tabUuid, name: defineComponentBlock.componentName })
+        componentsModule.updateComponentName({ componentUuid, name: defineComponentBlock.componentName })
       }
     }
     for (const blockUuid of Object.keys(this.blocks)) {

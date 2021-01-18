@@ -5,7 +5,7 @@ import {
   Action
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
-import store from '@/store/store'
+import store, { tabsModule } from '@/store/store'
 import { PBlocks, PComponent, PComponents } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 
@@ -50,5 +50,14 @@ export default class Components extends VuexModule implements ComponentsStateIF 
     const component = this.components[componentUuid]
     component.blocks = blocks
     this.updateComponent(component)
+  }
+
+  @Action({ rawError: true })
+  public updateComponentName ({ componentUuid, name }: { componentUuid: string; name: string }) {
+    const component = Object.assign({}, this.components[componentUuid])
+    component.name = name
+    this.updateComponent(component)
+    const tabUuid = tabsModule.currentViewingTabUuid
+    tabsModule.updateTabName({ tabUuid, name })
   }
 }
