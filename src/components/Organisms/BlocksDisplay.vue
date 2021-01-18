@@ -3,7 +3,6 @@
     <DebugBlock
       @newBlockGenerate="newBlockGenerate"
       @newBlockMove="newBlockMove"
-      @newBlockMouseUp="newBlockMouseUp"
       :new-block="newBlock"
       :block="getPBlock({ x: 0, y: 100 }, PBlockKind.DebugBlock)"
       class="dragBlock-btn"
@@ -12,7 +11,6 @@
     <DefineComponentBlock
       @newBlockGenerate="newBlockGenerate"
       @newBlockMove="newBlockMove"
-      @newBlockMouseUp="newBlockMouseUp"
       :new-block="newBlock"
       :block="getPBlock({ x: 0, y: 50 }, PBlockKind.DefineComponentBlock)"
       class="dragBlock-btn"
@@ -21,7 +19,6 @@
     <MovieLoadingBlock
       @newBlockGenerate="newBlockGenerate"
       @newBlockMove="newBlockMove"
-      @newBlockMouseUp="newBlockMouseUp"
       :new-block="newBlock"
       :block="getPBlock({ x: 0, y: 150 }, PBlockKind.MovieLoadingBlock)"
       class="dragBlock-btn"
@@ -30,7 +27,6 @@
     <GrayScaleFilterBlock
       @newBlockGenerate="newBlockGenerate"
       @newBlockMove="newBlockMove"
-      @newBlockMouseUp="newBlockMouseUp"
       :new-block="newBlock"
       :block="getPBlock({ x: 0, y: 200 }, PBlockKind.GrayScaleFilterBlock)"
       class="dragBlock-btn"
@@ -39,7 +35,6 @@
     <BlurFilterBlock
       @newBlockGenerate="newBlockGenerate"
       @newBlockMove="newBlockMove"
-      @newBlockMouseUp="newBlockMouseUp"
       :new-block="newBlock"
       :block="getPBlock({ x: 0, y: 250 }, PBlockKind.BlurFilterBlock)"
       class="dragBlock-btn"
@@ -131,13 +126,6 @@ export default class BlocksDisplay extends Vue {
     const block = this.blocks[context.uuid]
     block.position = context.position
     blocksModule.updateBlock(block)
-  }
-
-  public newBlockMouseUp (blockUuid: string) {
-    const block = this.blocks[blockUuid]
-    if (block != null && block.position.x <= 100) {
-      blocksModule.remove({ blockUuid, componentUuid: this.componentUuid })
-    }
   }
 }
 </script>

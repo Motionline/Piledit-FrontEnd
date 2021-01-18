@@ -44,13 +44,19 @@ export default class SandBox extends Vue {
   public componentUuid!: string
 
   public stopDragging (uuid: string) {
-    blocksModule.stopDragging({ triggeredBlockUuid: uuid, componentUuid: this.componentUuid })
+    const block = this.blocks[uuid]
+    if (block.position.x <= 50) {
+      blocksModule.remove({ blockUuid: uuid, componentUuid: this.componentUuid })
+    } else {
+      blocksModule.stopDragging({ triggeredBlockUuid: uuid, componentUuid: this.componentUuid })
+    }
   }
 
   public updatePosition (context: { position: PPosition; uuid: string }) {
     const block = this.blocks[context.uuid]
     block.uuid = context.uuid
     block.position = context.position
+    console.log(context.position)
     blocksModule.update({ _triggerBlock: block, componentUuid: this.componentUuid })
   }
 
