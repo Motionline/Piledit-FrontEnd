@@ -125,7 +125,7 @@ export default class BlocksDisplay extends Vue {
   public newBlockMove (context: { position: PPosition; uuid: string }) {
     const block = this.blocks[context.uuid]
     block.position = context.position
-    blocksModule.updateBlock(block)
+    blocksModule.update({ _triggerBlock: block, componentUuid: this.componentUuid })
   }
 }
 </script>
