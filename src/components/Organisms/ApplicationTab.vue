@@ -128,9 +128,10 @@ export default class ApplicationTab extends Vue {
 
   public async deleteTab (uuid: string) {
     const project: PProject = this.projects[this.currentViewingProjectUuid]
-    const tab = this.tabs[this.currentViewingTabUuid]
+    const tab = this.tabs[uuid]
     const tabHistoryIndex = tab.history.historyIndex
-    if (tab.history.historyContainer[tabHistoryIndex].kind === PTabHistoryKind.ProjectHome) {
+    const isProjectHome = tab.history.historyContainer[tabHistoryIndex].kind === PTabHistoryKind.ProjectHome
+    if (isProjectHome) {
       const options: Electron.MessageBoxSyncOptions = {
         type: 'question',
         title: project.name,
@@ -174,6 +175,26 @@ export default class ApplicationTab extends Vue {
       tabsModule.removeOwn({ tabUuid: uuid, nextTabUuid })
     } else {
       tabsModule.remove({ uuid })
+    }
+    if (isProjectHome) {
+      for (const tabUuid in this.tabs) {
+        const tab: PTab = this.tabs[tabUuid]
+        const tabHistoryIndex = tab.history.historyIndex
+        const projectUuid = tab.history.historyContainer[tabHistoryIndex].projectUuid
+        if (projectUuid === this.currentViewingProjectUuid) {
+          tabsModule.remove({ uuid: tab.uuid })
+        }
+      }
+      const tabsLen = Object.keys(this.tabs).length - 1
+      if (tabsLen === 0) {
+        const url = await tabsModule.init()
+        this.$router.push(url)
+      } else {
+        const nextTabUuid = this.tabsArray[currentViewingTabIndex - 1]
+        const nextTabHistory = this.tabs[nextTabUuid].history
+        const url = nextTabHistory.historyContainer[nextTabHistory.historyIndex].url
+        this.$router.push(url)
+      }
     }
   }
 
