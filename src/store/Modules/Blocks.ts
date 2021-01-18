@@ -5,17 +5,12 @@ import {
   PBlockKind,
   PBlocks,
   PPosition,
-  TBlurFilterBlock,
-  TDebugBlock,
-  TDefineComponentBlock,
-  TGrayScaleFilterBlock,
-  TMovieLoadingBlock
+  TDefineComponentBlock
 } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 import { PBlocksMixin } from '@/mixin/PBlocksMixin'
 import store, {
-  componentsModule,
-  tabsModule
+  componentsModule
 } from '@/store/store'
 
 export interface BlocksStateIF {
