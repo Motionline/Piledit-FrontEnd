@@ -46,7 +46,7 @@ export default class SandBox extends Vue {
   public stopDragging (uuid: string) {
     const block = this.blocks[uuid]
     if (block.position.x <= 50) {
-      blocksModule.remove({ blockUuid: uuid, componentUuid: this.componentUuid })
+      blocksModule.removeWithChildren({ blockUuid: uuid, componentUuid: this.componentUuid })
     } else {
       blocksModule.stopDragging({ triggeredBlockUuid: uuid, componentUuid: this.componentUuid })
     }

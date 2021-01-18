@@ -159,6 +159,22 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
   }
 
   @Action({ rawError: true })
+  public removeWithChildren ({ blockUuid, componentUuid }: { blockUuid: string; componentUuid: string }) {
+    const block = this.blocks[blockUuid]
+    const topBlock = block.topUuid === '' ? block : this.blocks[block.topUuid]
+    if (topBlock.kind === PBlockKind.DefineComponentBlock) {
+      componentsModule.updateBlocks({ componentUuid, blocks: {} })
+      const component = componentsModule.components[componentUuid]
+      component.name = ''
+      componentsModule.updateComponent(component)
+    }
+    const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
+    for (const child in blocksFamily) {
+      this.removeBlock(child)
+    }
+  }
+
+  @Action({ rawError: true })
   public update ({ _triggerBlock, componentUuid }: { _triggerBlock: PBlock; componentUuid: string }) {
     this.updateBlock(_triggerBlock)
     this.updateChildBlock(_triggerBlock)
