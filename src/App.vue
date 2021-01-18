@@ -1,6 +1,6 @@
 <template>
   <v-app id="app" class="ma-0 pa-0">
-    <application-tab />
+    <application-tab @save="save" />
     <router-view />
   </v-app>
 </template>
@@ -8,7 +8,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { remote } from 'electron'
-import { clipsModule, componentsModule, tabsModule, projectsModule, blocksModule } from '@/store/store'
+import { blocksModule, clipsModule, componentsModule, projectsModule, tabsModule } from '@/store/store'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 import axios from 'axios'
 import { filteredByProjectUuidObject, PBlocks, PClips, PComponents } from '@/@types/piledit'
@@ -172,15 +172,15 @@ export default class App extends Vue {
     return filtered
   }
 
-  public filteredComponents (components: PComponents, projectUuid: string): PComponents {
+  public filteredComponents (components: PComponents, projectUuid: string) {
     return this.filteredPileditObject(components, projectUuid)
   }
 
-  public filteredBlocks (blocks: PBlocks, projectUuid: string): PBlocks {
+  public filteredBlocks (blocks: PBlocks, projectUuid: string) {
     return this.filteredPileditObject(blocks, projectUuid)
   }
 
-  public filteredClips (clips: PClips, projectUuid: string): PClips {
+  public filteredClips (clips: PClips, projectUuid: string) {
     return this.filteredPileditObject(clips, projectUuid)
   }
 }

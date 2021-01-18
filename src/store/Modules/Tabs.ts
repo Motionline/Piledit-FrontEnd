@@ -90,7 +90,8 @@ export default class Tabs extends VuexModule implements TabStateIF {
     const senderTabUuid = this.currentViewingTabUuid
     const senderTabHistoryContainer = this.tabs[senderTabUuid].history.historyContainer
     const senderTabHistoryIndex = this.tabs[senderTabUuid].history.historyIndex
-    return senderTabHistoryContainer[senderTabHistoryIndex][0] === PTabHistoryKind.Projects
+    const senderTabHistoryKind = senderTabHistoryContainer[senderTabHistoryIndex][0]
+    return senderTabHistoryKind === PTabHistoryKind.Projects || senderTabHistoryKind === PTabHistoryKind.ProjectHome
   }
 
   @Action({ rawError: true })
@@ -127,7 +128,7 @@ export default class Tabs extends VuexModule implements TabStateIF {
     const tab = this.tabs[tabUuid]
     const projectUuid = await projectsModule.add({ name })
     const url = `/${tabUuid}/projects/${projectUuid}`
-    tab.history.addPage(PTabHistoryKind.Projects, name, url)
+    tab.history.addPage(PTabHistoryKind.ProjectHome, name, url)
     projectsModule.updateCurrentViewingTabUuid({ uuid: projectUuid, kind: PTabHistoryKind.Projects })
     return url
   }

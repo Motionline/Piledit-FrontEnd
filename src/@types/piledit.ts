@@ -254,7 +254,8 @@ export interface PTabIF {
 
 export enum PTabHistoryKind {
   General,
-  Projects
+  Projects,
+  ProjectHome
 }
 
 export class PTabHistory implements PTabHistoryIF {

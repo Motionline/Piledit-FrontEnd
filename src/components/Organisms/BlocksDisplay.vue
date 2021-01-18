@@ -50,7 +50,7 @@ import {
   PBlockKind,
   PPosition
 } from '@/@types/piledit'
-import { PBlocksMixin } from '@/mixin/PBlocksMixin'
+import { PBlocksMixin } from '@/mixin/pBlocks'
 import DebugBlock from '@/components/Molecules/Blocks/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/Blocks/DefineComponentBlock.vue'
 import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'

@@ -62,9 +62,12 @@
 </style>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import { tabsModule } from '@/store/store'
-import { PTab, PTabHistoryKind } from '@/@types/piledit'
+import { Component, Emit, Vue } from 'vue-property-decorator'
+import { projectsModule, tabsModule } from '@/store/store'
+import { PProject, PTab, PTabHistoryKind } from '@/@types/piledit'
+import { remote } from 'electron'
+
+const dialog = remote.dialog
 
 @Component
 export default class ApplicationTab extends Vue {
@@ -82,6 +85,14 @@ export default class ApplicationTab extends Vue {
 
   get currentViewingTabUuid () {
     return tabsModule.currentViewingTabUuid
+  }
+
+  get projects () {
+    return projectsModule.projects
+  }
+
+  get currentViewingProjectUuid () {
+    return projectsModule.currentViewingProjectUuid
   }
 
   async beforeMount () {
@@ -109,7 +120,33 @@ export default class ApplicationTab extends Vue {
     return tab.history.historyContainer[historyIndex][2]
   }
 
+  @Emit('save')
+  public save () {
+    console.log('save')
+    return true
+  }
+
   public async deleteTab (uuid: string) {
+    const project: PProject = this.projects[this.currentViewingProjectUuid]
+    const tab = this.tabs[this.currentViewingTabUuid]
+    const tabHistoryIndex = tab.history.historyIndex
+    if (tab.history.historyContainer[tabHistoryIndex][0] === PTabHistoryKind.ProjectHome) {
+      const options: Electron.MessageBoxSyncOptions = {
+        type: 'question',
+        title: project.name,
+        message: `プロジェクト ${project.name} を保存しますか？`,
+        detail: 'この時点での編集結果が保存されます。保存しない場合は破棄されます。',
+        buttons: ['保存する', '保存しない'],
+        cancelId: -1
+      }
+      const selectedOption = dialog.showMessageBoxSync(options)
+      if (selectedOption === -1) {
+        // escで選択をキャンセルしたらタブを消さない
+        return
+      } else if (selectedOption === 0) {
+        this.save()
+      }
+    }
     const tabsLen = Object.keys(this.tabs).length - 1
     let currentViewingTabIndex = 0
     for (const index in this.tabsArray) {
