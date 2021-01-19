@@ -5,6 +5,7 @@ import Components from '@/store/Modules/Components'
 import Clips from '@/store/Modules/Clips'
 import Tabs from '@/store/Modules/Tabs'
 import Projects from '@/store/Modules/Projects'
+import Sessions from '@/store/Modules/Sessions'
 import { getModule } from 'vuex-module-decorators'
 import VuexPersistence from 'vuex-persist'
 
@@ -20,7 +21,8 @@ const store = new Vuex.Store({
     ComponentsModule: Components,
     ClipsModule: Clips,
     TabsModule: Tabs,
-    ProjectsModule: Projects
+    ProjectsModule: Projects,
+    SessionsModule: Sessions
   },
   plugins: [vuexLocal.plugin]
 })
@@ -31,3 +33,4 @@ export const componentsModule = getModule(Components, store)
 export const clipsModule = getModule(Clips, store)
 export const tabsModule = getModule(Tabs, store)
 export const projectsModule = getModule(Projects, store)
+export const sessionsModule = getModule(Sessions, store)
