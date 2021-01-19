@@ -23,6 +23,9 @@
               <div>
                 <a>アカウントを作成する</a>
               </div>
+              <div>
+                <a @click="toLogin">ログイン</a>
+              </div>
             </div>
             <div class="Home__wrapper--links--group">
               <h3>Pileditについて学ぶ</h3>
@@ -72,6 +75,18 @@ export default class Home extends Vue {
       kind: PTabHistoryKind.General,
       projectUuid: '',
       title: 'プロジェクトを作成する',
+      url
+    })
+  }
+
+  toLogin () {
+    const uuid = tabsModule.currentViewingTabUuid
+    const url = `/${uuid}/login`
+    this.$router.push(url)
+    tabsModule.addPage({
+      kind: PTabHistoryKind.General,
+      projectUuid: '',
+      title: 'ログインする',
       url
     })
   }
