@@ -1,4 +1,5 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
+import firebase from 'firebase'
 import store from '@/store/store'
 
 export interface SessionStateIF {
@@ -15,7 +16,8 @@ export default class Sessions extends VuexModule implements SessionStateIF {
   }
 
   @Action({ rawError: true })
-  public updateLogInState ({ loggedIn }: { loggedIn: boolean }) {
-    this.setLogInState(loggedIn)
+  public async updateLogInState ({ user }: { user: firebase.User | null }) {
+    this.setLogInState(user != null)
+    return user != null
   }
 }
