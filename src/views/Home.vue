@@ -1,33 +1,45 @@
 <template>
   <div id="Home">
     <div class="Home__wrapper">
-      <img src="../assets/piledit.png" alt="piledit-logo"  width="395px" />
+      <img src="../assets/piledit.png" alt="piledit-logo" width="395px" />
       <h2>Simple, Componentable, Expandable</h2>
       <div class="Home__wrapper--links">
-        <div class="Home__wrapper--links--group">
-          <h3>スタート</h3>
+        <v-row>
           <div>
-            <a @click="toNewProject">新規プロジェクト</a>
+            <div class="Home__wrapper--links--group">
+              <h3>スタート</h3>
+              <div>
+                <a @click="toNewProject">新規プロジェクト</a>
+              </div>
+              <div>
+                <a>プロジェクトを開く</a>
+              </div>
+            </div>
+            <div class="Home__wrapper--links--group">
+              <h3>直近のプロジェクト</h3>
+            </div>
+            <div class="Home__wrapper--links--group">
+              <h3>アカウント設定</h3>
+              <div>
+                <a>アカウントを作成する</a>
+              </div>
+            </div>
+            <div class="Home__wrapper--links--group">
+              <h3>Pileditについて学ぶ</h3>
+            </div>
+            <div class="Home__wrapper--links--group">
+              <h3>ヘルプ</h3>
+            </div>
           </div>
           <div>
-            <a>プロジェクトを開く</a>
+            <div class="Home__wrapper--links--group">
+              <h3>ストア</h3>
+              <div>
+                <a @click="toStore">ストア</a>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="Home__wrapper--links--group">
-          <h3>直近のプロジェクト</h3>
-        </div>
-        <div class="Home__wrapper--links--group">
-          <h3>アカウント設定</h3>
-          <div>
-            <a>アカウントを作成する</a>
-          </div>
-        </div>
-        <div class="Home__wrapper--links--group">
-          <h3>Pileditについて学ぶ</h3>
-        </div>
-        <div class="Home__wrapper--links--group">
-          <h3>ヘルプ</h3>
-        </div>
+        </v-row>
       </div>
     </div>
   </div>
@@ -51,6 +63,18 @@ export default class Home extends Vue {
       url
     })
   }
+
+  toStore () {
+    const uuid = tabsModule.currentViewingTabUuid
+    const url = `/${uuid}/store`
+    this.$router.push(url)
+    tabsModule.addPage({
+      kind: PTabHistoryKind.General,
+      projectUuid: '',
+      title: 'プロジェクトを作成する',
+      url
+    })
+  }
 }
 </script>
 
@@ -63,11 +87,14 @@ export default class Home extends Vue {
   align-items: center;
   justify-content: center;
 
-  .Home__wrapper--links {
-    margin-top: 40px;
+  .Home__wrapper {
+    width: 50%;
+    &--links {
+      margin-top: 40px;
 
-    &--group {
-      margin-top: 20px;
+      &--group {
+        margin-top: 20px;
+      }
     }
   }
 
