@@ -22,7 +22,6 @@
     "@types/node": "^14.14.2",
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
-    "electron-oauth-helper": "^5.1.1",
     "firebase": "^8.2.3",
     "opencv-wasm": "^4.3.0-4",
     "svg-z-order": "^1.2.1",
