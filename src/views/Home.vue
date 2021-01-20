@@ -120,7 +120,7 @@ export default class Home extends Vue {
     tabsModule.addPage({
       kind: PTabHistoryKind.General,
       projectUuid: '',
-      title: 'プロジェクトを作成する',
+      title: 'Piledit Store',
       url
     })
   }
