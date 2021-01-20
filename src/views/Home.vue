@@ -38,7 +38,12 @@
             <div class="Home__wrapper--links--group">
               <h3>アカウント</h3>
               <div v-if="isLoggedIn">
-                <a @click="logout">ログアウト</a>
+                <div>
+                  <a @click="toUserEdit">ユーザーを編集する</a>
+                </div>
+                <div>
+                  <a @click="logout">ログアウト</a>
+                </div>
               </div>
               <div v-else>
                 <div>
@@ -132,6 +137,18 @@ export default class Home extends Vue {
       kind: PTabHistoryKind.General,
       projectUuid: '',
       title: 'アカウントを作成する',
+      url
+    })
+  }
+
+  toUserEdit () {
+    const uuid = tabsModule.currentViewingTabUuid
+    const url = `/${uuid}/users/edit`
+    this.$router.push(url)
+    tabsModule.addPage({
+      kind: PTabHistoryKind.General,
+      projectUuid: '',
+      title: 'ユーザーを編集する',
       url
     })
   }
