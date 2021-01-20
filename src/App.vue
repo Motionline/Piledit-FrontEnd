@@ -8,10 +8,10 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { remote } from 'electron'
-import { blocksModule, clipsModule, componentsModule, projectsModule, tabsModule } from '@/store/store'
+import { blocksModule, clipsModule, componentsModule, projectsModule, pStoresModule, tabsModule } from '@/store/store'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
 import axios from 'axios'
-import { filteredByProjectUuidObject, PBlocks, PClips, PComponents } from '@/@types/piledit'
+import { filteredByProjectUuidObject, PBlocks, PClips, PComponents, PComponent } from '@/@types/piledit'
 import fs from 'fs'
 
 const Menu = remote.Menu
@@ -56,6 +56,15 @@ export default class App extends Vue {
             label: 'Encode',
             accelerator: 'CmdOrCtrl+E',
             click: () => { this.encode() }
+          }
+        ]
+      },
+      {
+        label: 'Components',
+        submenu: [
+          {
+            label: '公開する',
+            click: () => { this.publishComponent() }
           }
         ]
       },
@@ -130,6 +139,19 @@ export default class App extends Vue {
     axios.post('http://localhost:5000/encode', data)
     console.log(JSON.stringify(data, undefined, 2))
     console.log(data)
+  }
+
+  public async publishComponent () {
+    console.log('公開する')
+    const componentUuid = this.$route.params.componentUuid
+    const component = componentsModule.components[componentUuid]
+    console.log(component)
+    const processedComponent: PComponent = {
+      ...component,
+      projectUuid: ''
+    }
+    await pStoresModule.publishComponent({ component: processedComponent })
+    console.log(processedComponent)
   }
 
   public save () {
