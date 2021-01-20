@@ -14,8 +14,10 @@ export default class PStores extends VuexModule implements PStoreIF {
   @Action({ rawError: true })
   public async publishComponent ({ component }: { component: PComponent }) {
     const componentsRef = DB.collection('components').doc(component.uuid)
+    const pureObject: object = JSON.parse(JSON.stringify(component))
+    console.log(pureObject)
     await componentsRef.set({
-      ...component
+      ...pureObject
     }, { merge: true })
   }
 }
