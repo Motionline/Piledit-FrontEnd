@@ -19,7 +19,7 @@
       </v-snackbar>
       <img src="../assets/piledit.png" alt="piledit-logo" width="395px" />
       <h2>Simple, Componentable, Expandable</h2>
-      <p v-if="isLoggedIn">ようこそ、{{ email }}さん！</p>
+      <p v-if="isLoggedIn">{{ greeting }}</p>
       <div class="Home__wrapper--links">
         <v-row>
           <div>
@@ -77,7 +77,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { tabsModule, sessionsModule } from '@/store/store'
+import { tabsModule, sessionsModule, usersModule } from '@/store/store'
 import { PTabHistoryKind } from '@/@types/piledit'
 import { Auth } from '@/firebase/auth'
 
@@ -89,6 +89,14 @@ export default class Home extends Vue {
 
   get email () {
     return sessionsModule.email
+  }
+
+  get greeting () {
+    if (usersModule.name === '') {
+      return 'Pileditへようこそ！'
+    } else {
+      return `ようこそ、${usersModule.name}さん！`
+    }
   }
 
   public snackbar = false
