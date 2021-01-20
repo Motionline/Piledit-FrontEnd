@@ -30,7 +30,6 @@ export default class UserRegister extends Vue {
   }
 
   public signup () {
-    console.log('signup')
     Auth.createUserWithEmailAndPassword(this.email, this.password)
       .then(() => {
         const url = `/${this.currentViewingTabUuid}`
