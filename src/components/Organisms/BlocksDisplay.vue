@@ -1,45 +1,51 @@
 <template>
-  <svg id="blocksDisplay" x="7vw">
-    <DebugBlock
-      @newBlockGenerate="newBlockGenerate"
-      @newBlockMove="newBlockMove"
-      :new-block="newBlock"
-      :block="getPBlock({ x: 0, y: 100 }, PBlockKind.DebugBlock)"
-      class="dragBlock-btn"
-      transform="translate(1,20)"
-    />
-    <DefineComponentBlock
-      @newBlockGenerate="newBlockGenerate"
-      @newBlockMove="newBlockMove"
-      :new-block="newBlock"
-      :block="getPBlock({ x: 0, y: 50 }, PBlockKind.DefineComponentBlock)"
-      class="dragBlock-btn"
-      transform="translate(1,50)"
-    />
-    <MovieLoadingBlock
-      @newBlockGenerate="newBlockGenerate"
-      @newBlockMove="newBlockMove"
-      :new-block="newBlock"
-      :block="getPBlock({ x: 0, y: 150 }, PBlockKind.MovieLoadingBlock)"
-      class="dragBlock-btn"
-      transform="translate(1,20)"
-    />
-    <GrayScaleFilterBlock
-      @newBlockGenerate="newBlockGenerate"
-      @newBlockMove="newBlockMove"
-      :new-block="newBlock"
-      :block="getPBlock({ x: 0, y: 200 }, PBlockKind.GrayScaleFilterBlock)"
-      class="dragBlock-btn"
-      transform="translate(1,20)"
-    />
-    <BlurFilterBlock
-      @newBlockGenerate="newBlockGenerate"
-      @newBlockMove="newBlockMove"
-      :new-block="newBlock"
-      :block="getPBlock({ x: 0, y: 250 }, PBlockKind.BlurFilterBlock)"
-      class="dragBlock-btn"
-      transform="translate(1,20)"
-    />
+  <svg id="blocksDisplay" x="1vw">
+    <svg v-if="blockDisplayTab === 0">
+      <DefineComponentBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 50 }, PBlockKind.DefineComponentBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,50)"
+      />
+    </svg>
+    <svg v-else-if="blockDisplayTab === 1">
+      <MovieLoadingBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 50 }, PBlockKind.MovieLoadingBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,20)"
+      />
+      <DebugBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 100 }, PBlockKind.DebugBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,20)"
+      />
+    </svg>
+    <svg v-else-if="blockDisplayTab === 2">
+      <GrayScaleFilterBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 50 }, PBlockKind.GrayScaleFilterBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,20)"
+      />
+      <BlurFilterBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 100 }, PBlockKind.BlurFilterBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,20)"
+      />
+    </svg>
   </svg>
 </template>
 
@@ -75,6 +81,9 @@ export default class BlocksDisplay extends Vue {
 
   @Prop({ required: true })
   public projectUuid!: string
+
+  @Prop({ required: true })
+  public blockDisplayTab!: number
 
   get PBlockKind () {
     return PBlockKind

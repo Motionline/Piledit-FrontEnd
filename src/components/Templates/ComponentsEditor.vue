@@ -1,34 +1,62 @@
 <template>
   <div class="componentsEditor__container">
+    <v-tabs v-model="blockDisplayTab" vertical style="width:10vw;" :height="500" color="#898989" icons-and-text>
+      <v-tab>
+        定義
+        <v-icon>mdi-cog</v-icon>
+      </v-tab>
+      <v-tab>
+        読み込み
+        <v-icon>mdi-import</v-icon>
+      </v-tab>
+      <v-tab>
+        フィルター
+        <v-icon>mdi-image-multiple-outline</v-icon>
+      </v-tab>
+      <v-tab>
+        音
+        <v-icon>mdi-surround-sound</v-icon>
+      </v-tab>
+      <v-tab>
+        イベント
+        <v-icon>mdi-fire</v-icon>
+      </v-tab>
+      <v-tab>
+        制御
+        <v-icon>mdi-camera-control</v-icon>
+      </v-tab>
+    </v-tabs>
     <SandBox
         :blocks="filteredBlocks()"
         :component-uuid="componentUuid"
         :tab-uuid="tabUuid"
         :project-uuid="projectUuid"
+        :blockDisplayTab="blockDisplayTab"
         @openingMenu="openingMenu"
         class="componentsEditor__container--sandbox"
     />
     <div class="componentsEditor__container--detail">
       <div class="componentsEditor__container--detail--preview">
-        <video-player  class="video-player-box"
-                       ref="videoPlayer"
-                       :options="playerOptions"
-                       :playsinline="true"
-                       customEventName="customstatechangedeventname"
+        <video-player
+           class="video-player-box"
+           ref="videoPlayer"
+           :options="playerOptions"
+           :playsinline="true"
+           customEventName="customstatechangedeventname"
 
-                       @play="onPlayerPlay($event)"
-                       @pause="onPlayerPause($event)"
-                       @ended="onPlayerEnded($event)"
-                       @waiting="onPlayerWaiting($event)"
-                       @playing="onPlayerPlaying($event)"
-                       @loadeddata="onPlayerLoadeddata($event)"
-                       @timeupdate="onPlayerTimeupdate($event)"
-                       @canplay="onPlayerCanplay($event)"
-                       @canplaythrough="onPlayerCanplaythrough($event)"
+           @play="onPlayerPlay($event)"
+           @pause="onPlayerPause($event)"
+           @ended="onPlayerEnded($event)"
+           @waiting="onPlayerWaiting($event)"
+           @playing="onPlayerPlaying($event)"
+           @loadeddata="onPlayerLoadeddata($event)"
+           @timeupdate="onPlayerTimeupdate($event)"
+           @canplay="onPlayerCanplay($event)"
+           @canplaythrough="onPlayerCanplaythrough($event)"
 
-                       @statechanged="playerStateChanged($event)"
-                       @ready="playerReadied">
-        </video-player>
+           @statechanged="playerStateChanged($event)"
+           @ready="playerReadied"
+        />
       </div>
       <BlockDetailedPanel
           :block="getBlock(blockUuid)"
@@ -63,6 +91,8 @@ export default class ComponentsEditor extends Vue {
 
   @Prop({ required: true })
   public projectUuid!: string
+
+  public blockDisplayTab = 0
 
   public blockUuid = ''
   public playerOptions = {
@@ -131,6 +161,9 @@ export default class ComponentsEditor extends Vue {
 </script>
 
 <style scoped lang="scss">
+.v-tab {
+  height: 100px !important;
+}
 .componentsEditor__container {
   height: calc(100vh - 96px);
   display: flex;

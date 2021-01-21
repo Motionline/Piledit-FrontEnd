@@ -1,8 +1,7 @@
 <template>
   <svg id="SandBox">
-    <line x1="5vw" x2="5vw" y1="0" y2="100vh" stroke="black" />
-    <BlocksDisplay :component-uuid="componentUuid" :tab-uuid="tabUuid" :project-uuid="projectUuid" />
-    <line x1="30vw" x2="30vw" y1="0" y2="100vh" stroke="black" />
+    <BlocksDisplay :component-uuid="componentUuid" :tab-uuid="tabUuid" :project-uuid="projectUuid" :blockDisplayTab="blockDisplayTab" />
+    <line x1="20vw" x2="20vw" y1="0" y2="100vh" stroke="black" />
     <component
         v-for="(block, uuid, index) in blocks"
         :is="block.name"
@@ -49,6 +48,9 @@ export default class SandBox extends Vue {
 
   @Prop({ required: true })
   public projectUuid!: string
+
+  @Prop({ required: true })
+  public blockDisplayTab: number
 
   public stopDragging (uuid: string) {
     const block = this.blocks[uuid]
