@@ -18,8 +18,19 @@ This is something that is being promoted by.
 
 This is a front-end repository, powered by **Vue.ts** and **Electron**.  
 
-## Feature
+## Features
 
+### Component-Block Editor
+
+### Piledit Store
+
+### Cross Platform Application
+
+## In Development Features
+
+### Electronic Signature
+
+### Concurrent editing
 
 ## Run
 ```
