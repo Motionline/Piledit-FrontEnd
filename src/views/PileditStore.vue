@@ -1,10 +1,13 @@
 <template>
   <div id="piledit-store">
     <h1>ストア</h1>
-    <v-form>
-      <h2>コンポーネントをダウンロードする</h2>
-      <p>ストアに公開されているコンポーネントをダウンロードできます</p>
-    </v-form>
+    <h2>コンポーネントをダウンロードする</h2>
+    <p>ストアに公開されているコンポーネントをダウンロードできます</p>
+    <ul>
+      <li v-for="(component, uuid, index) in components" :key="`${index}-${uuid}`">
+        {{ component.defaultName }}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -14,7 +17,13 @@ import { pStoresModule } from '@/store/store'
 
 @Component({})
 export default class PileditStore extends Vue {
+  get components () {
+    return pStoresModule.components
+  }
 
+  public mounted () {
+    pStoresModule.getComponentsFromFireStore()
+  }
 }
 </script>
 
