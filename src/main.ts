@@ -5,6 +5,8 @@ import store, { sessionsModule } from './store/store'
 import vuetify from './plugins/vuetify'
 import VueHead from 'vue-head'
 import adobeLoader from './assets/adobefont'
+import VueVideoPlayer from 'vue-video-player'
+import 'video.js/dist/video-js.css'
 import { firestorePlugin } from 'vuefire'
 import { Auth } from '@/firebase/auth'
 import { MenuMixin } from '@/mixin/menu'
@@ -19,6 +21,7 @@ Vue.config.productionTip = false
 
 Vue.use(VueHead)
 Vue.use(firestorePlugin)
+Vue.use(VueVideoPlayer)
 
 adobeLoader(document)
 
