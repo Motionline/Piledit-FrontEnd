@@ -1,17 +1,9 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
-import {
-  PBlock,
-  PBlockKind,
-  PBlocks,
-  PPosition,
-  TDefineComponentBlock
-} from '@/@types/piledit'
+import { PBlock, PBlockKind, PBlocks, PPosition, TDefineComponentBlock } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 import { PBlocksMixin } from '@/mixin/pBlocks'
-import store, {
-  componentsModule
-} from '@/store/store'
+import store, { componentsModule } from '@/store/store'
 
 export interface BlocksStateIF {
   blocks: PBlocks;
@@ -186,6 +178,18 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
         this.hideShadow(blockUuid)
       }
     }
+  }
+
+  @Action({ rawError: true })
+  public async getFilteredBlocks ({ projectUuid }: { projectUuid: string }): Promise<PBlocks> {
+    const filtered: PBlocks = {}
+    for (const uuid in this.blocks) {
+      const block = this.blocks[uuid]
+      if (block.parentUuid === projectUuid || block.isExternal) {
+        filtered[uuid] = block
+      }
+    }
+    return filtered
   }
 
   @Action({ rawError: true })
