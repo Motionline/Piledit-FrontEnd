@@ -19,15 +19,13 @@ Vue.use(firestorePlugin)
 
 adobeLoader(document)
 
-const initVue = () => {
-  new Vue({
-    router,
-    store,
-    vuetify,
-    render: h => h(App)
-  }).$mount('#app')
-}
+new Vue({
+  router,
+  store,
+  vuetify,
+  render: h => h(App)
+}).$mount('#app')
 
 Auth.onAuthStateChanged(user => {
-  sessionsModule.updateLogInState({ user }).then(initVue)
+  sessionsModule.updateLogInState({ user })
 })
