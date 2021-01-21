@@ -62,7 +62,7 @@
 </style>
 
 <script lang="ts">
-import { Component, Emit, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { projectsModule, tabsModule } from '@/store/store'
 import { PProject, PTab, PTabHistoryKind } from '@/@types/piledit'
 import { remote } from 'electron'
@@ -120,12 +120,6 @@ export default class ApplicationTab extends Vue {
     return tab.history.historyContainer[historyIndex].url
   }
 
-  @Emit('save')
-  public save () {
-    console.log('save')
-    return true
-  }
-
   public async deleteTab (uuid: string) {
     const project: PProject = this.projects[this.currentViewingProjectUuid]
     const tab = this.tabs[uuid]
@@ -145,7 +139,8 @@ export default class ApplicationTab extends Vue {
         // escで選択をキャンセルしたらタブを消さない
         return
       } else if (selectedOption === 0) {
-        this.save()
+        // this.save()
+        console.log('キャンセル')
       }
     }
     const tabsLen = Object.keys(this.tabs).length - 1

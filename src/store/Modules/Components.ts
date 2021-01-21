@@ -12,12 +12,14 @@ import { VuexMixin } from '@/mixin/vuex'
 export interface ComponentsStateIF {
   components: PComponents;
   componentsCount: { [key: string]: number };
+  publishComponentUuid: string;
 }
 
 @Module({ store: store, name: 'ComponentsModule', namespaced: true })
 export default class Components extends VuexModule implements ComponentsStateIF {
   components: PComponents = {}
   componentsCount: { [key: string]: number } = {}
+  publishComponentUuid = ''
 
   @Mutation
   public addComponent (component: PComponent) {
@@ -38,6 +40,11 @@ export default class Components extends VuexModule implements ComponentsStateIF 
   public nextComponentCount (projectUuid: string) {
     const currentCount = this.componentsCount[projectUuid] == null ? 1 : this.componentsCount[projectUuid]
     Vue.set(this.componentsCount, projectUuid, currentCount + 1)
+  }
+
+  @Mutation
+  public setPublishComponentUuid (uuid: string) {
+    this.publishComponentUuid = uuid
   }
 
   @Action({ rawError: true })
@@ -98,5 +105,10 @@ export default class Components extends VuexModule implements ComponentsStateIF 
     const tabUuid = tabsModule.currentViewingTabUuid
     const title = name === '' ? component.defaultName : component.name
     tabsModule.updateTabName({ tabUuid, name: title })
+  }
+
+  @Action({ rawError: true })
+  public updatePublishComponentUuid ({ componentUuid }: { componentUuid: string }) {
+    this.setPublishComponentUuid(componentUuid)
   }
 }
