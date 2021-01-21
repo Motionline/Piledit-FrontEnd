@@ -53,6 +53,20 @@ export default class Components extends VuexModule implements ComponentsStateIF 
   }
 
   @Action({ rawError: true })
+  public async addGlobal ({ component }: { component: PComponent }) {
+    if (component.uuid in this.components) {
+      throw new Error('既にダウンロードしているコンポーネントです')
+    } else {
+      this.addComponent(component)
+    }
+  }
+
+  @Action({ rawError: true })
+  public async isAlreadyDownloaded ({ uuid }: { uuid: string }): Promise<boolean> {
+    return uuid in this.components
+  }
+
+  @Action({ rawError: true })
   public remove (uuid: string) {
     this.removeComponent(uuid)
   }
