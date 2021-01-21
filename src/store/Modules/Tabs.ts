@@ -126,6 +126,22 @@ export default class Tabs extends VuexModule implements TabStateIF {
   }
 
   @Action({ rawError: true })
+  public async addAboutTab (): Promise<string> {
+    const tabUuid = VuexMixin.generateUuid()
+    const url = `/${tabUuid}/about`
+    const tab = new PTab({
+      uuid: tabUuid,
+      kind: PTabHistoryKind.Projects,
+      projectUuid: '',
+      title: 'About',
+      url
+    })
+    this.setCurrentViewingTabUuid(tabUuid)
+    this.addTab(tab)
+    return url
+  }
+
+  @Action({ rawError: true })
   public updateTabName ({ tabUuid, name }: { tabUuid: string; name: string }) {
     // 参照元を直接変更するとリアクティブにならないのでassignする
     const tab = Object.assign({}, this.tabs[tabUuid])

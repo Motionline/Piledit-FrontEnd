@@ -20,7 +20,9 @@ export class MenuMixin extends Vue {
       label: 'View',
       submenu: [
         {
-          label: 'About'
+          id: 'About',
+          label: 'About Piledit',
+          click: async () => { await MenuMixin.about() }
         }
       ]
     },
@@ -213,6 +215,11 @@ export class MenuMixin extends Vue {
 
   static async addComponentsEditorTab () {
     const url = await tabsModule.addComponentsEditorTab()
+    await router.push(url)
+  }
+
+  static async about () {
+    const url = await tabsModule.addAboutTab()
     await router.push(url)
   }
 }

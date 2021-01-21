@@ -14,6 +14,7 @@ const routes: Array<RouteConfig> = [
   { path: '/:tabUuid/projects/new', name: 'NewProject', component: () => import('../views/NewProject.vue') },
   { path: '/:tabUuid/projects/:projectUuid/components/:componentUuid', name: 'ComponentsEdit', component: () => import('../views/ComponentsEdit.vue') },
   { path: '/:tabUuid/projects/:projectUuid', name: 'TimeLine', component: () => import('../views/TimeLine.vue') },
+  { path: '/:tabUuid/about', name: 'About', component: () => import('../views/About.vue') },
   { path: '/:tabUuid', name: 'Home', component: () => import('../views/Home.vue') }
 ]
 
