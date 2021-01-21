@@ -174,7 +174,7 @@ export default class ComponentsEditor extends Vue {
   }
 
   &--detail {
-    width: 30vw;
+    width: 35vw;
 
     &--preview {
       height: 30%;

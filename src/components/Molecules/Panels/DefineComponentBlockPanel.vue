@@ -1,11 +1,15 @@
 <template>
-  <div>
-    <p>コンポーネント定義ブロック</p>
-    <v-text-field
-      label="コンポーネント名"
-      :value="componentName"
-      @change="changeComponentName($event)"
-    ></v-text-field>
+  <div class="defineComponentBlockPanel">
+    <h3>コンポーネント定義ブロック</h3>
+    <v-form class="defineComponentBlockPanel__form">
+      <v-text-field
+          label="コンポーネント名"
+          :value="componentName"
+          @change="changeComponentName($event)"
+          outlined
+          color="#898989"
+      ></v-text-field>
+    </v-form>
   </div>
 </template>
 
@@ -40,6 +44,15 @@ export default class DefineComponentBlockPanel extends Vue {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.defineComponentBlockPanel {
+  color: #898989;
+  font-family: tbchibirgothicplusk-pro, sans-serif;
+  font-style: normal;
+  padding: 20px 30px;
 
+  &__form {
+    padding-top: 30px;
+  }
+}
 </style>
