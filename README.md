@@ -1,8 +1,10 @@
 # Piledit
-
 <div align="center">
 <img src="logo.png" alt="piledit-icon" title="piledit-icon">
 </div>
+
+[![SecHack365](https://img.shields.io/badge/SecHack365-2020-ffd700.svg)](https://sechack365.nict.go.jp/)
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 Piledit is a new video editing software that follows **software engineering** and adopts a **component-oriented approach** in which videos are assembled from small components.  
 
