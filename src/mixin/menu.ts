@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import router from '@/router'
 import {
   blocksModule,
   clipsModule,
@@ -14,114 +15,149 @@ import axios from 'axios'
 const Menu = remote.Menu
 
 export class MenuMixin extends Vue {
-  static viewLabel: Electron.MenuItemConstructorOptions = {
-    label: 'View',
-    submenu: [
-      {
-        label: 'About'
-      }
-    ]
-  }
-
-  static fileLabel: Electron.MenuItemConstructorOptions = {
-    label: 'File',
-    submenu: [
-      {
-        label: 'Save',
-        accelerator: 'CmdOrCtrl+S',
-        click: async () => { await MenuMixin.save() }
-      }
-    ]
-  }
-
-  static editLabel: Electron.MenuItemConstructorOptions = {
-    label: 'Edit',
-    submenu: [
-      {
-        label: 'Reload',
-        accelerator: 'CmdOrCtrl+R',
-        click: function (item, focusedWindow) {
-          if (focusedWindow) { focusedWindow.reload() }
+  static menu: Electron.MenuItemConstructorOptions[] = [
+    {
+      label: 'View',
+      submenu: [
+        {
+          label: 'About'
         }
-      },
-      {
-        label: 'Copy',
-        accelerator: 'CmdOrCtrl+C',
-        role: 'copy'
-      },
-      {
-        label: 'Paste',
-        accelerator: 'CmdOrCtrl+V',
-        role: 'paste'
-      }
-    ]
-  }
-
-  static movieLabel: Electron.MenuItemConstructorOptions = {
-    label: 'Movie',
-    submenu: [
-      {
-        label: 'Encode',
-        accelerator: 'CmdOrCtrl+E',
-        click: async () => { await MenuMixin.encode() }
-      }
-    ]
-  }
-
-  static componentsLabel: Electron.MenuItemConstructorOptions = {
-    label: 'Components',
-    submenu: [
-      {
-        label: 'Publish',
-        click: async () => { await MenuMixin.publishComponent() }
-      }
-    ]
-  }
-
-  static windowsLabel: Electron.MenuItemConstructorOptions = {
-    label: 'Window',
-    submenu: [
-      {
-        label: 'General Tabs',
-        submenu: [
-          {
-            label: 'TimeLine'
-          },
-          {
-            label: 'Piledit Store'
+      ]
+    },
+    {
+      label: 'File',
+      submenu: [
+        {
+          id: 'save',
+          label: 'Save',
+          accelerator: 'CmdOrCtrl+S',
+          click: async () => { await MenuMixin.save() }
+        }
+      ]
+    },
+    {
+      label: 'Edit',
+      submenu: [
+        {
+          label: 'Reload',
+          accelerator: 'CmdOrCtrl+R',
+          click: function (item, focusedWindow) {
+            if (focusedWindow) { focusedWindow.reload() }
           }
-        ]
-      },
-      {
-        label: 'Editor Tabs',
-        submenu: [
-          {
-            id: 'openComponentsEditor',
-            label: 'Components Editor',
-            accelerator: 'CmdOrCtrl+Option+C',
-            enabled: !MenuMixin.canOpenComponentsEditorTab(),
-            click: () => { MenuMixin.addComponentsEditorTab() }
-          },
-          {
-            label: 'Scripting Editor',
-            accelerator: 'CmdOrCtrl+Option+S'
-          },
-          {
-            label: 'Plugin Editor',
-            accelerator: 'CmdOrCtrl+Option+P'
-          }
-        ]
-      }
-    ]
+        },
+        {
+          label: 'Copy',
+          accelerator: 'CmdOrCtrl+C',
+          role: 'copy'
+        },
+        {
+          label: 'Paste',
+          accelerator: 'CmdOrCtrl+V',
+          role: 'paste'
+        }
+      ]
+    },
+    {
+      label: 'Movie',
+      submenu: [
+        {
+          id: 'encode',
+          label: 'Encode',
+          accelerator: 'CmdOrCtrl+E',
+          click: async () => { await MenuMixin.encode() }
+        }
+      ]
+    },
+    {
+      label: 'Components',
+      submenu: [
+        {
+          id: 'componentPublish',
+          label: 'Publish',
+          click: async () => { await MenuMixin.publishComponent() }
+        }
+      ]
+    },
+    {
+      label: 'Window',
+      submenu: [
+        {
+          label: 'General Tabs',
+          submenu: [
+            {
+              id: 'openTimeline',
+              label: 'TimeLine'
+            },
+            {
+              label: 'Piledit Store'
+            }
+          ]
+        },
+        {
+          label: 'Editor Tabs',
+          submenu: [
+            {
+              id: 'openComponentsEditor',
+              label: 'Components Editor',
+              accelerator: 'CmdOrCtrl+Option+C',
+              click: async () => { await MenuMixin.addComponentsEditorTab() }
+            },
+            {
+              id: 'openScriptingEditor',
+              label: 'Scripting Editor',
+              accelerator: 'CmdOrCtrl+Option+S',
+              enabled: false
+            },
+            {
+              id: 'openPluginEditor',
+              label: 'Plugin Editor',
+              accelerator: 'CmdOrCtrl+Option+P',
+              enabled: false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+
+  static getMenu () {
+    return Menu.buildFromTemplate(MenuMixin.menu)
   }
 
-  static getHome () {
-    const templateMenu: Electron.MenuItemConstructorOptions[] = [
-      this.viewLabel,
-      this.fileLabel,
-      this.editLabel
-    ]
-    return Menu.buildFromTemplate(templateMenu)
+  static updateMenuHome () {
+    const menu = Menu.getApplicationMenu()
+    if (menu) {
+      menu.getMenuItemById('save').enabled = false
+      menu.getMenuItemById('openComponentsEditor').enabled = false
+      menu.getMenuItemById('componentPublish').enabled = false
+      menu.getMenuItemById('openScriptingEditor').enabled = false
+      menu.getMenuItemById('openPluginEditor').enabled = false
+      menu.getMenuItemById('encode').enabled = false
+    }
+  }
+
+  static updateTimeline () {
+    const menu = Menu.getApplicationMenu()
+    if (menu) {
+      menu.getMenuItemById('save').enabled = true
+      menu.getMenuItemById('openComponentsEditor').enabled = true
+      menu.getMenuItemById('openScriptingEditor').enabled = false
+      menu.getMenuItemById('openPluginEditor').enabled = false
+      menu.getMenuItemById('componentPublish').enabled = false
+      menu.getMenuItemById('encode').enabled = true
+    }
+  }
+
+  static updateComponentEditor () {
+    const menu = Menu.getApplicationMenu()
+    if (menu) {
+      menu.getMenuItemById('save').enabled = true
+      menu.getMenuItemById('openComponentsEditor').enabled = true
+      menu.getMenuItemById('openScriptingEditor').enabled = false
+      menu.getMenuItemById('openPluginEditor').enabled = false
+      menu.getMenuItemById('componentPublish').enabled = true
+      menu.getMenuItemById('encode').enabled = true
+    }
   }
 
   static async save () {
@@ -175,14 +211,8 @@ export class MenuMixin extends Vue {
     console.log(data)
   }
 
-  static async canOpenComponentsEditorTab () {
-    return await tabsModule.canOpenComponentsEditorTab()
-  }
-
   static async addComponentsEditorTab () {
-    if (await this.canOpenComponentsEditorTab()) {
-      const url = await tabsModule.addComponentsEditorTab()
-      // this.$router.push(url)
-    }
+    const url = await tabsModule.addComponentsEditorTab()
+    await router.push(url)
   }
 }

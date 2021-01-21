@@ -81,14 +81,11 @@ import { tabsModule, sessionsModule, usersModule } from '@/store/store'
 import { PTabHistoryKind } from '@/@types/piledit'
 import { Auth } from '@/firebase/auth'
 import { MenuMixin } from '@/mixin/menu'
-import { remote } from 'electron'
-const Menu = remote.Menu
 
 @Component({})
 export default class Home extends Vue {
   public mounted () {
-    const menu = MenuMixin.getHome()
-    Menu.setApplicationMenu(menu)
+    MenuMixin.updateMenuHome()
   }
 
   get isLoggedIn () {

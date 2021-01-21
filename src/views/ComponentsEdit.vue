@@ -11,6 +11,7 @@
 <script lang="ts">
 import { Component, Watch, Vue } from 'vue-property-decorator'
 import ComponentsEditor from '@/components/Templates/ComponentsEditor.vue'
+import { MenuMixin } from '@/mixin/menu'
 
 @Component({
   components: {
@@ -21,6 +22,10 @@ export default class ComponentsEdit extends Vue {
   public componentUuid = this.$route.params.componentUuid
   public tabUuid = this.$route.params.tabUuid
   public projectUuid = this.$route.params.projectUuid
+
+  public mounted () {
+    MenuMixin.updateComponentEditor()
+  }
 
   @Watch('$route')
   onUrlsChanged (newRoute: any, _: any) {

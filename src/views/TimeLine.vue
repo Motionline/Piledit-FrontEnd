@@ -18,7 +18,9 @@ import TimeLineComponent from '@/components/Templates/Timeline.vue'
 import fs from 'fs'
 import { app, remote } from 'electron'
 import { PComponents, PClips, PComponent } from '@/@types/piledit'
+import { MenuMixin } from '@/mixin/menu'
 const dialog = remote.dialog
+const Menu = remote.Menu
 
 @Component({
   components: {
@@ -28,6 +30,10 @@ const dialog = remote.dialog
 export default class TimeLine extends Vue {
   public tabUuid = this.$route.params.tabUuid
   public projectUuid = this.$route.params.projectUuid
+
+  public mounted () {
+    MenuMixin.updateTimeline()
+  }
 
   @Watch('$route')
   onUrlsChanged (newRoute: any, _: any) {
@@ -86,26 +92,6 @@ export default class TimeLine extends Vue {
   public getComponentName (componentUuid: string) {
     const component = this.components[componentUuid]
     return component.name || component.defaultName
-  }
-
-  public outputMovieConfigurationFile () {
-    for (const key of Object.keys(this.clips)) {
-      const clip = this.clips[key]
-      const appPath = app.getAppPath()
-      const path = appPath + '/JSON'
-      if (!fs.existsSync(path)) {
-        fs.mkdirSync(path)
-      }
-      fs.writeFileSync(
-        `${path}/${key}.json`,
-        JSON.stringify({
-          Frame: {
-            Begin: clip.position.x,
-            End: clip.position.x + clip.width,
-            Length: clip.width
-          }
-        }, undefined, 2), 'utf-8')
-    }
   }
 }
 </script>

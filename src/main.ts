@@ -7,6 +7,9 @@ import VueHead from 'vue-head'
 import adobeLoader from './assets/adobefont'
 import { firestorePlugin } from 'vuefire'
 import { Auth } from '@/firebase/auth'
+import { MenuMixin } from '@/mixin/menu'
+import { remote } from 'electron'
+const Menu = remote.Menu
 
 // import axios from 'axios'
 // import VueAxios from 'vue-axios'
@@ -25,6 +28,9 @@ new Vue({
   vuetify,
   render: h => h(App)
 }).$mount('#app')
+
+const menu = MenuMixin.getMenu()
+Menu.setApplicationMenu(menu)
 
 Auth.onAuthStateChanged(user => {
   sessionsModule.updateLogInState({ user })
