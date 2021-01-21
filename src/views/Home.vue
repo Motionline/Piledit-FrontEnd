@@ -87,15 +87,19 @@ export default class Home extends Vue {
     return sessionsModule.loggedIn
   }
 
+  get name () {
+    return usersModule.name
+  }
+
   get email () {
-    return sessionsModule.email
+    return usersModule.email
   }
 
   get greeting () {
-    if (usersModule.name === '') {
+    if (this.name === '') {
       return 'Pileditへようこそ！'
     } else {
-      return `ようこそ、${usersModule.name}さん！`
+      return `ようこそ、${this.name}さん！`
     }
   }
 
