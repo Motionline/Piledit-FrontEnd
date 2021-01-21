@@ -1,5 +1,5 @@
 <template>
-  <svg id="blocksDisplay" x="2.5vw">
+  <svg id="blocksDisplay" x="7vw">
     <DebugBlock
       @newBlockGenerate="newBlockGenerate"
       @newBlockMove="newBlockMove"

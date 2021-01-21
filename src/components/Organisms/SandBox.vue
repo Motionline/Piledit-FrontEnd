@@ -1,7 +1,8 @@
 <template>
   <svg id="SandBox">
+    <line x1="5vw" x2="5vw" y1="0" y2="100vh" stroke="black" />
     <BlocksDisplay :component-uuid="componentUuid" :tab-uuid="tabUuid" :project-uuid="projectUuid" />
-    <line x1="22vw" x2="22vw" y1="0" y2="100vh" stroke="black" />
+    <line x1="30vw" x2="30vw" y1="0" y2="100vh" stroke="black" />
     <component
         v-for="(block, uuid, index) in blocks"
         :is="block.name"
@@ -80,10 +81,10 @@ export default class SandBox extends Vue {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 #SandBox {
   border: 2px solid black;
-  height: 60%;
-  width: 100%;
+  height: 100%;
+  // width: 100%;
 }
 </style>

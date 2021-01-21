@@ -82,7 +82,8 @@ export default class BlockDetailedPanel extends Vue {
 <style scoped>
 .BlockDetailedPanel {
   border: 2px solid black;
-  width: 80vw;
-  height: 35vh;
+  border-left: none;
+  width: 100%;
+  height: 70%;
 }
 </style>
