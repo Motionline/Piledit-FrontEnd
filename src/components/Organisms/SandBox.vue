@@ -1,20 +1,17 @@
 <template>
-  <svg height="60vh" width="90vw" id="SandBox" class="ma-0 pa-0">
+  <svg id="SandBox">
+    <BlocksDisplay :component-uuid="componentUuid" :tab-uuid="tabUuid" :project-uuid="projectUuid" :blockDisplayTab="blockDisplayTab" />
+    <line x1="20vw" x2="20vw" y1="0" y2="100vh" stroke="black" />
     <component
-      v-for="(block, uuid, index) in blocks"
-      :is="block.name"
-      :key="index"
-      :block="block"
-      :sample-block="false"
-      @stopDragging="stopDragging"
-      @updatePosition="updatePosition"
-      @remove="removeBlock"
-      @openingMenu="emitOpeningMenu"
+        v-for="(block, uuid, index) in blocks"
+        :is="block.name"
+        :key="`${uuid}-${index}`"
+        :block="block"
+        @stopDragging="stopDragging"
+        @updatePosition="updatePosition"
+        @remove="removeBlock"
+        @openingMenu="emitOpeningMenu"
     />
-
-    <line x1="58vw" x2="58vw" y1="0" y2="100vh" stroke="black" />
-
-    <BlocksDisplay :tab-uuid="tabUuid" />
   </svg>
 </template>
 
@@ -44,21 +41,39 @@ export default class SandBox extends Vue {
   public blocks!: PBlocks
 
   @Prop({ required: true })
+  public componentUuid!: string
+
+  @Prop({ required: true })
   public tabUuid!: string
 
+  @Prop({ required: true })
+  public projectUuid!: string
+
+  @Prop({ required: true })
+  public blockDisplayTab: number
+
   public stopDragging (uuid: string) {
-    blocksModule.stopDragging(uuid)
+    const block = this.blocks[uuid]
+    if (block.position.x <= 50) {
+      blocksModule.removeWithChildren({ blockUuid: uuid, componentUuid: this.componentUuid })
+    } else {
+      blocksModule.stopDragging({ triggeredBlockUuid: uuid, componentUuid: this.componentUuid })
+    }
   }
 
   public updatePosition (context: { position: PPosition; uuid: string }) {
     const block = this.blocks[context.uuid]
     block.uuid = context.uuid
     block.position = context.position
-    blocksModule.update(block)
+    blocksModule.update({
+      _triggerBlock: block,
+      componentUuid: this.componentUuid,
+      tabUuid: this.tabUuid
+    })
   }
 
-  public removeBlock (uuid: string) {
-    blocksModule.remove(uuid)
+  public removeBlock (blockUuid: string) {
+    blocksModule.remove({ blockUuid, componentUuid: this.componentUuid })
   }
 
   @Emit('openingMenu')
@@ -68,8 +83,10 @@ export default class SandBox extends Vue {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 #SandBox {
   border: 2px solid black;
+  height: 100%;
+  // width: 100%;
 }
 </style>

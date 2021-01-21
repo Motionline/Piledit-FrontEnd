@@ -1,55 +1,51 @@
 <template>
-  <svg id="blocksDisplay" x="60vw">
-    <DebugBlock
-      @newBlockGenerate="newBlockGenerate"
-      @newBlockMove="newBlockMove"
-      @newBlockMouseUp="newBlockMouseUp"
-      :new-block-uuid="newBlockUuid"
-      :sample-block="true"
-      :block="getPBlock({ x: 0, y: 100 }, PBlockKind.DebugBlock)"
-      class="dragBlock-btn"
-      transform="translate(1,20)"
-    />
-    <DefineComponentBlock
-      @newBlockGenerate="newBlockGenerate"
-      @newBlockMove="newBlockMove"
-      @newBlockMouseUp="newBlockMouseUp"
-      :new-block-uuid="newBlockUuid"
-      :sample-block="true"
-      :block="getPBlock({ x: 0, y: 50 }, PBlockKind.DefineComponentBlock)"
-      class="dragBlock-btn"
-      transform="translate(1,50)"
-    />
-    <MovieLoadingBlock
-      @newBlockGenerate="newBlockGenerate"
-      @newBlockMove="newBlockMove"
-      @newBlockMouseUp="newBlockMouseUp"
-      :new-block-uuid="newBlockUuid"
-      :sample-block="true"
-      :block="getPBlock({ x: 0, y: 150 }, PBlockKind.MovieLoadingBlock)"
-      class="dragBlock-btn"
-      transform="translate(1,20)"
-    />
-    <GrayScaleFilterBlock
-      @newBlockGenerate="newBlockGenerate"
-      @newBlockMove="newBlockMove"
-      @newBlockMouseUp="newBlockMouseUp"
-      :new-block-uuid="newBlockUuid"
-      :sample-block="true"
-      :block="getPBlock({ x: 0, y: 200 }, PBlockKind.GrayScaleFilterBlock)"
-      class="dragBlock-btn"
-      transform="translate(1,20)"
-    />
-    <BlurFilterBlock
-      @newBlockGenerate="newBlockGenerate"
-      @newBlockMove="newBlockMove"
-      @newBlockMouseUp="newBlockMouseUp"
-      :new-block-uuid="newBlockUuid"
-      :sample-block="true"
-      :block="getPBlock({ x: 0, y: 250 }, PBlockKind.BlurFilterBlock)"
-      class="dragBlock-btn"
-      transform="translate(1,20)"
-    />
+  <svg id="blocksDisplay" x="1vw">
+    <svg v-if="blockDisplayTab === 0">
+      <DefineComponentBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 50 }, PBlockKind.DefineComponentBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,50)"
+      />
+    </svg>
+    <svg v-else-if="blockDisplayTab === 1">
+      <MovieLoadingBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 50 }, PBlockKind.MovieLoadingBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,20)"
+      />
+      <DebugBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 100 }, PBlockKind.DebugBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,20)"
+      />
+    </svg>
+    <svg v-else-if="blockDisplayTab === 2">
+      <GrayScaleFilterBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 50 }, PBlockKind.GrayScaleFilterBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,20)"
+      />
+      <BlurFilterBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 100 }, PBlockKind.BlurFilterBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,20)"
+      />
+    </svg>
   </svg>
 </template>
 
@@ -57,65 +53,55 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { blocksModule } from '@/store/store'
 import {
-  PBlock,
   PBlockKind,
-  PPosition, TBlurFilterBlock,
-  TDebugBlock,
-  TDefineComponentBlock,
-  TGrayScaleFilterBlock,
-  TMovieLoadingBlock
+  PPosition
 } from '@/@types/piledit'
+import { PBlocksMixin } from '@/mixin/pBlocks'
 import DebugBlock from '@/components/Molecules/Blocks/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/Blocks/DefineComponentBlock.vue'
 import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'
 import GrayScaleFilterBlock from '@/components/Molecules/Blocks/GrayScaleFilterBlock.vue'
 import BlurFilterBlock from '@/components/Molecules/Blocks/BlurFilterBlock.vue'
 
-  @Component({
-    components: {
-      MovieLoadingBlock,
-      DebugBlock,
-      DefineComponentBlock,
-      GrayScaleFilterBlock,
-      BlurFilterBlock
-    }
-  })
+@Component({
+  components: {
+    MovieLoadingBlock,
+    DebugBlock,
+    DefineComponentBlock,
+    GrayScaleFilterBlock,
+    BlurFilterBlock
+  }
+})
 export default class BlocksDisplay extends Vue {
   @Prop({ required: true })
+  public componentUuid!: string
+
+  @Prop({ required: true })
   public tabUuid!: string
+
+  @Prop({ required: true })
+  public projectUuid!: string
+
+  @Prop({ required: true })
+  public blockDisplayTab!: number
 
   get PBlockKind () {
     return PBlockKind
   }
 
-  public newBlockUuid = ''
+  public newBlock = {}
 
   public getPBlock (position: PPosition, kind: PBlockKind) {
-    const init: Partial<PBlock> = {
+    const init = {
       name: kind,
       uuid: kind,
-      topUuid: '',
-      parentUuid: '',
-      childUuid: '',
-      shadow: false,
+      kind,
       position,
-      tabUuid: '',
-      isSample: true,
-      kind
+      componentUuid: '',
+      projectUuid: '',
+      isSample: true
     }
-    if (kind === PBlockKind.DebugBlock) {
-      return new TDebugBlock(init)
-    } else if (kind === PBlockKind.DefineComponentBlock) {
-      return new TDefineComponentBlock(init)
-    } else if (kind === PBlockKind.MovieLoadingBlock) {
-      return new TMovieLoadingBlock(init)
-    } else if (kind === PBlockKind.GrayScaleFilterBlock) {
-      return new TGrayScaleFilterBlock(init)
-    } else if (kind === PBlockKind.BlurFilterBlock) {
-      return new TBlurFilterBlock(init)
-    } else {
-      throw new Error('登録されていないブロックです')
-    }
+    return PBlocksMixin.newPBlock(init)
   }
 
   get blocks () {
@@ -123,36 +109,24 @@ export default class BlocksDisplay extends Vue {
   }
 
   public async newBlockGenerate (context: { position: PPosition; name: string; kind: PBlockKind }) {
-    this.newBlockUuid = await blocksModule.add({
+    const uuid = await blocksModule.add({
       position: context.position,
       name: context.name,
-      tabUuid: this.tabUuid,
-      kind: context.kind
+      componentUuid: this.componentUuid,
+      kind: context.kind,
+      projectUuid: this.projectUuid
     })
+    this.newBlock = this.blocks[uuid]
   }
 
   public newBlockMove (context: { position: PPosition; uuid: string }) {
     const block = this.blocks[context.uuid]
     block.position = context.position
-    blocksModule.updateBlock(block)
-  }
-
-  public newBlockMouseUp (uuid: string) {
-    const block = this.blocks[uuid]
-    if (block != null && block.position.x >= 430) {
-      blocksModule.remove(uuid)
-    }
-  }
-
-  public getContext (name: string) {
-    return {
-      name,
-      position: {
-        x: 0,
-        y: 0
-      },
+    blocksModule.update({
+      _triggerBlock: block,
+      componentUuid: this.componentUuid,
       tabUuid: this.tabUuid
-    }
+    })
   }
 }
 </script>

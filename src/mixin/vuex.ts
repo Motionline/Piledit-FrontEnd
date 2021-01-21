@@ -1,5 +1,10 @@
 import Vue from 'vue'
-import { PBlock, PBlocks, PBlockKind, PPosition } from '@/@types/piledit'
+import {
+  PBlock,
+  PBlockKind,
+  PBlocks,
+  PPosition
+} from '@/@types/piledit'
 
 export class VuexMixin extends Vue {
   static generateUuid (): string {
@@ -23,9 +28,10 @@ export class VuexMixin extends Vue {
   }
 
   static calcHeight (kind: PBlockKind): number {
-    return 37
+    return 38
   }
 
+  // 子Blocksを全て返す
   static searchChildrenOfBlock (topBlock: PBlock, blocks: PBlocks): PBlocks {
     const blocksFamily: PBlocks = {}
     let searchedBlock: PBlock = topBlock

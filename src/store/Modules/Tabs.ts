@@ -1,13 +1,8 @@
-import {
-  Module,
-  VuexModule,
-  Mutation,
-  Action
-} from 'vuex-module-decorators'
+import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import { VuexMixin } from '@/mixin/vuex'
-import { PTab, PTabs } from '@/@types/piledit'
-import store from '@/store/store'
+import { PTab, PTabHistoryKind, PTabs } from '@/@types/piledit'
+import store, { componentsModule, projectsModule } from '@/store/store'
 
 export interface TabStateIF {
   tabs: PTabs;
@@ -30,18 +25,56 @@ export default class Tabs extends VuexModule implements TabStateIF {
   }
 
   @Mutation
+  public updateTab (tab: PTab) {
+    Vue.set(this.tabs, tab.uuid, tab)
+  }
+
+  @Action({ rawError: true })
+  public forward () {
+    const tab = this.tabs[this.currentViewingTabUuid]
+    tab.history.forward()
+  }
+
+  @Action({ rawError: true })
+  public backward () {
+    const tab = this.tabs[this.currentViewingTabUuid]
+    tab.history.backward()
+  }
+
+  @Mutation
   public setCurrentViewingTabUuid (uuid: string) {
     this.currentViewingTabUuid = uuid
   }
 
   @Action({ rawError: true })
-  public add (context: { name: string }) {
+  public async init () {
     const uuid = VuexMixin.generateUuid()
-    const tab = new PTab(
-      context.name,
-      uuid
-    )
+    const tab = new PTab({
+      uuid,
+      kind: PTabHistoryKind.General,
+      projectUuid: '',
+      title: '新しいタブ',
+      url: `/${uuid}`
+    })
+    this.setCurrentViewingTabUuid(uuid)
     this.addTab(tab)
+    return uuid
+  }
+
+  @Action({ rawError: true })
+  public add ({ kind, projectUuid, title, url }: { kind: PTabHistoryKind; projectUuid: string; title: string; url: string }) {
+    const uuid = VuexMixin.generateUuid()
+    const tab = new PTab({
+      uuid, kind, projectUuid, title, url
+    })
+    this.setCurrentViewingTabUuid(uuid)
+    this.addTab(tab)
+  }
+
+  @Action({ rawError: true })
+  public addPage ({ kind, projectUuid, title, url }: { kind: PTabHistoryKind; projectUuid: string; title: string; url: string }) {
+    const tab = this.tabs[this.currentViewingTabUuid]
+    tab.history.addPage(kind, projectUuid, title, url)
   }
 
   @Action({ rawError: true })
@@ -50,7 +83,83 @@ export default class Tabs extends VuexModule implements TabStateIF {
   }
 
   @Action({ rawError: true })
+  public removeOwn ({ tabUuid, nextTabUuid }: { tabUuid: string; nextTabUuid: string }) {
+    this.setCurrentViewingTabUuid(nextTabUuid)
+    this.removeTab(tabUuid)
+  }
+
+  @Action({ rawError: true })
   public updateCurrentViewingTabUuid (context: { uuid: string }) {
     this.setCurrentViewingTabUuid(context.uuid)
+  }
+
+  @Action({ rawError: true })
+  public async canOpenComponentsEditorTab (): Promise<boolean> {
+    const senderTabUuid = this.currentViewingTabUuid
+    const senderTabHistoryContainer = this.tabs[senderTabUuid].history.historyContainer
+    const senderTabHistoryIndex = this.tabs[senderTabUuid].history.historyIndex
+    const senderTabHistoryKind = senderTabHistoryContainer[senderTabHistoryIndex].kind
+    return senderTabHistoryKind === PTabHistoryKind.Projects || senderTabHistoryKind === PTabHistoryKind.ProjectHome
+  }
+
+  @Action({ rawError: true })
+  public async addComponentsEditorTab (componentsUuid?: string): Promise<string> {
+    const tabUuid = VuexMixin.generateUuid()
+    const projectUuid = projectsModule.currentViewingProjectUuid
+    const projectName = projectsModule.projects[projectUuid].name
+    if (componentsUuid == null) {
+      componentsUuid = await componentsModule.add()
+    }
+    const url = `/${tabUuid}/projects/${projectUuid}/components/${componentsUuid}`
+    const component = componentsModule.components[componentsUuid]
+    const title = component.name === '' ? `${component.defaultName} (${projectName})` : `${component.name} (${projectName})`
+    const tab = new PTab({
+      uuid: tabUuid,
+      kind: PTabHistoryKind.Projects,
+      projectUuid: projectUuid,
+      title,
+      url
+    })
+    this.setCurrentViewingTabUuid(tabUuid)
+    this.addTab(tab)
+    return url
+  }
+
+  @Action({ rawError: true })
+  public async addAboutTab (): Promise<string> {
+    const tabUuid = VuexMixin.generateUuid()
+    const url = `/${tabUuid}/about`
+    const tab = new PTab({
+      uuid: tabUuid,
+      kind: PTabHistoryKind.Projects,
+      projectUuid: '',
+      title: 'About',
+      url
+    })
+    this.setCurrentViewingTabUuid(tabUuid)
+    this.addTab(tab)
+    return url
+  }
+
+  @Action({ rawError: true })
+  public updateTabName ({ tabUuid, name }: { tabUuid: string; name: string }) {
+    // 参照元を直接変更するとリアクティブにならないのでassignする
+    const tab = Object.assign({}, this.tabs[tabUuid])
+    const projectUuid = projectsModule.currentViewingProjectUuid
+    const projectName = projectsModule.projects[projectUuid].name
+    const tabHistoryIndex = tab.history.historyIndex
+    tab.history.historyContainer[tabHistoryIndex].title = `${name} (${projectName})`
+    this.updateTab(tab)
+  }
+
+  @Action({ rawError: true })
+  public async toProjectHomePage ({ name }: { name: string }): Promise<string> {
+    const tabUuid = this.currentViewingTabUuid
+    const tab = this.tabs[tabUuid]
+    const projectUuid = await projectsModule.add({ name })
+    const url = `/${tabUuid}/projects/${projectUuid}`
+    tab.history.addPage(PTabHistoryKind.ProjectHome, projectUuid, name, url)
+    projectsModule.updateCurrentViewingTabUuid({ uuid: projectUuid, kind: PTabHistoryKind.Projects })
+    return url
   }
 }

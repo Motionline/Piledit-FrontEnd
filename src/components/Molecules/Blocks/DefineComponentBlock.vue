@@ -1,7 +1,7 @@
 <template>
   <AbstractBlock
     :block="block"
-    :new-block-uuid="newBlockUuid"
+    :new-block="newBlock"
     @stopDragging="stopDragging"
     @updatePosition="updatePosition"
     @remove="removeBlock"
@@ -11,7 +11,7 @@
     @newBlockMouseUp="emitNewBlockMouseUp"
     @openingMenu="emitOpeningMenu"
   >
-    <SVGText x="10" y="75" color="white">
+    <SVGText x="10" y="30" color="white">
       {{ displayComponentName }}
     </SVGText>
   </AbstractBlock>
@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
-import { PBlockKind, PPosition, TDefineComponentBlock } from '@/@types/piledit'
+import { PBlock, PBlockKind, PPosition, TDefineComponentBlock } from '@/@types/piledit'
 import AbstractBlock from '@/components/Atoms/AbstractBlock.vue'
 import SVGText from '@/components/Atoms/SVGText.vue'
 
@@ -34,7 +34,7 @@ export default class DefineComponentBlock extends Vue {
   public block!: TDefineComponentBlock
 
   @Prop()
-  public newBlockUuid!: string
+  public newBlock!: PBlock
 
   public displayComponentName = 'コンポーネント定義'
 
