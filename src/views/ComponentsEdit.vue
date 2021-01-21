@@ -12,6 +12,7 @@
 import { Component, Watch, Vue } from 'vue-property-decorator'
 import ComponentsEditor from '@/components/Templates/ComponentsEditor.vue'
 import { MenuMixin } from '@/mixin/menu'
+import { componentsModule } from '@/store/store'
 
 @Component({
   components: {
@@ -24,6 +25,7 @@ export default class ComponentsEdit extends Vue {
   public projectUuid = this.$route.params.projectUuid
 
   public mounted () {
+    componentsModule.updatePublishComponentUuid({ componentUuid: this.componentUuid })
     MenuMixin.updateComponentEditor()
   }
 

@@ -200,7 +200,16 @@ export class MenuMixin extends Vue {
       projectUuid: ''
     }
     await pStoresModule.publishComponent({ component: processedComponent })
-    await componentsModule.updatePublishComponentUuid({ componentUuid: '' })
+    // await componentsModule.updatePublishComponentUuid({ componentUuid: '' })
+    const dialog = remote.dialog
+    const currentWindow = remote.getCurrentWindow()
+    await dialog.showMessageBox(currentWindow, {
+      type: 'info',
+      title: '完了',
+      message: 'Piledit Storeで公開しました',
+      detail: `あなたのコンポーネント、 ${component.name || component.defaultName} (ID: ${component.uuid}は、Piledit Storeに公開されました。)`
+      // TODO: 外部コンポーネントをコピーして上書きしますか？
+    })
   }
 
   static encode () {
