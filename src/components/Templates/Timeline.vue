@@ -104,7 +104,7 @@ export default class Timeline extends Vue {
     for (const [key, value] of Object.entries(this.components)) {
       menu.append(
         new MenuItem(({
-          label: key,
+          label: value.name || value.defaultName,
           click: () => this.setClip(key)
         }))
       )

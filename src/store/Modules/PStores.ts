@@ -22,6 +22,7 @@ export default class PStores extends VuexModule implements PStoreIF {
     // uuid重複を回避するためにcomponent, blocksのuuidを全て置換する
     const uuidReplaceTable: { [key: string]: string } = {}
     uuidReplaceTable[component.uuid] = VuexMixin.generateUuid()
+    component.isExternal = true
     for (const blockUuid in component.blocks) {
       uuidReplaceTable[blockUuid] = VuexMixin.generateUuid()
     }
