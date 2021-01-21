@@ -8,11 +8,15 @@ export type PPosition = {
 export interface PProjectIF {
   name: string;
   uuid: string;
+  isExternal: boolean;
+  storeUuid: string;
 }
 
 export class PProject implements PProjectIF {
   public name: string;
   public uuid: string;
+  public isExternal = false;
+  public storeUuid = '';
 
   constructor ({ name, uuid }: { name: string; uuid: string }) {
     this.name = name
@@ -39,6 +43,8 @@ export interface PBlockIF {
   strokeColor: string;
   fillColor: string;
   isSample: boolean;
+  isExternal: boolean;
+  storeUuid: string;
 }
 
 export enum PBlockKind {
@@ -112,6 +118,8 @@ class PBlockBase implements PBlockIF {
   public strokeColor: string
   public fillColor: string
   public isSample: boolean
+  public isExternal = false;
+  public storeUuid = '';
 
   constructor (
     { name, kind, uuid, topUuid, parentUuid, childUuid, shadow, position, componentUuid, projectUuid, isSample }: {
@@ -187,6 +195,8 @@ export interface PComponentIF {
   uuid: string;
   name: string;
   blocks: PBlocks;
+  isExternal: boolean;
+  storeUuid: string;
 }
 
 export class PComponent implements PComponentIF {
@@ -195,6 +205,8 @@ export class PComponent implements PComponentIF {
   public defaultName: string
   public blocks: PBlocks
   public projectUuid: string
+  public isExternal = false
+  public storeUuid = ''
 
   constructor (uuid: string, defaultName: string, projectUuid: string) {
     this.uuid = uuid
@@ -215,6 +227,8 @@ export interface ClipIF {
   componentUuid: string;
   position: PPosition;
   width: number;
+  isExternal: boolean;
+  storeUuid: string;
 }
 
 export class PClip implements ClipIF {
@@ -224,6 +238,8 @@ export class PClip implements ClipIF {
   public projectUuid: string
   public position: PPosition
   public width: number
+  public isExternal = false
+  public storeUuid = ''
 
   constructor (uuid: string, name: string, componentUuid: string, projectUuid: string, position: PPosition, width: number) {
     this.uuid = uuid
