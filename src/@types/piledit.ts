@@ -356,3 +356,25 @@ export class PTab implements PTabIF {
 export type PTabs = {
   [key: string]: PTab;
 }
+
+export interface PTemplateIF {
+  uuid: string;
+  clips: PClips;
+  components: PComponents;
+}
+
+export class PTemplate implements PTemplateIF {
+  public uuid: string
+  public clips: PClips
+  public components: PComponents
+
+  constructor (uuid: string, clips: PClips, components: PComponents) {
+    this.uuid = uuid
+    this.clips = clips
+    this.components = components
+  }
+}
+
+export type PTemplates = {
+  [key: string]: PTemplate;
+}
