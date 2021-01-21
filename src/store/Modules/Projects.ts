@@ -40,7 +40,9 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
     const uuid = VuexMixin.generateUuid()
     const project: PProject = {
       name: context.name,
-      uuid
+      uuid,
+      isExternal: false,
+      storeUuid: ''
     }
     this.addProject(project)
     return uuid
