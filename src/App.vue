@@ -8,9 +8,6 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import ApplicationTab from '@/components/Organisms/ApplicationTab.vue'
-import { remote } from 'electron'
-import { MenuMixin } from '@/mixin/menu'
-const Menu = remote.Menu
 
 @Component({
   components: { ApplicationTab }
