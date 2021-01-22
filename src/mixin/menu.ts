@@ -6,13 +6,15 @@ import {
   componentsModule,
   projectsModule,
   pStoresModule,
-  tabsModule
+  tabsModule,
+  templatesModule
 } from '@/store/store'
 import { remote } from 'electron'
 import fs from 'fs'
 import { PComponent } from '@/@types/piledit'
 import axios from 'axios'
 const Menu = remote.Menu
+const dialog = remote.dialog
 
 export class MenuMixin extends Vue {
   static language = 'ja'
@@ -284,7 +286,6 @@ export class MenuMixin extends Vue {
     }
     await pStoresModule.publishComponent({ component: processedComponent })
     // await componentsModule.updatePublishComponentUuid({ componentUuid: '' })
-    const dialog = remote.dialog
     const currentWindow = remote.getCurrentWindow()
     await dialog.showMessageBox(currentWindow, {
       type: 'info',
@@ -311,7 +312,7 @@ export class MenuMixin extends Vue {
   }
 
   static async addTemplate () {
-    console.log('addTemplate')
+    templatesModule.updateShowNewTemplateDialog({ condition: true })
   }
 
   static async about () {
