@@ -221,6 +221,7 @@ export type PComponents = {
   [key: string]: PComponent;
 }
 
+// TODO: width, positionを用いてstartFrame, endFrameを計算する
 export interface ClipIF {
   uuid: string;
   name: string;
@@ -363,12 +364,15 @@ export interface PTemplateIF {
   components: PComponents;
 }
 
+// fontなどOSに依存するようなデータをどこまで残すか
 export class PTemplate implements PTemplateIF {
+  public name: string
   public uuid: string
   public clips: PClips
   public components: PComponents
 
-  constructor ({ uuid, clips, components }: { uuid: string; clips: PClips; components: PComponents }) {
+  constructor ({ name, uuid, clips, components }: { name: string; uuid: string; clips: PClips; components: PComponents }) {
+    this.name = name
     this.uuid = uuid
     this.clips = clips
     this.components = components

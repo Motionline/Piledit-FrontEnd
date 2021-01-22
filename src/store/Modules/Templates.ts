@@ -40,12 +40,17 @@ export default class Templates extends VuexModule implements TemplatesStateIF {
   }
 
   @Action({ rawError: true })
-  public async add (): Promise<string> {
+  public async add ({ name }: { name: string }): Promise<string> {
     const uuid = VuexMixin.generateUuid()
     const projectUuid = projectsModule.currentViewingProjectUuid
     const components = await componentsModule.getFilteredComponents({ projectUuid })
     const clips = await clipsModule.getFilteredClips({ projectUuid })
-    const template = new PTemplate({ uuid, clips, components })
+    console.log(components)
+    console.log(clips)
+    if (Object.keys(components).length === 0 && Object.keys(clips).length === 0) {
+      throw new Error('空プロジェクトをテンプレートにすることはできません。')
+    }
+    const template = new PTemplate({ name, uuid, clips, components })
     this.addTemplate(uuid, template)
     return uuid
   }
