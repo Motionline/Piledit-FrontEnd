@@ -1,8 +1,49 @@
 <template>
   <div id="Home">
+    <v-dialog :value="showNewTemplateDialog" @click:outside.prevent="turnOffDialog">
+      <v-card rounded>
+        <v-card-title>テンプレートを作成する</v-card-title>
+        <v-card-text>
+          現在のプロジェクトを基にテンプレートを作成することができます。<br />
+          テンプレートを用いてプロジェクトを開始することで、何度も作成するような動画の編集作業を楽にできます。
+        </v-card-text>
+        <v-card-text v-show="errorCreatingTemplateMessage">
+          <v-alert type="error" dense outlined>
+            空プロジェクトからテンプレートを作成することはできません。
+            最低1つ以上のコンポーネントまたはクリップを設置してください。
+          </v-alert>
+        </v-card-text>
+        <v-card-text>
+          <v-form>
+            <v-text-field label="テンプレート名" outlined color="#898989" v-model="templateName"></v-text-field>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn text @click="turnOffDialog">閉じる</v-btn>
+          <v-btn @click="createTemplate" :disabled="templateName === ''">作成する</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-snackbar
+        v-model="successCreatingTemplateSnackBar"
+        shaped
+    >
+      テンプレートを作成しました
+      <template v-slot:action="{ attrs }">
+        <v-btn
+            color="white"
+            text
+            v-bind="attrs"
+            @click="successCreatingTemplateSnackBar = false"
+        >
+          閉じる
+        </v-btn>
+      </template>
+    </v-snackbar>
     <h3>全てのコンポーネント</h3>
     <div v-for="(component, uuid) in filteredComponents()" :key="uuid">
-      <v-btn @click="openComponentEditor(component)">{{ getComponentName(uuid) }}を開く</v-btn>
+      <v-btn @click="openComponentEditor(component)">{{ getComponentName(uuid) }}を開く {{ uuid }}</v-btn>
     </div>
     <TimeLineComponent :clips="filteredClips()" :components="filteredComponents()" />
   </div>
@@ -13,10 +54,9 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { componentsModule, clipsModule, blocksModule, tabsModule } from '@/store/store'
+import { componentsModule, clipsModule, blocksModule, tabsModule, templatesModule } from '@/store/store'
 import TimeLineComponent from '@/components/Templates/Timeline.vue'
-import fs from 'fs'
-import { app, remote } from 'electron'
+import { remote } from 'electron'
 import { PComponents, PClips, PComponent } from '@/@types/piledit'
 import { MenuMixin } from '@/mixin/menu'
 const dialog = remote.dialog
@@ -30,9 +70,31 @@ const Menu = remote.Menu
 export default class TimeLine extends Vue {
   public tabUuid = this.$route.params.tabUuid
   public projectUuid = this.$route.params.projectUuid
+  public successCreatingTemplateSnackBar = false
+  public errorCreatingTemplateMessage = false
+  public templateName = ''
 
   public mounted () {
     MenuMixin.updateTimeline()
+  }
+
+  public turnOnDialog () {
+    templatesModule.updateShowNewTemplateDialog({ condition: true })
+  }
+
+  public turnOffDialog () {
+    templatesModule.updateShowNewTemplateDialog({ condition: false })
+  }
+
+  public async createTemplate () {
+    try {
+      await templatesModule.add({ name: this.templateName })
+      this.successCreatingTemplateSnackBar = true
+      this.errorCreatingTemplateMessage = false
+      this.turnOffDialog()
+    } catch (e) {
+      this.errorCreatingTemplateMessage = true
+    }
   }
 
   @Watch('$route')
@@ -59,6 +121,10 @@ export default class TimeLine extends Vue {
       }
     }
     return filtered
+  }
+
+  get showNewTemplateDialog () {
+    return templatesModule.showNewTemplateDialog
   }
 
   get components () {
