@@ -368,7 +368,7 @@ export class PTemplate implements PTemplateIF {
   public clips: PClips
   public components: PComponents
 
-  constructor (uuid: string, clips: PClips, components: PComponents) {
+  constructor ({ uuid, clips, components }: { uuid: string; clips: PClips; components: PComponents }) {
     this.uuid = uuid
     this.clips = clips
     this.components = components
