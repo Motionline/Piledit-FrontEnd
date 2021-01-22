@@ -20,8 +20,8 @@ export default class Templates extends VuexModule implements TemplatesStateIF {
   showNewTemplateDialog = false
 
   @Mutation
-  public addTemplate (uuid: string, template: PTemplate) {
-    Vue.set(this.templates, uuid, template)
+  public addTemplate (template: PTemplate) {
+    Vue.set(this.templates, template.uuid, template)
   }
 
   @Mutation
@@ -45,13 +45,12 @@ export default class Templates extends VuexModule implements TemplatesStateIF {
     const projectUuid = projectsModule.currentViewingProjectUuid
     const components = await componentsModule.getFilteredComponents({ projectUuid })
     const clips = await clipsModule.getFilteredClips({ projectUuid })
-    console.log(components)
-    console.log(clips)
     if (Object.keys(components).length === 0 && Object.keys(clips).length === 0) {
       throw new Error('空プロジェクトをテンプレートにすることはできません。')
     }
     const template = new PTemplate({ name, uuid, clips, components })
-    this.addTemplate(uuid, template)
+    console.log(template)
+    this.addTemplate(template)
     return uuid
   }
 

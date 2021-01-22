@@ -43,7 +43,7 @@
     </v-snackbar>
     <h3>全てのコンポーネント</h3>
     <div v-for="(component, uuid) in filteredComponents()" :key="uuid">
-      <v-btn @click="openComponentEditor(component)">{{ getComponentName(uuid) }}を開く</v-btn>
+      <v-btn @click="openComponentEditor(component)">{{ getComponentName(uuid) }}を開く {{ uuid }}</v-btn>
     </div>
     <TimeLineComponent :clips="filteredClips()" :components="filteredComponents()" />
   </div>

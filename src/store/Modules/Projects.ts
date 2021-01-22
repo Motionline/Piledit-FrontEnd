@@ -1,9 +1,9 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import { VuexMixin } from '@/mixin/vuex'
-import store from '@/store/store'
+import store, { blocksModule, clipsModule, componentsModule, templatesModule } from '@/store/store'
 
-import { PProject, PProjects, PTabHistoryKind } from '@/@types/piledit'
+import { PClips, PComponents, PProject, PProjects, PTabHistoryKind } from '@/@types/piledit'
 
 export interface ProjectsStateIF {
   projects: PProjects;
@@ -44,6 +44,63 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
       isExternal: false,
       storeUuid: ''
     }
+    this.addProject(project)
+    return uuid
+  }
+
+  @Action({ rawError: true })
+  public async addByTemplate ({ name, templateUuid }: { name: string; templateUuid: string }) {
+    const uuid = VuexMixin.generateUuid()
+    const project: PProject = {
+      name,
+      uuid,
+      isExternal: false,
+      storeUuid: ''
+    }
+    const template = Object.assign({}, templatesModule.templates[templateUuid])
+    console.log(template)
+    const components = Object.assign({}, template.components)
+    const clips = Object.assign({}, template.clips)
+    // uuid重複を回避するためにclips, components, blocksのuuidを全て置換する
+    const uuidReplaceTable: { [key: string]: string } = {}
+    for (const clipUuid in clips) {
+      uuidReplaceTable[clipUuid] = VuexMixin.generateUuid()
+    }
+    for (const componentUuid in components) {
+      uuidReplaceTable[componentUuid] = VuexMixin.generateUuid()
+      const component = components[componentUuid]
+      for (const blockUuid in component.blocks) {
+        uuidReplaceTable[blockUuid] = VuexMixin.generateUuid()
+      }
+    }
+    let stringifyComponents: string = JSON.stringify(components)
+    let stringifyClips: string = JSON.stringify(clips)
+    for (const uuid in uuidReplaceTable) {
+      const reg = new RegExp(uuid, 'g')
+      stringifyComponents = stringifyComponents.replace(reg, uuidReplaceTable[uuid])
+      stringifyClips = stringifyClips.replace(reg, uuidReplaceTable[uuid])
+    }
+    // 置換終了
+    const processedComponents: PComponents = JSON.parse(stringifyComponents)
+    const processedClips: PClips = JSON.parse(stringifyClips)
+    for (const componentUuid in processedComponents) {
+      const component = processedComponents[componentUuid]
+      component.projectUuid = uuid
+      componentsModule.addComponent(component)
+
+      for (const blockUuid in component.blocks) {
+        const block = component.blocks[blockUuid]
+        block.projectUuid = uuid
+        blocksModule.addBlock(block)
+      }
+    }
+    for (const clipUuid in processedClips) {
+      const clip = processedClips[clipUuid]
+      clip.projectUuid = uuid
+      clipsModule.addClip(clip)
+    }
+    console.log(processedComponents)
+    console.log(processedClips)
     this.addProject(project)
     return uuid
   }

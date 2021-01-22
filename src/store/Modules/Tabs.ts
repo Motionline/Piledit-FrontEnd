@@ -162,4 +162,15 @@ export default class Tabs extends VuexModule implements TabStateIF {
     projectsModule.updateCurrentViewingTabUuid({ uuid: projectUuid, kind: PTabHistoryKind.Projects })
     return url
   }
+
+  @Action({ rawError: true })
+  public async toProjectByTemplateHomePage ({ name, templateUuid }: { name: string; templateUuid: string }) {
+    const tabUuid = this.currentViewingTabUuid
+    const tab = this.tabs[tabUuid]
+    const projectUuid = await projectsModule.addByTemplate({ name, templateUuid })
+    const url = `/${tabUuid}/projects/${projectUuid}`
+    tab.history.addPage(PTabHistoryKind.ProjectHome, projectUuid, name, url)
+    projectsModule.updateCurrentViewingTabUuid({ uuid: projectUuid, kind: PTabHistoryKind.Projects })
+    return url
+  }
 }
