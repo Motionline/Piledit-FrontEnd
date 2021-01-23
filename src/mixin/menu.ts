@@ -264,7 +264,7 @@ export class MenuMixin extends Vue {
         ...clips
       }
     }
-    MenuMixin.writeFile(`${project.name}.json`, saveData)
+    MenuMixin.writeFile(`/projects/${project.name}.json`, saveData)
   }
 
   static writeFile (path: string, data: any) {
