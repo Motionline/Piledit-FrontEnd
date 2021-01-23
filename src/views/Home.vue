@@ -29,7 +29,7 @@
                 <a @click="toNewProject">新規プロジェクト</a>
               </div>
               <div>
-                <a>プロジェクトを開く</a>
+                <a @click="toOpenProject">プロジェクトを開く</a>
               </div>
             </div>
             <div class="Home__wrapper--links--group">
@@ -118,6 +118,18 @@ export default class Home extends Vue {
       kind: PTabHistoryKind.General,
       projectUuid: '',
       title: 'プロジェクトを作成する',
+      url
+    })
+  }
+
+  toOpenProject () {
+    const uuid = tabsModule.currentViewingTabUuid
+    const url = `/${uuid}/projects/open`
+    tabsModule.routerPush({ url })
+    tabsModule.addPage({
+      kind: PTabHistoryKind.General,
+      projectUuid: '',
+      title: 'プロジェクトを開く',
       url
     })
   }
