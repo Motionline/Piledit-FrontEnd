@@ -42,7 +42,6 @@ export default class NewProject extends Vue {
         value: uuid
       })
     }
-    console.log(this.templatesItem)
   }
 
   public async newProject () {
@@ -50,7 +49,6 @@ export default class NewProject extends Vue {
       const url = await tabsModule.toProjectHomePage({ name: this.name })
       tabsModule.routerPush({ url })
     } else {
-      console.log(this.selectedTemplateItem)
       const url = await tabsModule.toProjectByTemplateHomePage({ name: this.name, templateUuid: this.selectedTemplateItem.value })
       tabsModule.routerPush({ url })
     }

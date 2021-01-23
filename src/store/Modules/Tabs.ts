@@ -39,7 +39,6 @@ export default class Tabs extends VuexModule implements TabStateIF {
 
   @Mutation
   public backwardTabHistory ({ tab }: { tab: PTab }) {
-    console.log(tab)
     if (tab.history.historyIndex === 0) return
     tab.history.historyIndex -= 1
     Vue.set(this.tabs, tab.uuid, tab)
@@ -89,11 +88,6 @@ export default class Tabs extends VuexModule implements TabStateIF {
   @Action({ rawError: true })
   public addPage ({ kind, projectUuid, title, url }: { kind: PTabHistoryKind; projectUuid: string; title: string; url: string }) {
     const tab = this.tabs[this.currentViewingTabUuid] as PTab
-    console.log(tab)
-    console.log(this.tabs)
-    console.log(this.currentViewingTabUuid)
-    // 流れるデータ調べたけどエラー起こるわけがない...なぜ？
-    // これではデータを直接書き換えてるから書き直す
     this.addPageTabHistory({ tab, kind, projectUuid, title, url })
   }
 

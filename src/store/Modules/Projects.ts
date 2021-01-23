@@ -58,7 +58,6 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
       storeUuid: ''
     }
     const template = Object.assign({}, templatesModule.templates[templateUuid])
-    console.log(template)
     const components = Object.assign({}, template.components)
     const clips = Object.assign({}, template.clips)
     // uuid重複を回避するためにclips, components, blocksのuuidを全て置換する
@@ -99,8 +98,6 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
       clip.projectUuid = uuid
       clipsModule.addClip(clip)
     }
-    console.log(processedComponents)
-    console.log(processedClips)
     this.addProject(project)
     return uuid
   }
