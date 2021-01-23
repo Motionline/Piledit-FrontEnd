@@ -4,6 +4,7 @@ import { VuexMixin } from '@/mixin/vuex'
 import store, { blocksModule, clipsModule, componentsModule, tabsModule, templatesModule } from '@/store/store'
 import { remote } from 'electron'
 import fs from 'fs'
+import moment from 'moment'
 
 import { PBlocks, PClips, PComponents, PProject, PProjects, PTabHistoryKind } from '@/@types/piledit'
 
@@ -40,14 +41,10 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
   // -------------------------------------------------------------
 
   @Action({ rawError: true })
-  public async add (context: { name: string }) {
+  public async add ({ name }: { name: string }) {
     const uuid = VuexMixin.generateUuid()
-    const project: PProject = {
-      name: context.name,
-      uuid,
-      isExternal: false,
-      storeUuid: ''
-    }
+    const createdAt = moment()
+    const project = new PProject({ name, uuid, createdAt })
     this.addProject(project)
     return uuid
   }
@@ -55,12 +52,8 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
   @Action({ rawError: true })
   public async addByTemplate ({ name, templateUuid }: { name: string; templateUuid: string }) {
     const uuid = VuexMixin.generateUuid()
-    const project: PProject = {
-      name,
-      uuid,
-      isExternal: false,
-      storeUuid: ''
-    }
+    const createdAt = moment()
+    const project = new PProject({ name, uuid, createdAt })
     const template = Object.assign({}, templatesModule.templates[templateUuid])
     const components = Object.assign({}, template.components)
     const clips = Object.assign({}, template.clips)

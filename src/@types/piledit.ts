@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 export type filteredByProjectUuidObject = PComponents | PBlocks | PClips
 
 export type PPosition = {
@@ -10,6 +12,9 @@ export interface PProjectIF {
   uuid: string;
   isExternal: boolean;
   storeUuid: string;
+  createdAt: moment.Moment;
+  updatedAt: moment.Moment;
+  // TODO: userID を実装する
 }
 
 export class PProject implements PProjectIF {
@@ -17,10 +22,14 @@ export class PProject implements PProjectIF {
   public uuid: string;
   public isExternal = false;
   public storeUuid = '';
+  public createdAt: moment.Moment;
+  public updatedAt: moment.Moment;
 
-  constructor ({ name, uuid }: { name: string; uuid: string }) {
+  constructor ({ name, uuid, createdAt }: { name: string; uuid: string; createdAt: moment.Moment }) {
     this.name = name
     this.uuid = uuid
+    this.createdAt = createdAt
+    this.updatedAt = createdAt
   }
 }
 

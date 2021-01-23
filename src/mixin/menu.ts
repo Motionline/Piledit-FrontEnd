@@ -14,6 +14,7 @@ import pathModule from 'path'
 import { PComponent } from '@/@types/piledit'
 import axios from 'axios'
 import mkdirp from 'mkdirp'
+import moment from 'moment'
 const Menu = remote.Menu
 const dialog = remote.dialog
 
@@ -250,7 +251,9 @@ export class MenuMixin extends Vue {
 
   static async save () {
     const projectUuid = projectsModule.currentViewingProjectUuid
-    const project = projectsModule.projects[projectUuid]
+    const project = Object.assign({}, projectsModule.projects[projectUuid])
+    project.updatedAt = moment()
+    projectsModule.updateProject(project)
     const components = await componentsModule.getFilteredComponents({ projectUuid })
     const blocks = await blocksModule.getFilteredBlocks({ projectUuid })
     const clips = await clipsModule.getFilteredClips({ projectUuid })

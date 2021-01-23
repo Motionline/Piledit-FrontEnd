@@ -12,7 +12,7 @@
             <v-list-item-title>
               <a @click="openProject(uuid)">{{ project.name }}</a>
             </v-list-item-title>
-            <v-list-item-subtitle>{{ uuid }}</v-list-item-subtitle>
+            <v-list-item-subtitle>最終更新: {{ formatTime(project.updatedAt) }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-card>
@@ -26,6 +26,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import { projectsModule } from '@/store/store'
+import moment from 'moment'
 
 @Component({})
 export default class OpenProject extends Vue {
@@ -39,6 +40,11 @@ export default class OpenProject extends Vue {
 
   public openProject (uuid: string) {
     projectsModule.openProject({ uuid })
+  }
+
+  public formatTime (time: moment.Moment) {
+    if (!time) return
+    return time.format('YYYY年MM月DD日 HH:mm')
   }
 }
 </script>
