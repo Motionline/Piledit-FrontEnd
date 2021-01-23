@@ -5,20 +5,23 @@
         <v-card-title>Magic Project</v-card-title>
         <v-card-text>
           Magic Projectは、データをインターネットに公開し、複数人で同時編集できる機能です。<br />
-          友人に次のトークンを共有して、ワクワクするような編集を体験しよう！
+          友人に次のトークンを共有して、ワクワクするような編集を体験しよう！<br/>
         </v-card-text>
         <v-card-text>
           <v-text-field
-              @click="copyToken"
               readonly
               outlined
               dense
               color="#898989"
               label="トークン"
-              value="token"
+              :value="token"
               append-icon="mdi-content-copy"
           />
         </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn @click="copyToken">コピーする</v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <v-snackbar
@@ -118,9 +121,16 @@ export default class TimeLine extends Vue {
   public successCreatingTemplateSnackBar = false
   public errorCreatingTemplateMessage = false
   public templateName = ''
+  public token = this.$route.params.projectUuid
 
   public copyToken () {
     this.successCopyClipboard = true
+    this.turnOffMagicProjectDialog()
+    this.$copyText(this.token).then(function (_) {
+      console.log('copy')
+    }, function (_) {
+      console.log('not copy')
+    })
   }
 
   public mounted () {
