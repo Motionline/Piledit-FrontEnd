@@ -17,9 +17,6 @@
           </v-btn>
         </template>
       </v-snackbar>
-      <div>
-        <p v-for="tab in tabs" :key="tab.uuid">{{ tab }}</p>
-      </div>
       <img src="../assets/piledit.png" alt="piledit-logo" width="395px" />
       <h2>Simple, Componentable, Expandable</h2>
       <p v-if="isLoggedIn">{{ greeting }}</p>
@@ -109,10 +106,6 @@ export default class Home extends Vue {
     } else {
       return `ようこそ、${this.name}さん！`
     }
-  }
-
-  get tabs () {
-    return tabsModule.tabs
   }
 
   public snackbar = false
