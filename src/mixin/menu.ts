@@ -10,8 +10,10 @@ import {
 } from '@/store/store'
 import { remote } from 'electron'
 import fs from 'fs'
+import pathModule from 'path'
 import { PComponent } from '@/@types/piledit'
 import axios from 'axios'
+import mkdirp from 'mkdirp'
 const Menu = remote.Menu
 const dialog = remote.dialog
 
@@ -269,7 +271,11 @@ export class MenuMixin extends Vue {
 
   static writeFile (path: string, data: any) {
     const jsonStr = JSON.stringify(data, null, 2)
-    fs.writeFile(path, jsonStr, (err) => {
+    const getDirName = pathModule.dirname
+    const appDirPath = remote.app.getAppPath() + getDirName(path)
+    const appPath = remote.app.getAppPath() + path
+    mkdirp(appDirPath)
+    fs.writeFile(appPath, jsonStr, (err) => {
       if (!err) {
         console.log('success to save!')
       }
