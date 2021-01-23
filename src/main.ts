@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import store, { sessionsModule } from './store/store'
+import store, { sessionsModule, tabsModule } from './store/store'
 import vuetify from './plugins/vuetify'
 import VueHead from 'vue-head'
 import adobeLoader from './assets/adobefont'
@@ -34,6 +34,12 @@ new Vue({
 
 const menu = MenuMixin.getMenu()
 Menu.setApplicationMenu(menu)
+
+const tabs = tabsModule.tabs
+const tab = tabs[tabsModule.currentViewingTabUuid]
+const tabHistoryIndex = tab.history.historyIndex
+const url = tab.history.historyContainer[tabHistoryIndex].url
+router.push(url)
 
 Auth.onAuthStateChanged(user => {
   sessionsModule.updateLogInState({ user })
