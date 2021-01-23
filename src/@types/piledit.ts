@@ -10,7 +10,7 @@ export type PPosition = {
 export interface PProjectIF {
   name: string;
   uuid: string;
-  isExternal: boolean;
+  isMagicProject: boolean;
   storeUuid: string;
   createdAt: moment.Moment;
   updatedAt: moment.Moment;
@@ -20,7 +20,7 @@ export interface PProjectIF {
 export class PProject implements PProjectIF {
   public name: string;
   public uuid: string;
-  public isExternal = false;
+  public isMagicProject = false;
   public storeUuid = '';
   public createdAt: moment.Moment;
   public updatedAt: moment.Moment;

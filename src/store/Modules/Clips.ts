@@ -5,7 +5,7 @@ import {
   Action
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
-import store, { componentsModule } from '@/store/store'
+import store, { componentsModule, magicProjectsModule } from '@/store/store'
 import { PClip, PClips, PPosition } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 
@@ -38,7 +38,7 @@ export default class Clips extends VuexModule implements ClipsStateIF {
   }
 
   @Action({ rawError: true })
-  public add (context: { componentUuid: string; projectUuid: string }) {
+  public async add (context: { componentUuid: string; projectUuid: string }) {
     const uuid = VuexMixin.generateUuid()
     const component = componentsModule.components[context.componentUuid]
     const componentName = component.name === '' ? component.defaultName : component.name
@@ -54,6 +54,7 @@ export default class Clips extends VuexModule implements ClipsStateIF {
       200
     )
     this.addClip(clip)
+    await magicProjectsModule.updateMagicProject()
   }
 
   @Action({ rawError: true })
@@ -69,16 +70,18 @@ export default class Clips extends VuexModule implements ClipsStateIF {
   }
 
   @Action({ rawError: true })
-  public updatePosition (context: { position: PPosition; uuid: string }) {
+  public async updatePosition (context: { position: PPosition; uuid: string }) {
     const clip = this.clips[context.uuid]
     clip.position = context.position
     this.updateClipPosition(clip)
+    await magicProjectsModule.updateMagicProject()
   }
 
   @Action({ rawError: true })
-  public updateWidth (context: { width: number; uuid: string }) {
+  public async updateWidth (context: { width: number; uuid: string }) {
     const clip = this.clips[context.uuid]
     clip.width = context.width
     this.updateClipWidth(clip)
+    await magicProjectsModule.updateMagicProject()
   }
 }

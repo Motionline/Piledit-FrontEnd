@@ -5,6 +5,7 @@ import Components from '@/store/Modules/Components'
 import Clips from '@/store/Modules/Clips'
 import Tabs from '@/store/Modules/Tabs'
 import Projects from '@/store/Modules/Projects'
+import MagicProjects from '@/store/Modules/MagicProjects'
 import Sessions from '@/store/Modules/Sessions'
 import Users from '@/store/Modules/Users'
 import PStores from '@/store/Modules/PStores'
@@ -28,7 +29,8 @@ const store = new Vuex.Store({
     SessionsModule: Sessions,
     UsersModule: Users,
     PStoresModule: PStores,
-    TemplatesModule: Templates
+    TemplatesModule: Templates,
+    MagicProjectsModule: MagicProjects
   },
   plugins: [vuexLocal.plugin]
 })
@@ -43,3 +45,4 @@ export const sessionsModule = getModule(Sessions, store)
 export const usersModule = getModule(Users, store)
 export const pStoresModule = getModule(PStores, store)
 export const templatesModule = getModule(Templates, store)
+export const magicProjectsModule = getModule(MagicProjects, store)
