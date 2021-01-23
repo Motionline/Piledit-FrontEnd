@@ -3,6 +3,7 @@ import {
   blocksModule,
   clipsModule,
   componentsModule,
+  magicProjectsModule,
   projectsModule,
   pStoresModule,
   tabsModule,
@@ -35,7 +36,9 @@ export class MenuMixin extends Vue {
       edit: 'Edit',
       reload: 'Reload',
       copy: 'Copy',
-      paste: 'Paste'
+      paste: 'Paste',
+      movie: 'Movie',
+      publishMagicProject: 'Publish Magic Project'
     },
     ja: {
       aboutPiledit: 'Piledit について',
@@ -51,7 +54,9 @@ export class MenuMixin extends Vue {
       edit: '編集する',
       reload: '再読み込み',
       copy: 'コピー',
-      paste: 'ペースト'
+      paste: 'ペースト',
+      movie: '動画',
+      publishMagicProject: 'Magic Projectとして公開する'
     }
   }
 
@@ -140,7 +145,7 @@ export class MenuMixin extends Vue {
       ]
     },
     {
-      label: 'Movie',
+      label: MenuMixin.i18nDict[MenuMixin.language].movie,
       submenu: [
         {
           id: 'encode',
@@ -149,8 +154,9 @@ export class MenuMixin extends Vue {
           click: async () => { await MenuMixin.encode() }
         },
         {
-          id: 'addTemplate',
-          label: 'Add Template'
+          label: MenuMixin.i18nDict[MenuMixin.language].publishMagicProject,
+          accelerator: 'CmdOrCtrl+Option+M',
+          click: async () => { await MenuMixin.publishMagicProject() }
         }
       ]
     },
@@ -302,6 +308,11 @@ export class MenuMixin extends Vue {
       detail: `あなたのコンポーネント、 ${component.name || component.defaultName} (ID: ${component.uuid}は、Piledit Storeに公開されました。)`
       // TODO: 外部コンポーネントをコピーして上書きしますか？
     })
+  }
+
+  static async publishMagicProject () {
+    // await magickProjectsModule.publishMagicProject()
+    await magicProjectsModule.updateMagicProjectDialog({ condition: true })
   }
 
   static encode () {

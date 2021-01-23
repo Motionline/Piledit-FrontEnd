@@ -1,5 +1,42 @@
 <template>
   <div id="Home">
+    <v-dialog :value="magicProjectDialog" @click:outside.prevent="turnOffMagicProjectDialog">
+      <v-card>
+        <v-card-title>Magic Project</v-card-title>
+        <v-card-text>
+          Magic Projectは、データをインターネットに公開し、複数人で同時編集できる機能です。<br />
+          友人に次のトークンを共有して、ワクワクするような編集を体験しよう！
+        </v-card-text>
+        <v-card-text>
+          <v-text-field
+              @click="copyToken"
+              readonly
+              outlined
+              dense
+              color="#898989"
+              label="トークン"
+              value="token"
+              append-icon="mdi-content-copy"
+          />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-snackbar
+        v-model="successCopyClipboard"
+        shaped
+    >
+      トークンをコピーしました！
+      <template v-slot:action="{ attrs }">
+        <v-btn
+            color="white"
+            text
+            v-bind="attrs"
+            @click="successCopyClipboard = false"
+        >
+          閉じる
+        </v-btn>
+      </template>
+    </v-snackbar>
     <v-dialog :value="showNewTemplateDialog" @click:outside.prevent="turnOffDialog">
       <v-card rounded>
         <v-card-title>テンプレートを作成する</v-card-title>
@@ -54,7 +91,14 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { componentsModule, clipsModule, blocksModule, tabsModule, templatesModule } from '@/store/store'
+import {
+  componentsModule,
+  clipsModule,
+  blocksModule,
+  tabsModule,
+  templatesModule,
+  magicProjectsModule
+} from '@/store/store'
 import TimeLineComponent from '@/components/Templates/Timeline.vue'
 import { remote } from 'electron'
 import { PComponents, PClips, PComponent } from '@/@types/piledit'
@@ -70,9 +114,14 @@ const Menu = remote.Menu
 export default class TimeLine extends Vue {
   public tabUuid = this.$route.params.tabUuid
   public projectUuid = this.$route.params.projectUuid
+  public successCopyClipboard = false
   public successCreatingTemplateSnackBar = false
   public errorCreatingTemplateMessage = false
   public templateName = ''
+
+  public copyToken () {
+    this.successCopyClipboard = true
+  }
 
   public mounted () {
     MenuMixin.updateTimeline()
@@ -84,6 +133,14 @@ export default class TimeLine extends Vue {
 
   public turnOffDialog () {
     templatesModule.updateShowNewTemplateDialog({ condition: false })
+  }
+
+  public turnOnMagicProjectDialog () {
+    magicProjectsModule.updateMagicProjectDialog({ condition: true })
+  }
+
+  public turnOffMagicProjectDialog () {
+    magicProjectsModule.updateMagicProjectDialog({ condition: false })
   }
 
   public async createTemplate () {
@@ -125,6 +182,10 @@ export default class TimeLine extends Vue {
 
   get showNewTemplateDialog () {
     return templatesModule.showNewTemplateDialog
+  }
+
+  get magicProjectDialog () {
+    return magicProjectsModule.magicProjectDialog
   }
 
   get components () {
