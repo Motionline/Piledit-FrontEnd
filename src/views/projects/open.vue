@@ -1,13 +1,24 @@
 <template>
-  <div id="openProject">
+  <div class="openProject">
     <h1>プロジェクトを開く</h1>
-    <div v-if="existProject">
-      <div v-for="(project, uuid) in projects" :key="uuid">
-        <a @click="openProject(uuid)">{{ project.name }}</a>
+    <div class="openProject__projectsList">
+      <v-card
+          class="mx-auto"
+          tile
+          v-if="existProject"
+      >
+        <v-list-item two-line v-for="(project, uuid) in projects" :key="uuid">
+          <v-list-item-content>
+            <v-list-item-title>
+              <a @click="openProject(uuid)">{{ project.name }}</a>
+            </v-list-item-title>
+            <v-list-item-subtitle>{{ uuid }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-card>
+      <div v-else>
+        <p>作成されたプロジェクトはありません。</p>
       </div>
-    </div>
-    <div v-else>
-      <p>作成されたプロジェクトはありません。</p>
     </div>
   </div>
 </template>
@@ -32,10 +43,15 @@ export default class OpenProject extends Vue {
 }
 </script>
 
-<style scoped>
-#openProject {
+<style scoped lang="scss">
+.openProject {
   font-family: tbchibirgothicplusk-pro, sans-serif;
   font-style: normal;
-  color: #898989
+  color: #898989;
+  padding: 50px;
+
+  &__projectsList {
+    padding-top: 40px;
+  }
 }
 </style>
