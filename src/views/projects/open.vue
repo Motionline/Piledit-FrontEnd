@@ -42,8 +42,12 @@ export default class OpenProject extends Vue {
     projectsModule.openProject({ uuid })
   }
 
-  public formatTime (time: moment.Moment) {
+  public formatTime (time: moment.Moment | string) {
     if (!time) return
+    if (typeof time === 'string') {
+      const momentTime = moment(time)
+      return momentTime.format('YYYY年MM月DD日 HH:mm')
+    }
     return time.format('YYYY年MM月DD日 HH:mm')
   }
 }
