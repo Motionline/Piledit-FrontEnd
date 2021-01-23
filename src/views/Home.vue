@@ -17,6 +17,9 @@
           </v-btn>
         </template>
       </v-snackbar>
+      <div>
+        <p v-for="tab in tabs" :key="tab.uuid">{{ tab }}</p>
+      </div>
       <img src="../assets/piledit.png" alt="piledit-logo" width="395px" />
       <h2>Simple, Componentable, Expandable</h2>
       <p v-if="isLoggedIn">{{ greeting }}</p>
@@ -108,12 +111,16 @@ export default class Home extends Vue {
     }
   }
 
+  get tabs () {
+    return tabsModule.tabs
+  }
+
   public snackbar = false
 
   toNewProject () {
     const uuid = tabsModule.currentViewingTabUuid
     const url = `/${uuid}/projects/new`
-    this.$router.push(url)
+    tabsModule.routerPush({ url })
     tabsModule.addPage({
       kind: PTabHistoryKind.General,
       projectUuid: '',
@@ -125,7 +132,7 @@ export default class Home extends Vue {
   toStore () {
     const uuid = tabsModule.currentViewingTabUuid
     const url = `/${uuid}/store`
-    this.$router.push(url)
+    tabsModule.routerPush({ url })
     tabsModule.addPage({
       kind: PTabHistoryKind.General,
       projectUuid: '',
@@ -137,7 +144,7 @@ export default class Home extends Vue {
   toLogin () {
     const uuid = tabsModule.currentViewingTabUuid
     const url = `/${uuid}/login`
-    this.$router.push(url)
+    tabsModule.routerPush({ url })
     tabsModule.addPage({
       kind: PTabHistoryKind.General,
       projectUuid: '',
@@ -149,7 +156,7 @@ export default class Home extends Vue {
   toRegister () {
     const uuid = tabsModule.currentViewingTabUuid
     const url = `/${uuid}/users/new`
-    this.$router.push(url)
+    tabsModule.routerPush({ url })
     tabsModule.addPage({
       kind: PTabHistoryKind.General,
       projectUuid: '',
@@ -161,7 +168,7 @@ export default class Home extends Vue {
   toUserEdit () {
     const uuid = tabsModule.currentViewingTabUuid
     const url = `/${uuid}/users/edit`
-    this.$router.push(url)
+    tabsModule.routerPush({ url })
     tabsModule.addPage({
       kind: PTabHistoryKind.General,
       projectUuid: '',
@@ -175,7 +182,7 @@ export default class Home extends Vue {
       Auth.onAuthStateChanged(() => {
         const homePath = `/${tabsModule.currentViewingTabUuid}`
         if (this.$router.currentRoute.path !== homePath) {
-          this.$router.push(homePath)
+          tabsModule.routerPush({ url: homePath })
           tabsModule.addPage({
             kind: PTabHistoryKind.General,
             projectUuid: '',

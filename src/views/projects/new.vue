@@ -48,11 +48,11 @@ export default class NewProject extends Vue {
   public async newProject () {
     if (this.selectedTemplateItem.value === 'none') {
       const url = await tabsModule.toProjectHomePage({ name: this.name })
-      this.$router.push(url)
+      tabsModule.routerPush({ url })
     } else {
       console.log(this.selectedTemplateItem)
       const url = await tabsModule.toProjectByTemplateHomePage({ name: this.name, templateUuid: this.selectedTemplateItem.value })
-      this.$router.push(url)
+      tabsModule.routerPush({ url })
     }
   }
 

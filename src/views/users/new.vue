@@ -33,7 +33,7 @@ export default class UserRegister extends Vue {
     Auth.createUserWithEmailAndPassword(this.email, this.password)
       .then(() => {
         const url = `/${this.currentViewingTabUuid}`
-        this.$router.push(url)
+        tabsModule.routerPush({ url })
         tabsModule.addPage({
           kind: PTabHistoryKind.General,
           projectUuid: '',
