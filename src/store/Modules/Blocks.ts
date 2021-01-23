@@ -185,7 +185,7 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
     const filtered: PBlocks = {}
     for (const uuid in this.blocks) {
       const block = this.blocks[uuid]
-      if (block.parentUuid === projectUuid || block.isExternal) {
+      if (block.projectUuid === projectUuid || block.isExternal) {
         filtered[uuid] = block
       }
     }
