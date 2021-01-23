@@ -3,11 +3,17 @@
     <div class="NewProject__container">
       <h1>新しくプロジェクトを作成する</h1>
       <v-form class="NewProject__container__projectForm">
-        <v-text-field v-model="name" outlined label="プロジェクト名" color="#898989"></v-text-field>
-<!--        <v-select outlined label="編集方法" color="#898989" :items="items">a</v-select>-->
-        <v-select v-model="selectedTemplateItem" outlined label="テンプレートから作成する" color="#898989" return-object :items="templatesItem"></v-select>
+        <v-text-field v-model="name" outlined label="プロジェクト名" color="#898989" :rules="rules()"></v-text-field>
+        <v-select
+            v-model="selectedTemplateItem"
+            :menu-props="{ bottom: true, offsetY: true }"
+            outlined
+            label="テンプレートから作成する"
+            color="#898989"
+            return-object
+            :items="templatesItem"
+        ></v-select>
         <v-btn @click="newProject" :disabled="canSubmit()">作成する</v-btn>
-        {{ selectedTemplateItem }}
       </v-form>
     </div>
   </div>
@@ -15,7 +21,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { tabsModule, templatesModule } from '@/store/store'
+import { projectsModule, tabsModule, templatesModule } from '@/store/store'
 
 @Component({})
 export default class NewProject extends Vue {
@@ -31,8 +37,25 @@ export default class NewProject extends Vue {
 
   public selectedTemplateItem = { text: '選択しない', value: 'none' }
 
+  public rules () {
+    let duplicate = false
+    for (const projectUuid in this.projects) {
+      const project = this.projects[projectUuid]
+      if (project.name === this.name) {
+        duplicate = true
+        break
+      }
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    return [_ => !duplicate || 'プロジェクト名が重複しています']
+  }
+
   get templates () {
     return templatesModule.templates
+  }
+
+  get projects () {
+    return projectsModule.projects
   }
 
   public mounted () {
