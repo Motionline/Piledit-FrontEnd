@@ -39,7 +39,7 @@ const tabs = tabsModule.tabs
 const tab = tabs[tabsModule.currentViewingTabUuid]
 const tabHistoryIndex = tab.history.historyIndex
 const url = tab.history.historyContainer[tabHistoryIndex].url
-router.push(url)
+tabsModule.routerPush({ url })
 
 Auth.onAuthStateChanged(user => {
   sessionsModule.updateLogInState({ user })

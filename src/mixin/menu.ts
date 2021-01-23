@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import router from '@/router'
 import {
   blocksModule,
   clipsModule,
@@ -308,7 +307,7 @@ export class MenuMixin extends Vue {
 
   static async addComponentsEditorTab () {
     const url = await tabsModule.addComponentsEditorTab()
-    await router.push(url)
+    tabsModule.routerPush({ url })
   }
 
   static async addTemplate () {
@@ -317,6 +316,6 @@ export class MenuMixin extends Vue {
 
   static async about () {
     const url = await tabsModule.addAboutTab()
-    await router.push(url)
+    tabsModule.routerPush({ url })
   }
 }

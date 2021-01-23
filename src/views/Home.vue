@@ -113,7 +113,7 @@ export default class Home extends Vue {
   toNewProject () {
     const uuid = tabsModule.currentViewingTabUuid
     const url = `/${uuid}/projects/new`
-    this.$router.push(url)
+    tabsModule.routerPush({ url })
     tabsModule.addPage({
       kind: PTabHistoryKind.General,
       projectUuid: '',
@@ -125,7 +125,7 @@ export default class Home extends Vue {
   toStore () {
     const uuid = tabsModule.currentViewingTabUuid
     const url = `/${uuid}/store`
-    this.$router.push(url)
+    tabsModule.routerPush({ url })
     tabsModule.addPage({
       kind: PTabHistoryKind.General,
       projectUuid: '',
@@ -137,7 +137,7 @@ export default class Home extends Vue {
   toLogin () {
     const uuid = tabsModule.currentViewingTabUuid
     const url = `/${uuid}/login`
-    this.$router.push(url)
+    tabsModule.routerPush({ url })
     tabsModule.addPage({
       kind: PTabHistoryKind.General,
       projectUuid: '',
@@ -149,7 +149,7 @@ export default class Home extends Vue {
   toRegister () {
     const uuid = tabsModule.currentViewingTabUuid
     const url = `/${uuid}/users/new`
-    this.$router.push(url)
+    tabsModule.routerPush({ url })
     tabsModule.addPage({
       kind: PTabHistoryKind.General,
       projectUuid: '',
@@ -161,7 +161,7 @@ export default class Home extends Vue {
   toUserEdit () {
     const uuid = tabsModule.currentViewingTabUuid
     const url = `/${uuid}/users/edit`
-    this.$router.push(url)
+    tabsModule.routerPush({ url })
     tabsModule.addPage({
       kind: PTabHistoryKind.General,
       projectUuid: '',
@@ -175,7 +175,7 @@ export default class Home extends Vue {
       Auth.onAuthStateChanged(() => {
         const homePath = `/${tabsModule.currentViewingTabUuid}`
         if (this.$router.currentRoute.path !== homePath) {
-          this.$router.push(homePath)
+          tabsModule.routerPush({ url: homePath })
           tabsModule.addPage({
             kind: PTabHistoryKind.General,
             projectUuid: '',

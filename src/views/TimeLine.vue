@@ -151,7 +151,7 @@ export default class TimeLine extends Vue {
       })
     } else {
       const url = await tabsModule.addComponentsEditorTab(component.uuid)
-      this.$router.push(url)
+      tabsModule.routerPush({ url })
     }
   }
 

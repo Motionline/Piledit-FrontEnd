@@ -259,9 +259,6 @@ export type PClips = {
 export interface PTabHistoryIF {
   historyContainer: PTabHistoryContainer;
   historyIndex: number;
-  addPage (kind: PTabHistoryKind, projectUuid: string, title: string, url: string): void;
-  forward (): void;
-  backward (): void;
 }
 
 export interface PTabIF {
@@ -318,23 +315,6 @@ export class PTabHistory implements PTabHistoryIF {
     const tabHistoryItem = new PTabHistoryItem({ kind, projectUuid, title, url })
     this.historyContainer = [tabHistoryItem]
     this.historyIndex = 0
-  }
-
-  forward () {
-    if (this.historyIndex === this.historyContainer.length - 1) return
-    this.historyIndex++
-  }
-
-  addPage (kind: PTabHistoryKind, projectUuid: string, title: string, url: string) {
-    this.historyContainer.length = this.historyIndex + 1
-    const tabHistoryItem = new PTabHistoryItem({ kind, projectUuid, title, url })
-    this.historyContainer.push(tabHistoryItem)
-    this.historyIndex++
-  }
-
-  backward () {
-    if (this.historyIndex === 0) return
-    this.historyIndex--
   }
 }
 

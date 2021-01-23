@@ -49,7 +49,6 @@ export default class Templates extends VuexModule implements TemplatesStateIF {
       throw new Error('空プロジェクトをテンプレートにすることはできません。')
     }
     const template = new PTemplate({ name, uuid, clips, components })
-    console.log(template)
     this.addTemplate(template)
     return uuid
   }

@@ -67,7 +67,6 @@ export default class PileditStore extends Vue {
     for (const uuid in this.components) {
       this.isAlreadyDownloaded(uuid)
     }
-    console.log(this.disabledDownloadButton)
   }
 
   public async download (component: PComponent) {
