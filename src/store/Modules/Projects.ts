@@ -1,9 +1,11 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import { VuexMixin } from '@/mixin/vuex'
-import store, { blocksModule, clipsModule, componentsModule, templatesModule } from '@/store/store'
+import store, { blocksModule, clipsModule, componentsModule, tabsModule, templatesModule } from '@/store/store'
+import { remote } from 'electron'
+import fs from 'fs'
 
-import { PClips, PComponents, PProject, PProjects, PTabHistoryKind } from '@/@types/piledit'
+import { PBlocks, PClips, PComponents, PProject, PProjects, PTabHistoryKind } from '@/@types/piledit'
 
 export interface ProjectsStateIF {
   projects: PProjects;
@@ -34,6 +36,8 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
   public setCurrentViewingProjectUuid (uuid: string) {
     this.currentViewingProjectUuid = uuid
   }
+
+  // -------------------------------------------------------------
 
   @Action({ rawError: true })
   public async add (context: { name: string }) {
@@ -120,5 +124,27 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
     } else {
       this.setCurrentViewingProjectUuid('')
     }
+  }
+
+  @Action({ rawError: true })
+  public async openProject ({ uuid }: { uuid: string }) {
+    const project = this.projects[uuid]
+    const path = remote.app.getAppPath() + `/projects/${project.name}.json`
+    const projectJson = JSON.parse(fs.readFileSync(path, 'utf8'))
+    const components = projectJson.components as PComponents
+    const blocks = projectJson.blocks as PBlocks
+    const clips = projectJson.clips as PClips
+    for (const componentUuid in components) {
+      componentsModule.addComponent(components[componentUuid])
+    }
+    for (const blockUuid in blocks) {
+      blocksModule.addBlock(blocks[blockUuid])
+    }
+    for (const clipUuid in clips) {
+      clipsModule.addClip(clips[clipUuid])
+    }
+    const url = await tabsModule.openProjectHome({ projectUuid: uuid, title: project.name })
+    tabsModule.routerPush({ url })
+    console.log(projectJson)
   }
 }
