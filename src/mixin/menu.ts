@@ -311,7 +311,7 @@ export class MenuMixin extends Vue {
   }
 
   static async publishMagicProject () {
-    // await magickProjectsModule.publishMagicProject()
+    await magicProjectsModule.publishMagicProject()
     await magicProjectsModule.updateMagicProjectDialog({ condition: true })
   }
 
