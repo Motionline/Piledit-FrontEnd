@@ -145,6 +145,5 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
     }
     const url = await tabsModule.openProjectHome({ projectUuid: uuid, title: project.name })
     tabsModule.routerPush({ url })
-    console.log(projectJson)
   }
 }

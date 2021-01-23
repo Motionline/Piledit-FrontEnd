@@ -254,7 +254,6 @@ export class MenuMixin extends Vue {
     const components = await componentsModule.getFilteredComponents({ projectUuid })
     const blocks = await blocksModule.getFilteredBlocks({ projectUuid })
     const clips = await clipsModule.getFilteredClips({ projectUuid })
-    console.log(blocks)
     const saveData = {
       ...project,
       components: {
