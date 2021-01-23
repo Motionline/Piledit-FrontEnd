@@ -31,6 +31,9 @@
               <div>
                 <a @click="toOpenProject">プロジェクトを開く</a>
               </div>
+              <div>
+                <a @click="toMagicOpenProject">Magic Projectにアクセスする</a>
+              </div>
             </div>
             <div class="Home__wrapper--links--group">
               <h3>直近のプロジェクト</h3>
@@ -118,6 +121,18 @@ export default class Home extends Vue {
       kind: PTabHistoryKind.General,
       projectUuid: '',
       title: 'プロジェクトを作成する',
+      url
+    })
+  }
+
+  toMagicOpenProject () {
+    const uuid = tabsModule.currentViewingTabUuid
+    const url = `/${uuid}/projects/magicNew`
+    tabsModule.routerPush({ url })
+    tabsModule.addPage({
+      kind: PTabHistoryKind.General,
+      projectUuid: '',
+      title: 'Magic Projectにアクセスする',
       url
     })
   }
