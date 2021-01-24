@@ -37,9 +37,15 @@
             </div>
             <div class="Home__wrapper--links--row--group">
               <h3>Pileditについて学ぶ</h3>
+              <div>
+                <a @click="toLearnIndex">Piledit チュートリアル</a>
+              </div>
             </div>
             <div class="Home__wrapper--links--row--group">
               <h3>ヘルプ</h3>
+              <div>
+                <a @click="toHelp">Pileditのヘルプ</a>
+              </div>
             </div>
           </div>
           <div class="Home__wrapper--links--row">
@@ -175,6 +181,30 @@ export default class Home extends Vue {
       kind: PTabHistoryKind.General,
       projectUuid: '',
       title: 'Piledit Forum',
+      url
+    })
+  }
+
+  toLearnIndex () {
+    const uuid = tabsModule.currentViewingTabUuid
+    const url = `/${uuid}/learn`
+    tabsModule.routerPush({ url })
+    tabsModule.addPage({
+      kind: PTabHistoryKind.General,
+      projectUuid: '',
+      title: 'Piledit Learn',
+      url
+    })
+  }
+
+  toHelp () {
+    const uuid = tabsModule.currentViewingTabUuid
+    const url = `/${uuid}/help`
+    tabsModule.routerPush({ url })
+    tabsModule.addPage({
+      kind: PTabHistoryKind.General,
+      projectUuid: '',
+      title: 'Piledit Help',
       url
     })
   }
