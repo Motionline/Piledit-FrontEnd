@@ -80,7 +80,7 @@ export default class Components extends VuexModule implements ComponentsStateIF 
   @Action({ rawError: true })
   public async getFilteredComponents ({ projectUuid }: { projectUuid: string }): Promise<PComponents> {
     const filtered: PComponents = {}
-    for (const uuid in this.components) {
+    for (const uuid of Object.keys(this.components)) {
       const component = this.components[uuid]
       if (component.projectUuid === projectUuid || component.isExternal) {
         filtered[uuid] = component

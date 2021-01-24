@@ -59,19 +59,19 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
     const clips = Object.assign({}, template.clips)
     // uuid重複を回避するためにclips, components, blocksのuuidを全て置換する
     const uuidReplaceTable: { [key: string]: string } = {}
-    for (const clipUuid in clips) {
+    for (const clipUuid of Object.keys(clips)) {
       uuidReplaceTable[clipUuid] = VuexMixin.generateUuid()
     }
-    for (const componentUuid in components) {
+    for (const componentUuid of Object.keys(components)) {
       uuidReplaceTable[componentUuid] = VuexMixin.generateUuid()
       const component = components[componentUuid]
-      for (const blockUuid in component.blocks) {
+      for (const blockUuid of Object.keys(component.blocks)) {
         uuidReplaceTable[blockUuid] = VuexMixin.generateUuid()
       }
     }
     let stringifyComponents: string = JSON.stringify(components)
     let stringifyClips: string = JSON.stringify(clips)
-    for (const uuid in uuidReplaceTable) {
+    for (const uuid of Object.keys(uuidReplaceTable)) {
       const reg = new RegExp(uuid, 'g')
       stringifyComponents = stringifyComponents.replace(reg, uuidReplaceTable[uuid])
       stringifyClips = stringifyClips.replace(reg, uuidReplaceTable[uuid])
@@ -79,18 +79,18 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
     // 置換終了
     const processedComponents: PComponents = JSON.parse(stringifyComponents)
     const processedClips: PClips = JSON.parse(stringifyClips)
-    for (const componentUuid in processedComponents) {
+    for (const componentUuid of Object.keys(processedComponents)) {
       const component = processedComponents[componentUuid]
       component.projectUuid = uuid
       componentsModule.addComponent(component)
 
-      for (const blockUuid in component.blocks) {
+      for (const blockUuid of Object.keys(component.blocks)) {
         const block = component.blocks[blockUuid]
         block.projectUuid = uuid
         blocksModule.addBlock(block)
       }
     }
-    for (const clipUuid in processedClips) {
+    for (const clipUuid of Object.keys(processedClips)) {
       const clip = processedClips[clipUuid]
       clip.projectUuid = uuid
       clipsModule.addClip(clip)

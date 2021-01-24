@@ -23,11 +23,11 @@ export default class PStores extends VuexModule implements PStoreIF {
     const uuidReplaceTable: { [key: string]: string } = {}
     uuidReplaceTable[component.uuid] = VuexMixin.generateUuid()
     component.isExternal = true
-    for (const blockUuid in component.blocks) {
+    for (const blockUuid of Object.keys(component.blocks)) {
       uuidReplaceTable[blockUuid] = VuexMixin.generateUuid()
     }
     let stringifyComponent: string = JSON.stringify(component)
-    for (const uuid in uuidReplaceTable) {
+    for (const uuid of Object.keys(uuidReplaceTable)) {
       const reg = new RegExp(uuid, 'g')
       stringifyComponent = stringifyComponent.replace(reg, uuidReplaceTable[uuid])
     }

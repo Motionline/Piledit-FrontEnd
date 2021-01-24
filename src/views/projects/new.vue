@@ -39,7 +39,7 @@ export default class NewProject extends Vue {
 
   public rules () {
     let duplicate = false
-    for (const projectUuid in this.projects) {
+    for (const projectUuid of Object.keys(this.projects)) {
       const project = this.projects[projectUuid]
       if (project.name === this.name) {
         duplicate = true
@@ -59,9 +59,10 @@ export default class NewProject extends Vue {
   }
 
   public mounted () {
-    for (const uuid in this.templates) {
+    for (const uuid of Object.keys(this.templates)) {
+      const template = this.templates[uuid]
       this.templatesItem.push({
-        text: this.templates[uuid].name,
+        text: template.name,
         value: uuid
       })
     }

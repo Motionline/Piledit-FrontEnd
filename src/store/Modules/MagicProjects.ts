@@ -40,37 +40,19 @@ export default class MagicProjects extends VuexModule implements MagicProjectsSt
       const clips = magicProject!.clips as PClips
       const components = magicProject!.components as PComponents
       const blocks = magicProject!.blocks as PBlocks
-      for (const uuid in clips) {
-        const clip = clips[uuid]
-        clipsModule.addClip(clip)
-      }
-      for (const uuid in components) {
-        const component = components[uuid]
-        componentsModule.addComponent(component)
-      }
-      for (const uuid in blocks) {
-        const block = blocks[uuid]
-        blocksModule.addBlock(block)
-      }
+      await clipsModule.addClips({ clips })
+      await componentsModule.addComponents({ components })
+      await blocksModule.addBlocks({ blocks })
       const url = await tabsModule.openProjectHome({ projectUuid: uuid, title: magicProject!.name })
       tabsModule.routerPush({ url })
-      await DB.collection('magicProjects').doc(uuid).onSnapshot((doc: any) => {
-        const updatedMagicProject = doc.data()
+      await DB.collection('magicProjects').doc(uuid).onSnapshot(async (doc: any) => {
+        const updatedMagicProject = await doc.data()
         const clips = updatedMagicProject!.clips as PClips
         const components = updatedMagicProject!.components as PComponents
         const blocks = updatedMagicProject!.blocks as PBlocks
-        for (const uuid in clips) {
-          const clip = clips[uuid]
-          clipsModule.addClip(clip)
-        }
-        for (const uuid in components) {
-          const component = components[uuid]
-          componentsModule.addComponent(component)
-        }
-        for (const uuid in blocks) {
-          const block = blocks[uuid]
-          blocksModule.addBlock(block)
-        }
+        await clipsModule.addClips({ clips })
+        await componentsModule.addComponents({ components })
+        await blocksModule.addBlocks({ blocks })
       })
     }
   }
@@ -99,18 +81,9 @@ export default class MagicProjects extends VuexModule implements MagicProjectsSt
       const clips = updatedMagicProject!.clips as PClips
       const components = updatedMagicProject!.components as PComponents
       const blocks = updatedMagicProject!.blocks as PBlocks
-      for (const uuid in clips) {
-        const clip = clips[uuid]
-        clipsModule.addClip(clip)
-      }
-      for (const uuid in components) {
-        const component = components[uuid]
-        componentsModule.addComponent(component)
-      }
-      for (const uuid in blocks) {
-        const block = blocks[uuid]
-        blocksModule.addBlock(block)
-      }
+      clipsModule.addClips({ clips })
+      componentsModule.addComponents({ components })
+      blocksModule.addBlocks({ blocks })
     })
   }
 

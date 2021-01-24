@@ -58,7 +58,7 @@ export default class Clips extends VuexModule implements ClipsStateIF {
   @Action({ rawError: true })
   public async getFilteredClips ({ projectUuid }: { projectUuid: string }): Promise<PClips> {
     const filtered: PClips = {}
-    for (const uuid in this.clips) {
+    for (const uuid of Object.keys(this.clips)) {
       const clip = this.clips[uuid]
       if (clip.projectUuid === projectUuid || clip.isExternal) {
         filtered[uuid] = clip

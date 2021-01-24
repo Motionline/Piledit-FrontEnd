@@ -76,9 +76,9 @@ export default class ApplicationTab extends Vue {
   }
 
   get tabsArray () {
-    const tabsArr = []
-    for (const tab in this.tabs) {
-      tabsArr.push(tab)
+    const tabsArr: string[] = []
+    for (const tabUuid of Object.keys(this.tabs)) {
+      tabsArr.push(tabUuid)
     }
     return tabsArr
   }

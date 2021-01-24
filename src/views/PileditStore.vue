@@ -64,7 +64,7 @@ export default class PileditStore extends Vue {
 
   public beforeMount () {
     pStoresModule.getComponentsFromFireStore()
-    for (const uuid in this.components) {
+    for (const uuid of Object.keys(this.components)) {
       this.isAlreadyDownloaded(uuid)
     }
   }
