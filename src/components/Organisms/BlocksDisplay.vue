@@ -5,7 +5,15 @@
           @newBlockGenerate="newBlockGenerate"
           @newBlockMove="newBlockMove"
           :new-block="newBlock"
-          :block="getPBlock({ x: 0, y: 50 }, PBlockKind.DefineComponentBlock)"
+          :block="getPBlock({ x: 0, y: 25 }, PBlockKind.DefineComponentBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,50)"
+      />
+      <PropBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 75 }, PBlockKind.PropBlock)"
           class="dragBlock-btn"
           transform="translate(1,50)"
       />
@@ -59,6 +67,7 @@ import {
 import { PBlocksMixin } from '@/mixin/pBlocks'
 import DebugBlock from '@/components/Molecules/Blocks/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/Blocks/DefineComponentBlock.vue'
+import PropBlock from '@/components/Molecules/Blocks/PropBlock.vue'
 import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'
 import GrayScaleFilterBlock from '@/components/Molecules/Blocks/GrayScaleFilterBlock.vue'
 import BlurFilterBlock from '@/components/Molecules/Blocks/BlurFilterBlock.vue'
@@ -69,7 +78,8 @@ import BlurFilterBlock from '@/components/Molecules/Blocks/BlurFilterBlock.vue'
     DebugBlock,
     DefineComponentBlock,
     GrayScaleFilterBlock,
-    BlurFilterBlock
+    BlurFilterBlock,
+    PropBlock
   }
 })
 export default class BlocksDisplay extends Vue {

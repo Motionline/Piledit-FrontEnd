@@ -59,7 +59,8 @@ export enum PBlockKind {
   DefineComponentBlock = 'DefineComponentBlock',
   MovieLoadingBlock = 'MovieLoadingBlock',
   GrayScaleFilterBlock = 'GrayScaleFilterBlock',
-  BlurFilterBlock = 'BlurFilterBlock'
+  BlurFilterBlock = 'BlurFilterBlock',
+  PropBlock = 'PropBlock'
 }
 
 enum PBlockSize {
@@ -103,6 +104,11 @@ export function blockParameter (kind?: PBlockKind) {
     const path = basicBlockPath(PBlockSize.medium)
     const strokeColor = '#601b7d'
     const fillColor = '#79219c'
+    return { path, strokeColor, fillColor }
+  } else if (kind === PBlockKind.PropBlock) {
+    const path = basicBlockPath(PBlockSize.medium)
+    const strokeColor = '#bd9900'
+    const fillColor = '#e3b100'
     return { path, strokeColor, fillColor }
   } else {
     throw new Error('登録されていないBlockです')
@@ -187,12 +193,21 @@ export class TGrayScaleFilterBlock extends PBlockBase {
 
 export class TBlurFilterBlock extends PBlockBase {}
 
+export type propType = 'moviePath'
+
+export class TPropBlock extends PBlockBase {
+  public propName?: string
+  public propType?: propType
+  public blocks: PBlocks = {}
+}
+
 export type PBlock =
   TDebugBlock |
   TDefineComponentBlock |
   TMovieLoadingBlock |
   TGrayScaleFilterBlock |
-  TBlurFilterBlock
+  TBlurFilterBlock |
+  TPropBlock
 
 export type PBlocks = {
   [key: string]: PBlock;

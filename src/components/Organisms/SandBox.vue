@@ -25,6 +25,7 @@ import DefineComponentBlock from '@/components/Molecules/Blocks/DefineComponentB
 import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'
 import GrayScaleFilterBlock from '@/components/Molecules/Blocks/GrayScaleFilterBlock.vue'
 import BlurFilterBlock from '@/components/Molecules/Blocks/BlurFilterBlock.vue'
+import PropBlock from '@/components/Molecules/Blocks/PropBlock.vue'
 
 @Component({
   components: {
@@ -33,7 +34,8 @@ import BlurFilterBlock from '@/components/Molecules/Blocks/BlurFilterBlock.vue'
     BlocksDisplay,
     MovieLoadingBlock,
     GrayScaleFilterBlock,
-    BlurFilterBlock
+    BlurFilterBlock,
+    PropBlock
   }
 })
 export default class SandBox extends Vue {
@@ -50,7 +52,7 @@ export default class SandBox extends Vue {
   public projectUuid!: string
 
   @Prop({ required: true })
-  public blockDisplayTab: number
+  public blockDisplayTab!: number
 
   public stopDragging (uuid: string) {
     const block = this.blocks[uuid]
