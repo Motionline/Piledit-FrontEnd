@@ -12,8 +12,11 @@ export default class Help extends Vue {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .help {
+  font-family: tbchibirgothicplusk-pro, sans-serif;
+  font-style: normal;
+  color: #898989;
   padding: 50px;
 }
 </style>
