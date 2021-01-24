@@ -1,7 +1,5 @@
 import moment from 'moment'
 
-export type filteredByProjectUuidObject = PComponents | PBlocks | PClips
-
 export type PPosition = {
   x: number;
   y: number;
