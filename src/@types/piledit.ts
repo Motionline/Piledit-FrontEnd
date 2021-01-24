@@ -249,7 +249,9 @@ export class PClip implements ClipIF {
   public isExternal = false
   public storeUuid = ''
 
-  constructor (uuid: string, name: string, componentUuid: string, projectUuid: string, position: PPosition, width: number) {
+  constructor ({
+    uuid, name, componentUuid, projectUuid, position, width
+  }: { uuid: string; name: string; componentUuid: string; projectUuid: string; position: PPosition; width: number }) {
     this.uuid = uuid
     this.name = name
     this.componentUuid = componentUuid

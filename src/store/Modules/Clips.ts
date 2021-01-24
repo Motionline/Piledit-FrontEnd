@@ -46,21 +46,11 @@ export default class Clips extends VuexModule implements ClipsStateIF {
   }
 
   @Action({ rawError: true })
-  public async add (context: { componentUuid: string; projectUuid: string }) {
+  public async add ({ componentUuid, projectUuid }: { componentUuid: string; projectUuid: string }) {
     const uuid = VuexMixin.generateUuid()
-    const component = componentsModule.components[context.componentUuid]
+    const component = componentsModule.components[componentUuid]
     const componentName = component.name === '' ? component.defaultName : component.name
-    const clip = new PClip(
-      uuid,
-      componentName,
-      context.componentUuid,
-      context.projectUuid,
-      {
-        x: 0,
-        y: 1
-      },
-      200
-    )
+    const clip = new PClip({ uuid, name: componentName, componentUuid, projectUuid, position: { x: 0, y: 1 }, width: 200 })
     this.addClip(clip)
     await magicProjectsModule.updateMagicProject()
   }
