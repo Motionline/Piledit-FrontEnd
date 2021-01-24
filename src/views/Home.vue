@@ -22,8 +22,8 @@
       <p v-if="isLoggedIn">{{ greeting }}</p>
       <div class="Home__wrapper--links">
         <v-row>
-          <div>
-            <div class="Home__wrapper--links--group">
+          <div class="Home__wrapper--links--row">
+            <div class="Home__wrapper--links--row--group">
               <h3>スタート</h3>
               <div>
                 <a @click="toNewProject">新規プロジェクト</a>
@@ -35,10 +35,24 @@
                 <a @click="toMagicOpenProject">Magic Projectにアクセスする</a>
               </div>
             </div>
-            <div class="Home__wrapper--links--group">
-              <h3>直近のプロジェクト</h3>
+            <div class="Home__wrapper--links--row--group">
+              <h3>Pileditについて学ぶ</h3>
             </div>
-            <div class="Home__wrapper--links--group">
+            <div class="Home__wrapper--links--row--group">
+              <h3>ヘルプ</h3>
+            </div>
+          </div>
+          <div class="Home__wrapper--links--row">
+            <div class="Home__wrapper--links--row--group">
+              <h3>ストア</h3>
+              <div>
+                <a @click="toStore">ストア</a>
+              </div>
+              <div>
+                <span>ダウンロードの管理</span>
+              </div>
+            </div>
+            <div class="Home__wrapper--links--row--group">
               <h3>アカウント</h3>
               <div v-if="isLoggedIn">
                 <div>
@@ -57,18 +71,10 @@
                 </div>
               </div>
             </div>
-            <div class="Home__wrapper--links--group">
-              <h3>Pileditについて学ぶ</h3>
-            </div>
-            <div class="Home__wrapper--links--group">
-              <h3>ヘルプ</h3>
-            </div>
-          </div>
-          <div>
-            <div class="Home__wrapper--links--group">
-              <h3>ストア</h3>
+            <div class="Home__wrapper--links--row--group">
+              <h3>フォーラム</h3>
               <div>
-                <a @click="toStore">ストア</a>
+                <a @click="toForumIndex">フォーラム</a>
               </div>
             </div>
           </div>
@@ -161,6 +167,18 @@ export default class Home extends Vue {
     })
   }
 
+  toForumIndex () {
+    const uuid = tabsModule.currentViewingTabUuid
+    const url = `/${uuid}/forum`
+    tabsModule.routerPush({ url })
+    tabsModule.addPage({
+      kind: PTabHistoryKind.General,
+      projectUuid: '',
+      title: 'Piledit Forum',
+      url
+    })
+  }
+
   toLogin () {
     const uuid = tabsModule.currentViewingTabUuid
     const url = `/${uuid}/login`
@@ -231,8 +249,11 @@ export default class Home extends Vue {
     &--links {
       margin-top: 40px;
 
-      &--group {
-        margin-top: 20px;
+      &--row {
+        padding: 0 20px;
+        &--group {
+          margin-top: 20px;
+        }
       }
     }
   }
@@ -245,7 +266,7 @@ export default class Home extends Vue {
     font-style: normal;
   }
 
-  a {
+  a, span {
     font-family: tbchibirgothicplusk-pro, sans-serif;
 
     font-weight: normal;
