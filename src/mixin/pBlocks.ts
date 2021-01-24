@@ -7,7 +7,8 @@ import {
   TDebugBlock,
   TDefineComponentBlock,
   TGrayScaleFilterBlock,
-  TMovieLoadingBlock, TPropBlock
+  TMovieLoadingBlock,
+  TPropBlock, TPropsBlock
 } from '@/@types/piledit'
 
 function getPBlockInit () {
@@ -45,6 +46,8 @@ export class PBlocksMixin extends Vue {
       return new TBlurFilterBlock(init)
     } else if (kind === PBlockKind.PropBlock) {
       return new TPropBlock(init)
+    } else if (kind === PBlockKind.PropsBlock) {
+      return new TPropsBlock(init)
     } else {
       throw new Error('登録されていないブロックです')
     }

@@ -10,6 +10,11 @@
       @updateBlock="updateBlock"
       v-else-if="isKind(PBlockKind.PropBlock)"
     />
+    <PropsBlockPanel
+      :block="block"
+      @updateBlock="updateBlock"
+      v-else-if="isKind(PBlockKind.PropsBlock)"
+    />
     <MovieLoadingBlockPanel
       :block="block"
       @updateBlock="updateBlock"
@@ -40,10 +45,12 @@ import GrayScaleFilterBlockPanel from '@/components/Molecules/Panels/GrayScaleFi
 import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'
 import BlurFilterBlockPanel from '@/components/Molecules/Panels/BlurFilterBlockPanel.vue'
 import PropBlockPanel from '@/components/Molecules/Panels/PropBlockPanel.vue'
+import PropsBlockPanel from '@/components/Molecules/Panels/PropsBlockPanel.vue'
 
 @Component({
   components: {
     PropBlockPanel,
+    PropsBlockPanel,
     BlurFilterBlockPanel,
     DefineComponentBlockPanel,
     MovieLoadingBlockPanel,

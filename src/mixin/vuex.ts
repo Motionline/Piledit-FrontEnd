@@ -1,10 +1,5 @@
 import Vue from 'vue'
-import {
-  PBlock,
-  PBlockKind,
-  PBlocks,
-  PPosition
-} from '@/@types/piledit'
+import { PBlock, PBlockKind, PBlocks, PPosition } from '@/@types/piledit'
 
 export class VuexMixin extends Vue {
   static generateUuid (): string {
@@ -28,6 +23,9 @@ export class VuexMixin extends Vue {
   }
 
   static calcHeight (kind: PBlockKind): number {
+    if (kind === PBlockKind.PropsBlock) {
+      return 104
+    }
     return 38
   }
 

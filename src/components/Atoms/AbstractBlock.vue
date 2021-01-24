@@ -21,7 +21,7 @@
           v-if="block.shadow"
           fill="#d3d3d8"
           :d="block.shadowPath"
-          transform="translate(1,38)"
+          :transform="calcShadowHeight()"
       />
     </g>
   </svg>
@@ -38,6 +38,7 @@ import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { PBlock, PPosition } from '@/@types/piledit'
 import svgZOrder from 'svg-z-order'
 import { remote } from 'electron'
+import { VuexMixin } from '@/mixin/vuex'
 const Menu = remote.Menu
 const MenuItem = remote.MenuItem
 
@@ -100,6 +101,11 @@ export default class AbstractBlock extends Vue {
       // this.block.isSample = false
     }
     event.preventDefault()
+  }
+
+  public calcShadowHeight () {
+    const height = VuexMixin.calcHeight(this.block.kind)
+    return `translate(1,${height})`
   }
 
   @Emit('newBlockGenerate')

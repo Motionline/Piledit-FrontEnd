@@ -60,7 +60,8 @@ export enum PBlockKind {
   MovieLoadingBlock = 'MovieLoadingBlock',
   GrayScaleFilterBlock = 'GrayScaleFilterBlock',
   BlurFilterBlock = 'BlurFilterBlock',
-  PropBlock = 'PropBlock'
+  PropBlock = 'PropBlock',
+  PropsBlock = 'PropsBlock'
 }
 
 enum PBlockSize {
@@ -77,6 +78,10 @@ function basicBlockPath (width: number) {
 
 function onlyParentBlockPath (width: number) {
   return `m 0,0 c 25,-22 71,-22 96,0 H ${width} a 4,4 0 0,1 4,4 v 30  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z`
+}
+
+function hasBlocksBlockPath (width: number) {
+  return `m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H ${width} a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 64 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 h -8  a 4,4 0 0,0 -4,4 v 16 a 4,4 0 0,0 4,4 h  8 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 180 H 180 a 4,4 0 0,1 4,4 v 24  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z`
 }
 
 export function blockParameter (kind?: PBlockKind) {
@@ -107,6 +112,11 @@ export function blockParameter (kind?: PBlockKind) {
     return { path, strokeColor, fillColor }
   } else if (kind === PBlockKind.PropBlock) {
     const path = basicBlockPath(PBlockSize.medium)
+    const strokeColor = '#bd9900'
+    const fillColor = '#e3b100'
+    return { path, strokeColor, fillColor }
+  } else if (kind === PBlockKind.PropsBlock) {
+    const path = hasBlocksBlockPath(PBlockSize.medium)
     const strokeColor = '#bd9900'
     const fillColor = '#e3b100'
     return { path, strokeColor, fillColor }
@@ -198,6 +208,9 @@ export type propType = 'moviePath'
 export class TPropBlock extends PBlockBase {
   public propName?: string
   public propType?: propType
+}
+
+export class TPropsBlock extends PBlockBase {
   public blocks: PBlocks = {}
 }
 
@@ -207,7 +220,8 @@ export type PBlock =
   TMovieLoadingBlock |
   TGrayScaleFilterBlock |
   TBlurFilterBlock |
-  TPropBlock
+  TPropBlock |
+  TPropsBlock
 
 export type PBlocks = {
   [key: string]: PBlock;
