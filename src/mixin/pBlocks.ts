@@ -8,7 +8,8 @@ import {
   TDefineComponentBlock,
   TGrayScaleFilterBlock,
   TMovieLoadingBlock,
-  TPropBlock, TPropsBlock
+  TPropBlock,
+  TPropsBlock, TVariableBlock
 } from '@/@types/piledit'
 
 function getPBlockInit () {
@@ -48,6 +49,8 @@ export class PBlocksMixin extends Vue {
       return new TPropBlock(init)
     } else if (kind === PBlockKind.PropsBlock) {
       return new TPropsBlock(init)
+    } else if (kind === PBlockKind.VariableBlock) {
+      return new TVariableBlock(init)
     } else {
       throw new Error('登録されていないブロックです')
     }

@@ -25,6 +25,14 @@
           class="dragBlock-btn"
           transform="translate(1,50)"
       />
+      <VariableBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 270 }, PBlockKind.VariableBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,50)"
+      />
     </svg>
     <svg v-else-if="blockDisplayTab === 1">
       <MovieLoadingBlock
@@ -80,6 +88,7 @@ import PropsBlock from '@/components/Molecules/Blocks/PropsBlock.vue'
 import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'
 import GrayScaleFilterBlock from '@/components/Molecules/Blocks/GrayScaleFilterBlock.vue'
 import BlurFilterBlock from '@/components/Molecules/Blocks/BlurFilterBlock.vue'
+import VariableBlock from '@/components/Molecules/Blocks/VariableBlock.vue'
 
 @Component({
   components: {
@@ -89,7 +98,8 @@ import BlurFilterBlock from '@/components/Molecules/Blocks/BlurFilterBlock.vue'
     GrayScaleFilterBlock,
     BlurFilterBlock,
     PropBlock,
-    PropsBlock
+    PropsBlock,
+    VariableBlock
   }
 })
 export default class BlocksDisplay extends Vue {
