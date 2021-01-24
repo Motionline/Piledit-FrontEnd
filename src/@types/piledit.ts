@@ -396,3 +396,28 @@ export class PTopic implements PTopicIF {
 export type PTopics = {
   [key: string]: PTopic;
 }
+
+export interface PCommentIF {
+  uuid: string;
+  content: string;
+  topicUuid: string;
+  userUuid: string;
+}
+
+export class PComment implements PCommentIF {
+  public uuid: string
+  public content: string
+  public topicUuid: string
+  public userUuid: string
+
+  constructor ({ uuid, content, topicUuid, userUuid }: { uuid: string; content: string; topicUuid: string; userUuid: string }) {
+    this.uuid = uuid
+    this.content = content
+    this.topicUuid = topicUuid
+    this.userUuid = userUuid
+  }
+}
+
+export type PComments = {
+  [key: string]: PComment;
+}
