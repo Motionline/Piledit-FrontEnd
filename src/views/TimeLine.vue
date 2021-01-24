@@ -10,31 +10,12 @@
         :success-copy-token="successCopyClipboard"
         @disappearSelfSnackbar="disappearSuccessCopySnackbar"
     />
-    <v-dialog :value="showNewTemplateDialog" @click:outside.prevent="turnOffDialog">
-      <v-card rounded>
-        <v-card-title>テンプレートを作成する</v-card-title>
-        <v-card-text>
-          現在のプロジェクトを基にテンプレートを作成することができます。<br />
-          テンプレートを用いてプロジェクトを開始することで、何度も作成するような動画の編集作業を楽にできます。
-        </v-card-text>
-        <v-card-text v-show="errorCreatingTemplateMessage">
-          <v-alert type="error" dense outlined>
-            空プロジェクトからテンプレートを作成することはできません。
-            最低1つ以上のコンポーネントまたはクリップを設置してください。
-          </v-alert>
-        </v-card-text>
-        <v-card-text>
-          <v-form>
-            <v-text-field label="テンプレート名" outlined color="#898989" v-model="templateName"></v-text-field>
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text @click="turnOffDialog">閉じる</v-btn>
-          <v-btn @click="createTemplate" :disabled="templateName === ''">作成する</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <new-template-dialog
+        :show-new-template-dialog="showNewTemplateDialog"
+        :error-creating-template-message="errorCreatingTemplateMessage"
+        @turnOffDialog="turnOffDialog"
+        @createTemplate="createTemplate"
+    />
     <v-snackbar
         v-model="successCreatingTemplateSnackBar"
         shaped
@@ -75,6 +56,7 @@ import {
 import TimeLineComponent from '@/components/Templates/Timeline.vue'
 import MagicProjectDialog from '@/components/Organisms/Dialogs/MagicProjectDialog.vue'
 import SuccessCopyTokenSnackbar from '@/components/Organisms/Snackbars/SuccessCopyTokenSnackbar.vue'
+import NewTemplateDialog from '@/components/Organisms/Dialogs/NewTemplateDialog.vue'
 import { remote } from 'electron'
 import { PComponents, PClips, PComponent } from '@/@types/piledit'
 import { MenuMixin } from '@/mixin/menu'
@@ -85,7 +67,8 @@ const Menu = remote.Menu
   components: {
     TimeLineComponent,
     MagicProjectDialog,
-    SuccessCopyTokenSnackbar
+    SuccessCopyTokenSnackbar,
+    NewTemplateDialog
   }
 })
 export default class TimeLine extends Vue {
