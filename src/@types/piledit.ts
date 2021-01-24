@@ -371,3 +371,28 @@ export class PTemplate implements PTemplateIF {
 export type PTemplates = {
   [key: string]: PTemplate;
 }
+
+export interface PTopicIF {
+  uuid: string;
+  title: string;
+  content: string;
+  userUuid: string;
+}
+
+export class PTopic implements PTopicIF {
+  public uuid: string;
+  public title: string;
+  public content: string;
+  public userUuid: string;
+
+  constructor ({ uuid, title, content, userUuid }: { uuid: string; title: string; content: string; userUuid: string }) {
+    this.uuid = uuid
+    this.title = title
+    this.content = content
+    this.userUuid = userUuid
+  }
+}
+
+export type PTopics = {
+  [key: string]: PTopic;
+}

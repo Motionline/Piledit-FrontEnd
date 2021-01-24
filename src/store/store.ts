@@ -10,6 +10,7 @@ import Sessions from '@/store/Modules/Sessions'
 import Users from '@/store/Modules/Users'
 import PStores from '@/store/Modules/PStores'
 import Templates from '@/store/Modules/Templates'
+import Topics from '@/store/Modules/Topics'
 import { getModule } from 'vuex-module-decorators'
 import VuexPersistence from 'vuex-persist'
 
@@ -30,7 +31,8 @@ const store = new Vuex.Store({
     UsersModule: Users,
     PStoresModule: PStores,
     TemplatesModule: Templates,
-    MagicProjectsModule: MagicProjects
+    MagicProjectsModule: MagicProjects,
+    TopicsModule: Topics
   },
   plugins: [vuexLocal.plugin]
 })
@@ -46,3 +48,4 @@ export const usersModule = getModule(Users, store)
 export const pStoresModule = getModule(PStores, store)
 export const templatesModule = getModule(Templates, store)
 export const magicProjectsModule = getModule(MagicProjects, store)
+export const topicsModule = getModule(Topics, store)
