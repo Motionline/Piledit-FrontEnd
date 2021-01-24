@@ -92,5 +92,6 @@ export default class PileditStore extends Vue {
   font-family: tbchibirgothicplusk-pro, sans-serif;
   font-weight: bold;
   font-style: normal;
+  padding: 50px;
 }
 </style>
