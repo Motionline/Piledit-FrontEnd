@@ -3,13 +3,14 @@ import {
   PBlock,
   PBlockKind,
   PPosition,
-  TBlurFilterBlock,
+  TBlurFilterBlock, TConstantBlock,
   TDebugBlock,
   TDefineComponentBlock,
   TGrayScaleFilterBlock,
   TMovieLoadingBlock,
   TPropBlock,
-  TPropsBlock, TVariableBlock
+  TPropsBlock,
+  TVariableBlock
 } from '@/@types/piledit'
 
 function getPBlockInit () {
@@ -51,6 +52,8 @@ export class PBlocksMixin extends Vue {
       return new TPropsBlock(init)
     } else if (kind === PBlockKind.VariableBlock) {
       return new TVariableBlock(init)
+    } else if (kind === PBlockKind.ConstantBlock) {
+      return new TConstantBlock(init)
     } else {
       throw new Error('登録されていないブロックです')
     }

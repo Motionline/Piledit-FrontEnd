@@ -28,6 +28,7 @@ import BlurFilterBlock from '@/components/Molecules/Blocks/BlurFilterBlock.vue'
 import PropBlock from '@/components/Molecules/Blocks/PropBlock.vue'
 import PropsBlock from '@/components/Molecules/Blocks/PropsBlock.vue'
 import VariableBlock from '@/components/Molecules/Blocks/VariableBlock.vue'
+import ConstantBlock from '@/components/Molecules/Blocks/ConstantBlock.vue'
 
 @Component({
   components: {
@@ -39,7 +40,8 @@ import VariableBlock from '@/components/Molecules/Blocks/VariableBlock.vue'
     BlurFilterBlock,
     PropBlock,
     PropsBlock,
-    VariableBlock
+    VariableBlock,
+    ConstantBlock
   }
 })
 export default class SandBox extends Vue {

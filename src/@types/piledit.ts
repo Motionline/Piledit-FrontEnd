@@ -62,7 +62,8 @@ export enum PBlockKind {
   BlurFilterBlock = 'BlurFilterBlock',
   PropBlock = 'PropBlock',
   PropsBlock = 'PropsBlock',
-  VariableBlock = 'VariableBlock'
+  VariableBlock = 'VariableBlock',
+  ConstantBlock = 'ConstantBlock'
 }
 
 enum PBlockSize {
@@ -122,6 +123,11 @@ export function blockParameter (kind?: PBlockKind) {
     const fillColor = '#e3b100'
     return { path, strokeColor, fillColor }
   } else if (kind === PBlockKind.VariableBlock) {
+    const path = basicBlockPath(PBlockSize.medium)
+    const strokeColor = '#bd9900'
+    const fillColor = '#e3b100'
+    return { path, strokeColor, fillColor }
+  } else if (kind === PBlockKind.ConstantBlock) {
     const path = basicBlockPath(PBlockSize.medium)
     const strokeColor = '#bd9900'
     const fillColor = '#e3b100'
@@ -222,6 +228,8 @@ export class TPropsBlock extends PBlockBase {
 
 export class TVariableBlock extends PBlockBase {}
 
+export class TConstantBlock extends PBlockBase {}
+
 export type PBlock =
   TDebugBlock |
   TDefineComponentBlock |
@@ -230,7 +238,8 @@ export type PBlock =
   TBlurFilterBlock |
   TPropBlock |
   TPropsBlock |
-  TVariableBlock
+  TVariableBlock |
+  TConstantBlock
 
 export type PBlocks = {
   [key: string]: PBlock;

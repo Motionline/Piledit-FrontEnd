@@ -20,6 +20,11 @@
       @updateBlock="updateBlock"
       v-else-if="isKind(PBlockKind.VariableBlock)"
     />
+    <ConstantBlockPanel
+      :block="block"
+      @updateBlock="updateBlock"
+      v-else-if="isKind(PBlockKind.ConstantBlock)"
+    />
     <MovieLoadingBlockPanel
       :block="block"
       @updateBlock="updateBlock"
@@ -51,6 +56,7 @@ import BlurFilterBlockPanel from '@/components/Molecules/Panels/BlurFilterBlockP
 import PropBlockPanel from '@/components/Molecules/Panels/PropBlockPanel.vue'
 import PropsBlockPanel from '@/components/Molecules/Panels/PropsBlockPanel.vue'
 import VariableBlockPanel from '@/components/Molecules/Panels/VariableBlockPanel.vue'
+import ConstantBlockPanel from '@/components/Molecules/Panels/ConstantBlock.vue'
 
 @Component({
   components: {
@@ -60,7 +66,8 @@ import VariableBlockPanel from '@/components/Molecules/Panels/VariableBlockPanel
     DefineComponentBlockPanel,
     MovieLoadingBlockPanel,
     GrayScaleFilterBlockPanel,
-    VariableBlockPanel
+    VariableBlockPanel,
+    ConstantBlockPanel
   }
 })
 export default class BlockDetailedPanel extends Vue {
