@@ -5,7 +5,7 @@ import {
   Action
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
-import store, { projectsModule, tabsModule } from '@/store/store'
+import store, { magicProjectsModule, projectsModule, tabsModule } from '@/store/store'
 import { PBlocks, PComponent, PComponents } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 
@@ -24,6 +24,14 @@ export default class Components extends VuexModule implements ComponentsStateIF 
   @Mutation
   public addComponent (component: PComponent) {
     Vue.set(this.components, component.uuid, component)
+  }
+
+  @Mutation
+  public addComponents ({ components }: { components: PComponents }) {
+    for (const uuid of Object.keys(components)) {
+      const component = components[uuid]
+      Vue.set(this.components, component.uuid, component)
+    }
   }
 
   @Mutation
@@ -56,6 +64,7 @@ export default class Components extends VuexModule implements ComponentsStateIF 
     const component = new PComponent(componentUuid, defaultName, projectUuid)
     this.nextComponentCount(projectUuid)
     this.addComponent(component)
+    await magicProjectsModule.updateMagicProject()
     return componentUuid
   }
 
@@ -71,7 +80,7 @@ export default class Components extends VuexModule implements ComponentsStateIF 
   @Action({ rawError: true })
   public async getFilteredComponents ({ projectUuid }: { projectUuid: string }): Promise<PComponents> {
     const filtered: PComponents = {}
-    for (const uuid in this.components) {
+    for (const uuid of Object.keys(this.components)) {
       const component = this.components[uuid]
       if (component.projectUuid === projectUuid || component.isExternal) {
         filtered[uuid] = component
@@ -86,25 +95,28 @@ export default class Components extends VuexModule implements ComponentsStateIF 
   }
 
   @Action({ rawError: true })
-  public remove (uuid: string) {
+  public async remove (uuid: string) {
     this.removeComponent(uuid)
+    await magicProjectsModule.updateMagicProject()
   }
 
   @Action({ rawError: true })
-  public updateBlocks ({ componentUuid, blocks }: { componentUuid: string; blocks: PBlocks }) {
+  public async updateBlocks ({ componentUuid, blocks }: { componentUuid: string; blocks: PBlocks }) {
     const component = Object.assign({}, this.components[componentUuid])
     component.blocks = blocks
     this.updateComponent(component)
+    await magicProjectsModule.updateMagicProject()
   }
 
   @Action({ rawError: true })
-  public updateComponentName ({ componentUuid, name }: { componentUuid: string; name: string }) {
+  public async updateComponentName ({ componentUuid, name }: { componentUuid: string; name: string }) {
     const component = Object.assign({}, this.components[componentUuid])
     component.name = name
     this.updateComponent(component)
     const tabUuid = tabsModule.currentViewingTabUuid
     const title = name === '' ? component.defaultName : component.name
     tabsModule.updateTabName({ tabUuid, name: title })
+    await magicProjectsModule.updateMagicProject()
   }
 
   @Action({ rawError: true })

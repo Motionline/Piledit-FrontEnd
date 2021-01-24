@@ -64,10 +64,9 @@ export default class PileditStore extends Vue {
 
   public beforeMount () {
     pStoresModule.getComponentsFromFireStore()
-    for (const uuid in this.components) {
+    for (const uuid of Object.keys(this.components)) {
       this.isAlreadyDownloaded(uuid)
     }
-    console.log(this.disabledDownloadButton)
   }
 
   public async download (component: PComponent) {
@@ -93,5 +92,6 @@ export default class PileditStore extends Vue {
   font-family: tbchibirgothicplusk-pro, sans-serif;
   font-weight: bold;
   font-style: normal;
+  padding: 50px;
 }
 </style>

@@ -1,8 +1,9 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
 import { VuexMixin } from '@/mixin/vuex'
-import { PTab, PTabHistoryKind, PTabs } from '@/@types/piledit'
+import { PTab, PTabHistoryItem, PTabHistoryKind, PTabs } from '@/@types/piledit'
 import store, { componentsModule, projectsModule } from '@/store/store'
+import router from '@/router'
 
 export interface TabStateIF {
   tabs: PTabs;
@@ -15,36 +16,49 @@ export default class Tabs extends VuexModule implements TabStateIF {
   currentViewingTabUuid = ''
 
   @Mutation
-  public addTab (tab: PTab) {
+  public addTab ({ tab }: { tab: PTab }) {
     Vue.set(this.tabs, tab.uuid, tab)
   }
 
   @Mutation
-  public removeTab (uuid: string) {
+  public removeTab ({ uuid }: { uuid: string }) {
     Vue.delete(this.tabs, uuid)
   }
 
   @Mutation
-  public updateTab (tab: PTab) {
+  public updateTab ({ tab }: { tab: PTab }) {
     Vue.set(this.tabs, tab.uuid, tab)
   }
 
-  @Action({ rawError: true })
-  public forward () {
-    const tab = this.tabs[this.currentViewingTabUuid]
-    tab.history.forward()
-  }
-
-  @Action({ rawError: true })
-  public backward () {
-    const tab = this.tabs[this.currentViewingTabUuid]
-    tab.history.backward()
+  @Mutation
+  public forwardTabHistory ({ tab }: { tab: PTab }) {
+    if (tab.history.historyIndex === tab.history.historyContainer.length - 1) return
+    tab.history.historyIndex += 1
+    Vue.set(this.tabs, tab.uuid, tab)
   }
 
   @Mutation
-  public setCurrentViewingTabUuid (uuid: string) {
+  public backwardTabHistory ({ tab }: { tab: PTab }) {
+    if (tab.history.historyIndex === 0) return
+    tab.history.historyIndex -= 1
+    Vue.set(this.tabs, tab.uuid, tab)
+  }
+
+  @Mutation
+  public addPageTabHistory ({ tab, kind, projectUuid, title, url }: { tab: PTab; kind: PTabHistoryKind; projectUuid: string; title: string; url: string }) {
+    tab.history.historyContainer.length = tab.history.historyIndex + 1
+    const tabHistoryItem = new PTabHistoryItem({ kind, projectUuid, title, url })
+    tab.history.historyContainer.push(tabHistoryItem)
+    tab.history.historyIndex += 1
+    Vue.set(this.tabs, tab.uuid, tab)
+  }
+
+  @Mutation
+  public setCurrentViewingTabUuid ({ uuid }: { uuid: string }) {
     this.currentViewingTabUuid = uuid
   }
+
+  // -------------------------------------------------------------------------
 
   @Action({ rawError: true })
   public async init () {
@@ -56,8 +70,8 @@ export default class Tabs extends VuexModule implements TabStateIF {
       title: '新しいタブ',
       url: `/${uuid}`
     })
-    this.setCurrentViewingTabUuid(uuid)
-    this.addTab(tab)
+    this.setCurrentViewingTabUuid({ uuid })
+    this.addTab({ tab })
     return uuid
   }
 
@@ -67,30 +81,30 @@ export default class Tabs extends VuexModule implements TabStateIF {
     const tab = new PTab({
       uuid, kind, projectUuid, title, url
     })
-    this.setCurrentViewingTabUuid(uuid)
-    this.addTab(tab)
+    this.setCurrentViewingTabUuid({ uuid })
+    this.addTab({ tab })
   }
 
   @Action({ rawError: true })
   public addPage ({ kind, projectUuid, title, url }: { kind: PTabHistoryKind; projectUuid: string; title: string; url: string }) {
-    const tab = this.tabs[this.currentViewingTabUuid]
-    tab.history.addPage(kind, projectUuid, title, url)
+    const tab = this.tabs[this.currentViewingTabUuid] as PTab
+    this.addPageTabHistory({ tab, kind, projectUuid, title, url })
   }
 
   @Action({ rawError: true })
-  public remove (context: { uuid: string }) {
-    this.removeTab(context.uuid)
+  public remove ({ uuid }: { uuid: string }) {
+    this.removeTab({ uuid })
   }
 
   @Action({ rawError: true })
   public removeOwn ({ tabUuid, nextTabUuid }: { tabUuid: string; nextTabUuid: string }) {
-    this.setCurrentViewingTabUuid(nextTabUuid)
-    this.removeTab(tabUuid)
+    this.setCurrentViewingTabUuid({ uuid: nextTabUuid })
+    this.removeTab({ uuid: tabUuid })
   }
 
   @Action({ rawError: true })
-  public updateCurrentViewingTabUuid (context: { uuid: string }) {
-    this.setCurrentViewingTabUuid(context.uuid)
+  public updateCurrentViewingTabUuid ({ uuid }: { uuid: string }) {
+    this.setCurrentViewingTabUuid({ uuid })
   }
 
   @Action({ rawError: true })
@@ -120,8 +134,8 @@ export default class Tabs extends VuexModule implements TabStateIF {
       title,
       url
     })
-    this.setCurrentViewingTabUuid(tabUuid)
-    this.addTab(tab)
+    this.setCurrentViewingTabUuid({ uuid: tabUuid })
+    this.addTab({ tab })
     return url
   }
 
@@ -136,8 +150,8 @@ export default class Tabs extends VuexModule implements TabStateIF {
       title: 'About',
       url
     })
-    this.setCurrentViewingTabUuid(tabUuid)
-    this.addTab(tab)
+    this.setCurrentViewingTabUuid({ uuid: tabUuid })
+    this.addTab({ tab })
     return url
   }
 
@@ -149,7 +163,7 @@ export default class Tabs extends VuexModule implements TabStateIF {
     const projectName = projectsModule.projects[projectUuid].name
     const tabHistoryIndex = tab.history.historyIndex
     tab.history.historyContainer[tabHistoryIndex].title = `${name} (${projectName})`
-    this.updateTab(tab)
+    this.updateTab({ tab })
   }
 
   @Action({ rawError: true })
@@ -158,8 +172,36 @@ export default class Tabs extends VuexModule implements TabStateIF {
     const tab = this.tabs[tabUuid]
     const projectUuid = await projectsModule.add({ name })
     const url = `/${tabUuid}/projects/${projectUuid}`
-    tab.history.addPage(PTabHistoryKind.ProjectHome, projectUuid, name, url)
+    this.addPageTabHistory({ tab, kind: PTabHistoryKind.ProjectHome, projectUuid, title: name, url })
     projectsModule.updateCurrentViewingTabUuid({ uuid: projectUuid, kind: PTabHistoryKind.Projects })
     return url
+  }
+
+  @Action({ rawError: true })
+  public async openProjectHome ({ projectUuid, title }: { projectUuid: string; title: string }) {
+    const tabUuid = this.currentViewingTabUuid
+    const tab = this.tabs[tabUuid]
+    const url = `/${tabUuid}/projects/${projectUuid}`
+    this.addPageTabHistory({ tab, kind: PTabHistoryKind.ProjectHome, projectUuid, title, url })
+    projectsModule.updateCurrentViewingTabUuid({ uuid: projectUuid, kind: PTabHistoryKind.Projects })
+    return url
+  }
+
+  @Action({ rawError: true })
+  public async toProjectByTemplateHomePage ({ name, templateUuid }: { name: string; templateUuid: string }) {
+    const tabUuid = this.currentViewingTabUuid
+    const tab = this.tabs[tabUuid]
+    const projectUuid = await projectsModule.addByTemplate({ name, templateUuid })
+    const url = `/${tabUuid}/projects/${projectUuid}`
+    this.addPageTabHistory({ tab, kind: PTabHistoryKind.ProjectHome, projectUuid, title: name, url })
+    projectsModule.updateCurrentViewingTabUuid({ uuid: projectUuid, kind: PTabHistoryKind.Projects })
+    return url
+  }
+
+  @Action({ rawError: true })
+  public routerPush ({ url }: { url: string }) {
+    // 重複した時にエラーが出るがそれは現状では、放置する
+    // TODO: 同じページの場合はreload
+    router.push(url, () => { /* ignore */ })
   }
 }

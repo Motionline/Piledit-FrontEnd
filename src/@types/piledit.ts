@@ -1,4 +1,4 @@
-export type filteredByProjectUuidObject = PComponents | PBlocks | PClips
+import moment from 'moment'
 
 export type PPosition = {
   x: number;
@@ -8,19 +8,26 @@ export type PPosition = {
 export interface PProjectIF {
   name: string;
   uuid: string;
-  isExternal: boolean;
+  isMagicProject: boolean;
   storeUuid: string;
+  createdAt: moment.Moment;
+  updatedAt: moment.Moment;
+  // TODO: userID を実装する
 }
 
 export class PProject implements PProjectIF {
   public name: string;
   public uuid: string;
-  public isExternal = false;
+  public isMagicProject = false;
   public storeUuid = '';
+  public createdAt: moment.Moment;
+  public updatedAt: moment.Moment;
 
-  constructor ({ name, uuid }: { name: string; uuid: string }) {
+  constructor ({ name, uuid, createdAt }: { name: string; uuid: string; createdAt: moment.Moment }) {
     this.name = name
     this.uuid = uuid
+    this.createdAt = createdAt
+    this.updatedAt = createdAt
   }
 }
 
@@ -52,7 +59,11 @@ export enum PBlockKind {
   DefineComponentBlock = 'DefineComponentBlock',
   MovieLoadingBlock = 'MovieLoadingBlock',
   GrayScaleFilterBlock = 'GrayScaleFilterBlock',
-  BlurFilterBlock = 'BlurFilterBlock'
+  BlurFilterBlock = 'BlurFilterBlock',
+  PropBlock = 'PropBlock',
+  PropsBlock = 'PropsBlock',
+  VariableBlock = 'VariableBlock',
+  ConstantBlock = 'ConstantBlock'
 }
 
 enum PBlockSize {
@@ -69,6 +80,10 @@ function basicBlockPath (width: number) {
 
 function onlyParentBlockPath (width: number) {
   return `m 0,0 c 25,-22 71,-22 96,0 H ${width} a 4,4 0 0,1 4,4 v 30  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z`
+}
+
+function hasBlocksBlockPath (width: number) {
+  return `m 0,4 A 4,4 0 0,1 4,0 H 12 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H ${width} a 4,4 0 0,1 4,4 v 40  a 4,4 0 0,1 -4,4 H 64 c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 h -8  a 4,4 0 0,0 -4,4 v 16 a 4,4 0 0,0 4,4 h  8 c 2,0 3,1 4,2 l 4,4 c 1,1 2,2 4,2 h 12 c 2,0 3,-1 4,-2 l 4,-4 c 1,-1 2,-2 4,-2 H 180 H 180 a 4,4 0 0,1 4,4 v 24  a 4,4 0 0,1 -4,4 H 48   c -2,0 -3,1 -4,2 l -4,4 c -1,1 -2,2 -4,2 h -12 c -2,0 -3,-1 -4,-2 l -4,-4 c -1,-1 -2,-2 -4,-2 H 4 a 4,4 0 0,1 -4,-4 z`
 }
 
 export function blockParameter (kind?: PBlockKind) {
@@ -96,6 +111,26 @@ export function blockParameter (kind?: PBlockKind) {
     const path = basicBlockPath(PBlockSize.medium)
     const strokeColor = '#601b7d'
     const fillColor = '#79219c'
+    return { path, strokeColor, fillColor }
+  } else if (kind === PBlockKind.PropBlock) {
+    const path = basicBlockPath(PBlockSize.medium)
+    const strokeColor = '#bd9900'
+    const fillColor = '#e3b100'
+    return { path, strokeColor, fillColor }
+  } else if (kind === PBlockKind.PropsBlock) {
+    const path = hasBlocksBlockPath(PBlockSize.medium)
+    const strokeColor = '#bd9900'
+    const fillColor = '#e3b100'
+    return { path, strokeColor, fillColor }
+  } else if (kind === PBlockKind.VariableBlock) {
+    const path = basicBlockPath(PBlockSize.medium)
+    const strokeColor = '#bd9900'
+    const fillColor = '#e3b100'
+    return { path, strokeColor, fillColor }
+  } else if (kind === PBlockKind.ConstantBlock) {
+    const path = basicBlockPath(PBlockSize.medium)
+    const strokeColor = '#bd9900'
+    const fillColor = '#e3b100'
     return { path, strokeColor, fillColor }
   } else {
     throw new Error('登録されていないBlockです')
@@ -180,12 +215,31 @@ export class TGrayScaleFilterBlock extends PBlockBase {
 
 export class TBlurFilterBlock extends PBlockBase {}
 
+export type propType = 'moviePath'
+
+export class TPropBlock extends PBlockBase {
+  public propName?: string
+  public propType?: propType
+}
+
+export class TPropsBlock extends PBlockBase {
+  public blocks: PBlocks = {}
+}
+
+export class TVariableBlock extends PBlockBase {}
+
+export class TConstantBlock extends PBlockBase {}
+
 export type PBlock =
   TDebugBlock |
   TDefineComponentBlock |
   TMovieLoadingBlock |
   TGrayScaleFilterBlock |
-  TBlurFilterBlock
+  TBlurFilterBlock |
+  TPropBlock |
+  TPropsBlock |
+  TVariableBlock |
+  TConstantBlock
 
 export type PBlocks = {
   [key: string]: PBlock;
@@ -221,6 +275,7 @@ export type PComponents = {
   [key: string]: PComponent;
 }
 
+// TODO: width, positionを用いてstartFrame, endFrameを計算する
 export interface ClipIF {
   uuid: string;
   name: string;
@@ -241,7 +296,9 @@ export class PClip implements ClipIF {
   public isExternal = false
   public storeUuid = ''
 
-  constructor (uuid: string, name: string, componentUuid: string, projectUuid: string, position: PPosition, width: number) {
+  constructor ({
+    uuid, name, componentUuid, projectUuid, position, width
+  }: { uuid: string; name: string; componentUuid: string; projectUuid: string; position: PPosition; width: number }) {
     this.uuid = uuid
     this.name = name
     this.componentUuid = componentUuid
@@ -258,9 +315,6 @@ export type PClips = {
 export interface PTabHistoryIF {
   historyContainer: PTabHistoryContainer;
   historyIndex: number;
-  addPage (kind: PTabHistoryKind, projectUuid: string, title: string, url: string): void;
-  forward (): void;
-  backward (): void;
 }
 
 export interface PTabIF {
@@ -318,23 +372,6 @@ export class PTabHistory implements PTabHistoryIF {
     this.historyContainer = [tabHistoryItem]
     this.historyIndex = 0
   }
-
-  forward () {
-    if (this.historyIndex === this.historyContainer.length - 1) return
-    this.historyIndex++
-  }
-
-  addPage (kind: PTabHistoryKind, projectUuid: string, title: string, url: string) {
-    this.historyContainer.length = this.historyIndex + 1
-    const tabHistoryItem = new PTabHistoryItem({ kind, projectUuid, title, url })
-    this.historyContainer.push(tabHistoryItem)
-    this.historyIndex++
-  }
-
-  backward () {
-    if (this.historyIndex === 0) return
-    this.historyIndex--
-  }
 }
 
 export class PTab implements PTabIF {
@@ -355,4 +392,79 @@ export class PTab implements PTabIF {
 
 export type PTabs = {
   [key: string]: PTab;
+}
+
+export interface PTemplateIF {
+  uuid: string;
+  clips: PClips;
+  components: PComponents;
+}
+
+// fontなどOSに依存するようなデータをどこまで残すか
+export class PTemplate implements PTemplateIF {
+  public name: string
+  public uuid: string
+  public clips: PClips
+  public components: PComponents
+
+  constructor ({ name, uuid, clips, components }: { name: string; uuid: string; clips: PClips; components: PComponents }) {
+    this.name = name
+    this.uuid = uuid
+    this.clips = clips
+    this.components = components
+  }
+}
+
+export type PTemplates = {
+  [key: string]: PTemplate;
+}
+
+export interface PTopicIF {
+  uuid: string;
+  title: string;
+  content: string;
+  userUuid: string;
+}
+
+export class PTopic implements PTopicIF {
+  public uuid: string;
+  public title: string;
+  public content: string;
+  public userUuid: string;
+
+  constructor ({ uuid, title, content, userUuid }: { uuid: string; title: string; content: string; userUuid: string }) {
+    this.uuid = uuid
+    this.title = title
+    this.content = content
+    this.userUuid = userUuid
+  }
+}
+
+export type PTopics = {
+  [key: string]: PTopic;
+}
+
+export interface PCommentIF {
+  uuid: string;
+  content: string;
+  topicUuid: string;
+  userUuid: string;
+}
+
+export class PComment implements PCommentIF {
+  public uuid: string
+  public content: string
+  public topicUuid: string
+  public userUuid: string
+
+  constructor ({ uuid, content, topicUuid, userUuid }: { uuid: string; content: string; topicUuid: string; userUuid: string }) {
+    this.uuid = uuid
+    this.content = content
+    this.topicUuid = topicUuid
+    this.userUuid = userUuid
+  }
+}
+
+export type PComments = {
+  [key: string]: PComment;
 }

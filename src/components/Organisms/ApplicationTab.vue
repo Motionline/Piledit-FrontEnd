@@ -76,9 +76,9 @@ export default class ApplicationTab extends Vue {
   }
 
   get tabsArray () {
-    const tabsArr = []
-    for (const tab in this.tabs) {
-      tabsArr.push(tab)
+    const tabsArr: string[] = []
+    for (const tabUuid of Object.keys(this.tabs)) {
+      tabsArr.push(tabUuid)
     }
     return tabsArr
   }
@@ -95,10 +95,11 @@ export default class ApplicationTab extends Vue {
     return projectsModule.currentViewingProjectUuid
   }
 
-  async beforeMount () {
+  public async beforeMount () {
     if (Object.keys(this.tabs).length === 0) {
       const uuid = await tabsModule.init()
-      await this.$router.push(`/${uuid}`)
+      const url = `/${uuid}`
+      tabsModule.routerPush({ url })
     }
   }
 
@@ -153,20 +154,20 @@ export default class ApplicationTab extends Vue {
     }
     if (tabsLen === 0) {
       const url = await tabsModule.init()
-      this.$router.push(url)
+      tabsModule.routerPush({ url })
       tabsModule.remove({ uuid })
     } else if (currentViewingTabIndex === 0 && uuid === this.currentViewingTabUuid) {
       // 消したタブが0番目のタブの場合
       const nextTabUuid = this.tabsArray[currentViewingTabIndex + 1]
       const nextTabHistory = this.tabs[nextTabUuid].history
       const url = nextTabHistory.historyContainer[nextTabHistory.historyIndex].url
-      this.$router.push(url)
+      tabsModule.routerPush({ url })
       tabsModule.removeOwn({ tabUuid: uuid, nextTabUuid })
     } else if (uuid === this.currentViewingTabUuid) {
       const nextTabUuid = this.tabsArray[currentViewingTabIndex - 1]
       const nextTabHistory = this.tabs[nextTabUuid].history
       const url = nextTabHistory.historyContainer[nextTabHistory.historyIndex].url
-      this.$router.push(url)
+      tabsModule.routerPush({ url })
       tabsModule.removeOwn({ tabUuid: uuid, nextTabUuid })
     } else {
       tabsModule.remove({ uuid })
@@ -183,12 +184,12 @@ export default class ApplicationTab extends Vue {
       const tabsLen = Object.keys(this.tabs).length - 1
       if (tabsLen === 0) {
         const url = await tabsModule.init()
-        this.$router.push(url)
+        tabsModule.routerPush({ url })
       } else {
         const nextTabUuid = this.tabsArray[currentViewingTabIndex - 1]
         const nextTabHistory = this.tabs[nextTabUuid].history
         const url = nextTabHistory.historyContainer[nextTabHistory.historyIndex].url
-        this.$router.push(url)
+        tabsModule.routerPush({ url })
       }
     }
   }
@@ -204,29 +205,30 @@ export default class ApplicationTab extends Vue {
   }
 
   public forward () {
-    tabsModule.forward()
+    tabsModule.forwardTabHistory({ tab: this.tabs[this.currentViewingTabUuid] })
     const tab = this.tabs[this.currentViewingTabUuid]
     const url = tab.history.historyContainer[tab.history.historyIndex].url
-    this.$router.push(url)
+    tabsModule.routerPush({ url })
   }
 
   public backward () {
-    tabsModule.backward()
+    tabsModule.backwardTabHistory({ tab: this.tabs[this.currentViewingTabUuid] })
     const tab = this.tabs[this.currentViewingTabUuid]
     const url = tab.history.historyContainer[tab.history.historyIndex].url
-    this.$router.push(url)
+    tabsModule.routerPush({ url })
   }
 
   public toHome () {
     const tabUuid = this.currentViewingTabUuid
     const url = `/${tabUuid}`
     tabsModule.addPage({ kind: PTabHistoryKind.General, projectUuid: '', title: '新しいタブ', url })
-    this.$router.push(url)
+    tabsModule.routerPush({ url })
   }
 
   public async addTab () {
     const uuid = await tabsModule.init()
-    await this.$router.push(`/${uuid}`)
+    const url = `/${uuid}`
+    tabsModule.routerPush({ url })
   }
 }
 </script>

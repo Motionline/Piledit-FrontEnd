@@ -5,7 +5,39 @@
           @newBlockGenerate="newBlockGenerate"
           @newBlockMove="newBlockMove"
           :new-block="newBlock"
-          :block="getPBlock({ x: 0, y: 50 }, PBlockKind.DefineComponentBlock)"
+          :block="getPBlock({ x: 0, y: 25 }, PBlockKind.DefineComponentBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,50)"
+      />
+      <PropsBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 85 }, PBlockKind.PropsBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,50)"
+      />
+      <PropBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 210 }, PBlockKind.PropBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,50)"
+      />
+      <VariableBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 270 }, PBlockKind.VariableBlock)"
+          class="dragBlock-btn"
+          transform="translate(1,50)"
+      />
+      <ConstantBlock
+          @newBlockGenerate="newBlockGenerate"
+          @newBlockMove="newBlockMove"
+          :new-block="newBlock"
+          :block="getPBlock({ x: 0, y: 330 }, PBlockKind.ConstantBlock)"
           class="dragBlock-btn"
           transform="translate(1,50)"
       />
@@ -59,9 +91,13 @@ import {
 import { PBlocksMixin } from '@/mixin/pBlocks'
 import DebugBlock from '@/components/Molecules/Blocks/DebugBlock.vue'
 import DefineComponentBlock from '@/components/Molecules/Blocks/DefineComponentBlock.vue'
+import PropBlock from '@/components/Molecules/Blocks/PropBlock.vue'
+import PropsBlock from '@/components/Molecules/Blocks/PropsBlock.vue'
 import MovieLoadingBlock from '@/components/Molecules/Blocks/MovieLoadingBlock.vue'
 import GrayScaleFilterBlock from '@/components/Molecules/Blocks/GrayScaleFilterBlock.vue'
 import BlurFilterBlock from '@/components/Molecules/Blocks/BlurFilterBlock.vue'
+import VariableBlock from '@/components/Molecules/Blocks/VariableBlock.vue'
+import ConstantBlock from '@/components/Molecules/Blocks/ConstantBlock.vue'
 
 @Component({
   components: {
@@ -69,7 +105,11 @@ import BlurFilterBlock from '@/components/Molecules/Blocks/BlurFilterBlock.vue'
     DebugBlock,
     DefineComponentBlock,
     GrayScaleFilterBlock,
-    BlurFilterBlock
+    BlurFilterBlock,
+    PropBlock,
+    PropsBlock,
+    VariableBlock,
+    ConstantBlock
   }
 })
 export default class BlocksDisplay extends Vue {

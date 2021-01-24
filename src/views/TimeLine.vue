@@ -1,8 +1,40 @@
 <template>
   <div id="Home">
+    <magic-project-dialog
+        :magic-project-dialog="magicProjectDialog"
+        :token="token"
+        @turnOffMagicProjectDialog="turnOffMagicProjectDialog"
+        @copyToken="copyToken"
+    />
+    <success-copy-token-snackbar
+        :success-copy-token="successCopyClipboard"
+        @disappearSelfSnackbar="disappearSuccessCopySnackbar"
+    />
+    <new-template-dialog
+        :show-new-template-dialog="showNewTemplateDialog"
+        :error-creating-template-message="errorCreatingTemplateMessage"
+        @turnOffDialog="turnOffDialog"
+        @createTemplate="createTemplate"
+    />
+    <v-snackbar
+        v-model="successCreatingTemplateSnackBar"
+        shaped
+    >
+      テンプレートを作成しました
+      <template v-slot:action="{ attrs }">
+        <v-btn
+            color="white"
+            text
+            v-bind="attrs"
+            @click="successCreatingTemplateSnackBar = false"
+        >
+          閉じる
+        </v-btn>
+      </template>
+    </v-snackbar>
     <h3>全てのコンポーネント</h3>
     <div v-for="(component, uuid) in filteredComponents()" :key="uuid">
-      <v-btn @click="openComponentEditor(component)">{{ getComponentName(uuid) }}を開く</v-btn>
+      <v-btn @click="openComponentEditor(component)">{{ getComponentName(uuid) }}を開く {{ uuid }}</v-btn>
     </div>
     <TimeLineComponent :clips="filteredClips()" :components="filteredComponents()" />
   </div>
@@ -13,10 +45,19 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { componentsModule, clipsModule, blocksModule, tabsModule } from '@/store/store'
+import {
+  componentsModule,
+  clipsModule,
+  blocksModule,
+  tabsModule,
+  templatesModule,
+  magicProjectsModule
+} from '@/store/store'
 import TimeLineComponent from '@/components/Templates/Timeline.vue'
-import fs from 'fs'
-import { app, remote } from 'electron'
+import MagicProjectDialog from '@/components/Organisms/Dialogs/MagicProjectDialog.vue'
+import SuccessCopyTokenSnackbar from '@/components/Organisms/Snackbars/SuccessCopyTokenSnackbar.vue'
+import NewTemplateDialog from '@/components/Organisms/Dialogs/NewTemplateDialog.vue'
+import { remote } from 'electron'
 import { PComponents, PClips, PComponent } from '@/@types/piledit'
 import { MenuMixin } from '@/mixin/menu'
 const dialog = remote.dialog
@@ -24,15 +65,64 @@ const Menu = remote.Menu
 
 @Component({
   components: {
-    TimeLineComponent
+    TimeLineComponent,
+    MagicProjectDialog,
+    SuccessCopyTokenSnackbar,
+    NewTemplateDialog
   }
 })
 export default class TimeLine extends Vue {
   public tabUuid = this.$route.params.tabUuid
   public projectUuid = this.$route.params.projectUuid
+  public successCopyClipboard = false
+  public successCreatingTemplateSnackBar = false
+  public errorCreatingTemplateMessage = false
+  public templateName = ''
+  public token = this.$route.params.projectUuid
+
+  public copyToken () {
+    this.successCopyClipboard = true
+    this.turnOffMagicProjectDialog()
+    this.$copyText(this.token).then(function (_) {
+      console.log('copy')
+    }, function (_) {
+      console.log('not copy')
+    })
+  }
 
   public mounted () {
     MenuMixin.updateTimeline()
+  }
+
+  public turnOnDialog () {
+    templatesModule.updateShowNewTemplateDialog({ condition: true })
+  }
+
+  public turnOffDialog () {
+    templatesModule.updateShowNewTemplateDialog({ condition: false })
+  }
+
+  public turnOnMagicProjectDialog () {
+    magicProjectsModule.updateMagicProjectDialog({ condition: true })
+  }
+
+  public turnOffMagicProjectDialog () {
+    magicProjectsModule.updateMagicProjectDialog({ condition: false })
+  }
+
+  public disappearSuccessCopySnackbar () {
+    this.successCopyClipboard = false
+  }
+
+  public async createTemplate () {
+    try {
+      await templatesModule.add({ name: this.templateName })
+      this.successCreatingTemplateSnackBar = true
+      this.errorCreatingTemplateMessage = false
+      this.turnOffDialog()
+    } catch (e) {
+      this.errorCreatingTemplateMessage = true
+    }
   }
 
   @Watch('$route')
@@ -61,6 +151,14 @@ export default class TimeLine extends Vue {
     return filtered
   }
 
+  get showNewTemplateDialog () {
+    return templatesModule.showNewTemplateDialog
+  }
+
+  get magicProjectDialog () {
+    return magicProjectsModule.magicProjectDialog
+  }
+
   get components () {
     return componentsModule.components
   }
@@ -85,7 +183,7 @@ export default class TimeLine extends Vue {
       })
     } else {
       const url = await tabsModule.addComponentsEditorTab(component.uuid)
-      this.$router.push(url)
+      tabsModule.routerPush({ url })
     }
   }
 

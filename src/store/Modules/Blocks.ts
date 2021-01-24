@@ -29,6 +29,14 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
   }
 
   @Mutation
+  public addBlocks ({ blocks }: { blocks: PBlocks }) {
+    for (const uuid of Object.keys(blocks)) {
+      const block = blocks[uuid]
+      Vue.set(this.blocks, block.uuid, block)
+    }
+  }
+
+  @Mutation
   public removeBlock (uuid: string) {
     Vue.delete(this.blocks, uuid)
   }
@@ -140,8 +148,8 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
       componentsModule.updateComponentName({ componentUuid, name: '' })
     }
     const blocksFamily = VuexMixin.searchChildrenOfBlock(topBlock, this.blocks)
-    for (const child in blocksFamily) {
-      this.removeBlock(child)
+    for (const childUuid of Object.keys(blocksFamily)) {
+      this.removeBlock(childUuid)
     }
   }
 
@@ -183,9 +191,9 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
   @Action({ rawError: true })
   public async getFilteredBlocks ({ projectUuid }: { projectUuid: string }): Promise<PBlocks> {
     const filtered: PBlocks = {}
-    for (const uuid in this.blocks) {
+    for (const uuid of Object.keys(this.blocks)) {
       const block = this.blocks[uuid]
-      if (block.parentUuid === projectUuid || block.isExternal) {
+      if (block.projectUuid === projectUuid || block.isExternal) {
         filtered[uuid] = block
       }
     }
