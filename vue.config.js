@@ -1,6 +1,4 @@
-import { ProjectOptions } from '@vue/cli-service'
-
-const options: ProjectOptions = {
+module.exports = {
   transpileDependencies: [
     'vuetify'
   ],
@@ -11,5 +9,3 @@ const options: ProjectOptions = {
     }
   }
 }
-
-export default options
