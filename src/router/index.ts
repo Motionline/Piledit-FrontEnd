@@ -5,8 +5,6 @@ Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
   { path: '/preferences' }, // アプリの設定
-  { path: '/users/:userId' }, // ユーザー表示
-  { path: '/users/settings' }, // ユーザー編集
   { path: '/:tabUuid/login', name: 'UserLogin', component: () => import('../views/sessions/new.vue') },
   { path: '/:tabUuid/users/new', name: 'UserRegister', component: () => import('../views/users/new.vue') },
   { path: '/:tabUuid/users/edit', name: 'UserEdit', component: () => import('../views/users/edit.vue') },
@@ -18,6 +16,7 @@ const routes: Array<RouteConfig> = [
   { path: '/:tabUuid/projects/:projectUuid', name: 'TimeLine', component: () => import('../views/TimeLine.vue') },
   { path: '/:tabUuid/forum', name: 'ForumIndex', component: () => import('../views/forum/index.vue') },
   { path: '/:tabUuid/about', name: 'About', component: () => import('../views/About.vue') },
+  { path: ':/tabUuid/help', name: 'Help', component: () => import('../views/Help.vue') },
   { path: '/:tabUuid', name: 'Home', component: () => import('../views/Home.vue') }
 ]
 
