@@ -1,29 +1,11 @@
 <template>
   <div id="Home">
-    <v-dialog :value="magicProjectDialog" @click:outside.prevent="turnOffMagicProjectDialog">
-      <v-card>
-        <v-card-title>Magic Project</v-card-title>
-        <v-card-text>
-          Magic Projectは、データをインターネットに公開し、複数人で同時編集できる機能です。<br />
-          友人に次のトークンを共有して、ワクワクするような編集を体験しよう！<br/>
-        </v-card-text>
-        <v-card-text>
-          <v-text-field
-              readonly
-              outlined
-              dense
-              color="#898989"
-              label="トークン"
-              :value="token"
-              append-icon="mdi-content-copy"
-          />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn @click="copyToken">コピーする</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <magic-project-dialog
+        :magic-project-dialog="magicProjectDialog"
+        :token="token"
+        @turnOffMagicProjectDialog="turnOffMagicProjectDialog"
+        @copyToken="copyToken"
+    />
     <v-snackbar
         v-model="successCopyClipboard"
         shaped
@@ -103,6 +85,7 @@ import {
   magicProjectsModule
 } from '@/store/store'
 import TimeLineComponent from '@/components/Templates/Timeline.vue'
+import MagicProjectDialog from '@/components/Organisms/Dialogs/MagicProjectDialog.vue'
 import { remote } from 'electron'
 import { PComponents, PClips, PComponent } from '@/@types/piledit'
 import { MenuMixin } from '@/mixin/menu'
@@ -111,7 +94,8 @@ const Menu = remote.Menu
 
 @Component({
   components: {
-    TimeLineComponent
+    TimeLineComponent,
+    MagicProjectDialog
   }
 })
 export default class TimeLine extends Vue {
