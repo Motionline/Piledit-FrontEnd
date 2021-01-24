@@ -6,22 +6,10 @@
         @turnOffMagicProjectDialog="turnOffMagicProjectDialog"
         @copyToken="copyToken"
     />
-    <v-snackbar
-        v-model="successCopyClipboard"
-        shaped
-    >
-      トークンをコピーしました！
-      <template v-slot:action="{ attrs }">
-        <v-btn
-            color="white"
-            text
-            v-bind="attrs"
-            @click="successCopyClipboard = false"
-        >
-          閉じる
-        </v-btn>
-      </template>
-    </v-snackbar>
+    <success-copy-token-snackbar
+        :success-copy-token="successCopyClipboard"
+        @disappearSelfSnackbar="disappearSuccessCopySnackbar"
+    />
     <v-dialog :value="showNewTemplateDialog" @click:outside.prevent="turnOffDialog">
       <v-card rounded>
         <v-card-title>テンプレートを作成する</v-card-title>
@@ -86,6 +74,7 @@ import {
 } from '@/store/store'
 import TimeLineComponent from '@/components/Templates/Timeline.vue'
 import MagicProjectDialog from '@/components/Organisms/Dialogs/MagicProjectDialog.vue'
+import SuccessCopyTokenSnackbar from '@/components/Organisms/Snackbars/SuccessCopyTokenSnackbar.vue'
 import { remote } from 'electron'
 import { PComponents, PClips, PComponent } from '@/@types/piledit'
 import { MenuMixin } from '@/mixin/menu'
@@ -95,7 +84,8 @@ const Menu = remote.Menu
 @Component({
   components: {
     TimeLineComponent,
-    MagicProjectDialog
+    MagicProjectDialog,
+    SuccessCopyTokenSnackbar
   }
 })
 export default class TimeLine extends Vue {
@@ -135,6 +125,10 @@ export default class TimeLine extends Vue {
 
   public turnOffMagicProjectDialog () {
     magicProjectsModule.updateMagicProjectDialog({ condition: false })
+  }
+
+  public disappearSuccessCopySnackbar () {
+    this.successCopyClipboard = false
   }
 
   public async createTemplate () {
