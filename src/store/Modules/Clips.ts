@@ -23,6 +23,14 @@ export default class Clips extends VuexModule implements ClipsStateIF {
   }
 
   @Mutation
+  public async addClips ({ clips }: { clips: PClips }) {
+    for (const uuid of Object.keys(clips)) {
+      const clip = clips[uuid]
+      Vue.set(this.clips, clip.uuid, clip)
+    }
+  }
+
+  @Mutation
   public removeClip (uuid: string) {
     Vue.delete(this.clips, uuid)
   }

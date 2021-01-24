@@ -27,6 +27,14 @@ export default class Components extends VuexModule implements ComponentsStateIF 
   }
 
   @Mutation
+  public addComponents ({ components }: { components: PComponents }) {
+    for (const uuid of Object.keys(components)) {
+      const component = components[uuid]
+      Vue.set(this.components, component.uuid, component)
+    }
+  }
+
+  @Mutation
   public removeComponent (uuid: string) {
     Vue.delete(this.components, uuid)
   }

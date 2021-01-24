@@ -29,6 +29,14 @@ export default class Blocks extends VuexModule implements BlocksStateIF {
   }
 
   @Mutation
+  public addBlocks ({ blocks }: { blocks: PBlocks }) {
+    for (const uuid of Object.keys(blocks)) {
+      const block = blocks[uuid]
+      Vue.set(this.blocks, block.uuid, block)
+    }
+  }
+
+  @Mutation
   public removeBlock (uuid: string) {
     Vue.delete(this.blocks, uuid)
   }

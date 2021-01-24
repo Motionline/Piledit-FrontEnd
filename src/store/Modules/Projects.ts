@@ -127,15 +127,9 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
     const components = projectJson.components as PComponents
     const blocks = projectJson.blocks as PBlocks
     const clips = projectJson.clips as PClips
-    for (const componentUuid in components) {
-      componentsModule.addComponent(components[componentUuid])
-    }
-    for (const blockUuid in blocks) {
-      blocksModule.addBlock(blocks[blockUuid])
-    }
-    for (const clipUuid in clips) {
-      clipsModule.addClip(clips[clipUuid])
-    }
+    await componentsModule.addComponents({ components })
+    await blocksModule.addBlocks({ blocks })
+    await clipsModule.addClips({ clips }) // Mutation
     const url = await tabsModule.openProjectHome({ projectUuid: uuid, title: project.name })
     tabsModule.routerPush({ url })
   }
