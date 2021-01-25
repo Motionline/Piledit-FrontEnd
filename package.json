@@ -23,6 +23,7 @@
     "@types/node": "^14.14.22",
     "axios": "^0.20.0",
     "core-js": "^3.8.3",
+    "crypto-ts": "^1.0.2",
     "firebase": "^8.2.4",
     "mkdirp": "^1.0.4",
     "svg-z-order": "^1.2.1",
