@@ -5,7 +5,7 @@ import {
   Action
 } from 'vuex-module-decorators'
 import { Vue } from 'vue-property-decorator'
-import store, { componentsModule, magicProjectsModule } from '@/store/store'
+import store, { componentsModule, magicProjectsModule, projectsModule } from '@/store/store'
 import { PClip, PClips, PPosition } from '@/@types/piledit'
 import { VuexMixin } from '@/mixin/vuex'
 
@@ -36,6 +36,11 @@ export default class Clips extends VuexModule implements ClipsStateIF {
   }
 
   @Mutation
+  public updateClip (clip: PClip) {
+    Vue.set(this.clips, clip.uuid, clip)
+  }
+
+  @Mutation
   public updateClipPosition (clip: PClip) {
     this.clips[clip.uuid].position = clip.position
   }
@@ -49,8 +54,20 @@ export default class Clips extends VuexModule implements ClipsStateIF {
   public async add ({ componentUuid, projectUuid }: { componentUuid: string; projectUuid: string }) {
     const uuid = VuexMixin.generateUuid()
     const component = componentsModule.components[componentUuid]
+    const fps = projectsModule.projects[projectUuid].fps
     const componentName = component.name === '' ? component.defaultName : component.name
-    const clip = new PClip({ uuid, name: componentName, componentUuid, projectUuid, position: { x: 0, y: 1 }, width: 200 })
+    // const startFrame = fps *
+    const clip = new PClip({
+      uuid,
+      name: componentName,
+      componentUuid,
+      projectUuid,
+      position: { x: 0, y: 1 },
+      width: 200,
+      startFrame: 0,
+      endFrame: 0,
+      layer: 0
+    })
     this.addClip(clip)
     await magicProjectsModule.updateMagicProject()
   }
@@ -68,10 +85,13 @@ export default class Clips extends VuexModule implements ClipsStateIF {
   }
 
   @Action({ rawError: true })
-  public async updatePosition (context: { position: PPosition; uuid: string }) {
-    const clip = this.clips[context.uuid]
-    clip.position = context.position
-    this.updateClipPosition(clip)
+  public async updatePosition ({ position, uuid }: { position: PPosition; uuid: string }) {
+    const clip = this.clips[uuid]
+    clip.position = position
+    clip.startFrame = Math.round(position.x / 5)
+    clip.endFrame = Math.round(clip.startFrame + clip.width / 5)
+    clip.layer = (position.y - 1) / 50
+    this.updateClip(clip)
     await magicProjectsModule.updateMagicProject()
   }
 

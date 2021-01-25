@@ -4,6 +4,7 @@
       <h1>新しくプロジェクトを作成する</h1>
       <v-form class="NewProject__container__projectForm">
         <v-text-field v-model="name" outlined label="プロジェクト名" color="#898989" :rules="rules()"></v-text-field>
+        <v-text-field v-model="fps" outlined label="フレーム数 / 秒" color="#898989" type="number"></v-text-field>
         <v-select
             v-model="selectedTemplateItem"
             :menu-props="{ bottom: true, offsetY: true }"
@@ -26,6 +27,7 @@ import { projectsModule, tabsModule, templatesModule } from '@/store/store'
 @Component({})
 export default class NewProject extends Vue {
   public name = ''
+  public fps = 60
   public items = [
     { text: 'Only-Components-Edit（推奨）', value: 'components' },
     { text: 'Clips-Edit', value: 'clips' }
@@ -47,7 +49,7 @@ export default class NewProject extends Vue {
       }
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    return [_ => !duplicate || 'プロジェクト名が重複しています']
+    return [(_: any) => !duplicate || 'プロジェクト名が重複しています']
   }
 
   get templates () {
@@ -70,7 +72,7 @@ export default class NewProject extends Vue {
 
   public async newProject () {
     if (this.selectedTemplateItem.value === 'none') {
-      const url = await tabsModule.toProjectHomePage({ name: this.name })
+      const url = await tabsModule.toProjectHomePage({ name: this.name, fps: this.fps })
       tabsModule.routerPush({ url })
     } else {
       const url = await tabsModule.toProjectByTemplateHomePage({ name: this.name, templateUuid: this.selectedTemplateItem.value })

@@ -41,10 +41,10 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
   // -------------------------------------------------------------
 
   @Action({ rawError: true })
-  public async add ({ name }: { name: string }) {
+  public async add ({ name, fps }: { name: string; fps: number }) {
     const uuid = VuexMixin.generateUuid()
     const createdAt = moment()
-    const project = new PProject({ name, uuid, createdAt })
+    const project = new PProject({ name, uuid, createdAt, fps })
     this.addProject(project)
     return uuid
   }
@@ -53,7 +53,8 @@ export default class Projects extends VuexModule implements ProjectsStateIF {
   public async addByTemplate ({ name, templateUuid }: { name: string; templateUuid: string }) {
     const uuid = VuexMixin.generateUuid()
     const createdAt = moment()
-    const project = new PProject({ name, uuid, createdAt })
+    // TODO: fpsをテンプレートから読み出す
+    const project = new PProject({ name, uuid, createdAt, fps: 60 })
     const template = Object.assign({}, templatesModule.templates[templateUuid])
     const components = Object.assign({}, template.components)
     const clips = Object.assign({}, template.clips)

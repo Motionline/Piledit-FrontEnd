@@ -21,11 +21,11 @@
       <SVGText
         v-for="i in 20"
         :key="`SVGText-${i}`"
-        :x="`${10 + (i-1) * 200}`"
+        :x="`${10 + (i-1) * 300}`"
         y="16"
         color="black"
       >
-        {{ getTimeDisplay(i) }}
+        {{ getTimeDisplay(i-1) }}
       </SVGText>
       <g transform="translate(0, 20)">
         <ClipOnLayer
