@@ -10,6 +10,7 @@ export interface PProjectIF {
   uuid: string;
   isMagicProject: boolean;
   storeUuid: string;
+  fps: number;
   createdAt: moment.Moment;
   updatedAt: moment.Moment;
   // TODO: userID を実装する
@@ -22,10 +23,12 @@ export class PProject implements PProjectIF {
   public storeUuid = '';
   public createdAt: moment.Moment;
   public updatedAt: moment.Moment;
+  public fps: number;
 
-  constructor ({ name, uuid, createdAt }: { name: string; uuid: string; createdAt: moment.Moment }) {
+  constructor ({ name, uuid, createdAt, fps }: { name: string; uuid: string; fps: number; createdAt: moment.Moment }) {
     this.name = name
     this.uuid = uuid
+    this.fps = fps
     this.createdAt = createdAt
     this.updatedAt = createdAt
   }
@@ -295,16 +298,32 @@ export class PClip implements ClipIF {
   public width: number
   public isExternal = false
   public storeUuid = ''
+  public startFrame: number
+  public endFrame: number
+  public layer: number
 
   constructor ({
-    uuid, name, componentUuid, projectUuid, position, width
-  }: { uuid: string; name: string; componentUuid: string; projectUuid: string; position: PPosition; width: number }) {
+    uuid, name, componentUuid, projectUuid, position, width, startFrame, endFrame, layer
+  }: {
+    uuid: string;
+    name: string;
+    componentUuid: string;
+    projectUuid: string;
+    position: PPosition;
+    width: number;
+    startFrame: number;
+    endFrame: number;
+    layer: number;
+  }) {
     this.uuid = uuid
     this.name = name
     this.componentUuid = componentUuid
     this.projectUuid = projectUuid
     this.position = position
     this.width = width
+    this.startFrame = startFrame
+    this.endFrame = endFrame
+    this.layer = layer
   }
 }
 
