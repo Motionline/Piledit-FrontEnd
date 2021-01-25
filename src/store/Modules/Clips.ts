@@ -88,8 +88,8 @@ export default class Clips extends VuexModule implements ClipsStateIF {
   public async updatePosition ({ position, uuid }: { position: PPosition; uuid: string }) {
     const clip = this.clips[uuid]
     clip.position = position
-    clip.startFrame = Math.round(position.x / 5)
-    clip.endFrame = Math.round(clip.startFrame + clip.width / 5)
+    clip.frame.begin = Math.round(position.x / 5)
+    clip.frame.end = Math.round(clip.frame.begin + clip.width / 5)
     clip.layer = (position.y - 1) / 50
     this.updateClip(clip)
     await magicProjectsModule.updateMagicProject()
