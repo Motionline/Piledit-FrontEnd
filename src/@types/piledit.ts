@@ -289,6 +289,16 @@ export interface ClipIF {
   storeUuid: string;
 }
 
+export class PClipFrame {
+  public begin: number
+  public end: number
+
+  constructor ({ begin, end }: { begin: number; end: number }) {
+    this.begin = begin
+    this.end = end
+  }
+}
+
 export class PClip implements ClipIF {
   public uuid: string
   public name: string
@@ -298,8 +308,7 @@ export class PClip implements ClipIF {
   public width: number
   public isExternal = false
   public storeUuid = ''
-  public startFrame: number
-  public endFrame: number
+  public frame: PClipFrame
   public layer: number
 
   constructor ({
@@ -321,8 +330,7 @@ export class PClip implements ClipIF {
     this.projectUuid = projectUuid
     this.position = position
     this.width = width
-    this.startFrame = startFrame
-    this.endFrame = endFrame
+    this.frame = new PClipFrame({ begin: startFrame, end: endFrame })
     this.layer = layer
   }
 }
