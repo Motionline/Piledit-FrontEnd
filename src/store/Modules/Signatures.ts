@@ -7,9 +7,8 @@ import { SignaturesMixin } from '@/mixin/signatures'
 @Module({ store: store, name: 'SignaturesModule', namespaced: true })
 export default class Signatures extends VuexModule {
   @Action({ rawError: true })
-  public async giveComponentSignature ({ payload }: { payload: PComponent }) {
+  public async giveComponentSignature ({ key, payload }: { key: string; payload: PComponent }) {
     const header = { alg: 'HS256', typ: 'JWT' }
-    const key = VuexMixin.generateUuid()
     const unsignedToken = `${SignaturesMixin.base64(header)}.${SignaturesMixin.base64(payload)}`
     const signature = SignaturesMixin.HMAC_SHA256(key, unsignedToken)
     return `${unsignedToken}.${signature}`

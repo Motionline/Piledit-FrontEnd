@@ -12,6 +12,7 @@ import PStores from '@/store/Modules/PStores'
 import Templates from '@/store/Modules/Templates'
 import Topics from '@/store/Modules/Topics'
 import Comments from '@/store/Modules/Comments'
+import Signatures from '@/store/Modules/Signatures'
 import { getModule } from 'vuex-module-decorators'
 import VuexPersistence from 'vuex-persist'
 
@@ -34,7 +35,8 @@ const store = new Vuex.Store({
     TemplatesModule: Templates,
     MagicProjectsModule: MagicProjects,
     TopicsModule: Topics,
-    CommentsModule: Comments
+    CommentsModule: Comments,
+    SignaturesModule: Signatures
   },
   plugins: [vuexLocal.plugin]
 })
@@ -52,3 +54,4 @@ export const templatesModule = getModule(Templates, store)
 export const magicProjectsModule = getModule(MagicProjects, store)
 export const topicsModule = getModule(Topics, store)
 export const commentsModule = getModule(Comments, store)
+export const signaturesModule = getModule(Signatures, store)
