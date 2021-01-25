@@ -36,6 +36,12 @@
               </div>
             </div>
             <div class="Home__wrapper--links--row--group">
+              <h3>電子署名</h3>
+              <div>
+                <a @click="toVerifySignature">署名を検証する</a>
+              </div>
+            </div>
+            <div class="Home__wrapper--links--row--group">
               <h3>Pileditについて学ぶ</h3>
               <div>
                 <a @click="toLearnIndex">Piledit チュートリアル</a>
@@ -181,6 +187,18 @@ export default class Home extends Vue {
       kind: PTabHistoryKind.General,
       projectUuid: '',
       title: 'Piledit Forum',
+      url
+    })
+  }
+
+  toVerifySignature () {
+    const uuid = tabsModule.currentViewingTabUuid
+    const url = `/${uuid}/signatures/verify`
+    tabsModule.routerPush({ url })
+    tabsModule.addPage({
+      kind: PTabHistoryKind.General,
+      projectUuid: '',
+      title: '署名を検証する',
       url
     })
   }

@@ -14,6 +14,7 @@ const routes: Array<RouteConfig> = [
   { path: '/:tabUuid/projects/open', name: 'ProjectOpen', component: () => import('../views/projects/open.vue') },
   { path: '/:tabUuid/projects/:projectUuid/components/:componentUuid', name: 'ComponentsEdit', component: () => import('../views/ComponentsEdit.vue') },
   { path: '/:tabUuid/projects/:projectUuid', name: 'TimeLine', component: () => import('../views/TimeLine.vue') },
+  { path: '/:tabUuid/signatures/verify', name: 'VerifySignatures', component: () => import('../views/VerifyElectricSignature.vue') },
   { path: '/:tabUuid/learn', name: 'LearnIndex', component: () => import('../views/learn/index.vue') },
   { path: '/:tabUuid/forum', name: 'ForumIndex', component: () => import('../views/forum/index.vue') },
   { path: '/:tabUuid/about', name: 'About', component: () => import('../views/About.vue') },

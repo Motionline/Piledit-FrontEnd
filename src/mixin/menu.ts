@@ -5,7 +5,7 @@ import {
   componentsModule,
   magicProjectsModule,
   projectsModule,
-  pStoresModule,
+  pStoresModule, signaturesModule,
   tabsModule,
   templatesModule
 } from '@/store/store'
@@ -13,9 +13,11 @@ import { remote } from 'electron'
 import fs from 'fs'
 import pathModule from 'path'
 import { PComponent } from '@/@types/piledit'
-import axios from 'axios'
 import mkdirp from 'mkdirp'
 import moment from 'moment'
+import axios from 'axios'
+import { VuexMixin } from '@/mixin/vuex'
+axios.defaults.baseURL = 'http://localhost:5000/api'
 const Menu = remote.Menu
 const dialog = remote.dialog
 
@@ -38,7 +40,9 @@ export class MenuMixin extends Vue {
       copy: 'Copy',
       paste: 'Paste',
       movie: 'Movie',
-      publishMagicProject: 'Publish Magic Project'
+      publishMagicProject: 'Publish Magic Project',
+      components: 'Components',
+      signature: 'Give Electric Signature'
     },
     ja: {
       aboutPiledit: 'Piledit について',
@@ -56,7 +60,9 @@ export class MenuMixin extends Vue {
       copy: 'コピー',
       paste: 'ペースト',
       movie: '動画',
-      publishMagicProject: 'Magic Projectとして公開する'
+      publishMagicProject: 'Magic Projectとして公開する',
+      components: 'コンポーネント',
+      signature: '電子署名を与える'
     }
   }
 
@@ -161,12 +167,18 @@ export class MenuMixin extends Vue {
       ]
     },
     {
-      label: 'Components',
+      label: MenuMixin.i18nDict[MenuMixin.language].components,
       submenu: [
         {
           id: 'componentPublish',
           label: 'Publish',
           click: async () => { await MenuMixin.publishComponent() }
+        },
+        {
+          id: 'componentsSignature',
+          label: MenuMixin.i18nDict[MenuMixin.language].signature,
+          accelerator: 'CmdOrCtrl+Option+E',
+          click: async () => { await MenuMixin.giveComponentSignature() }
         }
       ]
     },
@@ -291,6 +303,36 @@ export class MenuMixin extends Vue {
     })
   }
 
+  static async giveComponentSignature () {
+    const componentUuid = componentsModule.publishComponentUuid
+    const component = componentsModule.components[componentUuid]
+    if (fs.existsSync(remote.app.getAppPath() + '/.key')) {
+      fs.readFile(remote.app.getAppPath() + '/.key', 'utf-8', async (err, data) => {
+        if (err) throw err
+        const key = data
+        const jwt = await signaturesModule.giveComponentSignature({ key, payload: component })
+        fs.writeFile(remote.app.getAppPath() + `/signatures/${component.name}.jwt`, jwt, (err) => {
+          if (!err) {
+            console.log('success to save!')
+          }
+        })
+      })
+    } else {
+      const key = VuexMixin.generateUuid()
+      fs.writeFile(remote.app.getAppPath() + '/.key', key, async (err) => {
+        if (!err) {
+          console.log('success to save!')
+        }
+      })
+      const jwt = await signaturesModule.giveComponentSignature({ key, payload: component })
+      fs.writeFile(remote.app.getAppPath() + `/signatures/${component.name}.jwt`, jwt, (err) => {
+        if (!err) {
+          console.log('success to save!')
+        }
+      })
+    }
+  }
+
   static async publishComponent () {
     const componentUuid = componentsModule.publishComponentUuid
     const component = componentsModule.components[componentUuid]
@@ -315,14 +357,43 @@ export class MenuMixin extends Vue {
     await magicProjectsModule.updateMagicProjectDialog({ condition: true })
   }
 
-  static encode () {
+  static async encode () {
+    const projectUuid = projectsModule.currentViewingProjectUuid
+    const project = Object.assign({}, projectsModule.projects[projectUuid])
+    project.updatedAt = moment()
+    projectsModule.updateProject(project)
+    const components = await componentsModule.getFilteredComponents({ projectUuid })
+    const blocks = await blocksModule.getFilteredBlocks({ projectUuid })
+    const clips = await clipsModule.getFilteredClips({ projectUuid })
     const data = {
-      clips: clipsModule.clips,
-      components: componentsModule.components
+      ...project,
+      components: {
+        ...components
+      },
+      blocks: {
+        ...blocks
+      },
+      clips: {
+        ...clips
+      }
     }
-    axios.post('http://localhost:5000/encode', data)
-    console.log(JSON.stringify(data, undefined, 2))
-    console.log(data)
+    const debugData = {
+      name: 'main2',
+      uuid: '40925085-0bf0-4809-b38b-5f24915b4f5e'
+    }
+    await axios.post('/Project', debugData).then(function (response) {
+      // 送信成功時の処理
+      console.log(response)
+    })
+    await axios.post('/Timeline', data).then(function (response) {
+      // 送信成功時の処理
+      console.log(response)
+    })
+    const outputDebug = { uuid: '40925085-0bf0-4809-b38b-5f24915b4f5e', extention: '.mp4', fourCC: 'mp4s' }
+    await axios.post('/Output', outputDebug).then(function (response) {
+      // 送信成功時の処理
+      console.log(response)
+    })
   }
 
   static async addComponentsEditorTab () {
