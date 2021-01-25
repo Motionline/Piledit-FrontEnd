@@ -12,13 +12,10 @@ import { firestorePlugin } from 'vuefire'
 import { Auth } from '@/firebase/auth'
 import { MenuMixin } from '@/mixin/menu'
 import { remote } from 'electron'
+
 const Menu = remote.Menu
 
-// import axios from 'axios'
-// import VueAxios from 'vue-axios'
-
 Vue.config.productionTip = false
-// Vue.use(axios)
 
 Vue.use(VueHead)
 Vue.use(firestorePlugin)
